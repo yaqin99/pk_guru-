@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GuruController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.layout');
-});
+
+Route::get('/guru', [GuruController::class,'index']);
+Route::get('/getGuru', [GuruController::class,'getGuru']);

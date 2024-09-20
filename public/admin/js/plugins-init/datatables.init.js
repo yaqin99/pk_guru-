@@ -43,7 +43,45 @@ let dataSet = [
 (function($) {
     "use strict"
     //example 1
+    let index = 1 ; 
+    var tboby = $('#example tbody');
+	tboby.empty();
     var table = $('#example').DataTable({
+        ajax:{
+            url: "getGuru",
+            type: 'GET',
+            dataType: 'json',
+            success: function ( data) {
+                data.forEach(e => {
+
+                    let tr = $('<tr></tr>')
+                        tr.append(`<td>${index}</td>`)
+                        tr.append(`<td>${e.nama_guru}</td>`)
+                        tr.append(`<td>${e.no_hp}</td>`)
+                        tr.append(`<td>${e.alamat}</td>`)
+                        tr.append(`<td> <div class="btn-group d-flex justify-content-around">
+                            
+                            <a href="javascript:void(0)"  class="btn btn-xs btn-light-primary font-weight-bold btn-icon" title="Edit details">
+                                <i class="la la-edit"></i>
+                            </a>
+                            <a href="javascript:void(0)"  class="btn btn-xs btn-light-danger font-weight-bold btn-icon" title="Delete">
+                                <i class="la la-trash"></i>
+                            </a>
+                            </div></td>`)
+                        
+                        tboby.append(tr);
+                        index = index + 1 ; 
+                });
+                
+                // $('#datatable tr').first().after(html); 
+                // $('#dasar').text(data.dasar);
+                // $('#maksud').text(data.maksud);
+                // $('#waktu').text(data.waktu);
+            },
+            error: function ( data ) {
+                console.log('error');
+            }
+        },
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
         } 

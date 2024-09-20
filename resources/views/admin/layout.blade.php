@@ -5,38 +5,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title></title>
-    <script>
-        let direction = 'left'; // Menentukan arah awal
-        let titleText = "Penilaian Kinerja Guru Al - Ghazali ";
-        
-        function scrollTitle() {
-            if (direction === 'left') {
-                titleText = titleText.substring(1) + titleText[0]; // Pindah satu karakter ke kiri
-            } else {
-                titleText = titleText[titleText.length - 1] + titleText.substring(0, titleText.length - 1); // Pindah satu karakter ke kanan
-            }
-            document.title = titleText; // Mengubah judul halaman
-        }
-        
-        function changeDirection() {
-            // Mengubah arah pergerakan
-            if (direction === 'left') {
-                direction = 'right';
-            } else {
-                direction = 'left';
-            }
-        }
-
-        setInterval(scrollTitle, 500);
-
-        setInterval(changeDirection, 5000);
-    </script>
-    <link rel="icon" type="image/png" sizes="16x16" href="/admin/images/alGhazali.png">
+    <title>Focus - Bootstrap Admin Dashboard </title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
     <!-- Datatable -->
     <link href="/admin/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <!-- Custom Stylesheet -->
     <link href="/admin/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 </head>
 
@@ -78,16 +54,20 @@
                 </div>
             </div>
         </div>
-       
+        <!--**********************************
+            Nav header end
+        ***********************************-->
 
         <!--**********************************
-            Navbar
+            Header start
         ***********************************-->
         @include('admin.component.navbar')
-      
+        <!--**********************************
+            Header end ti-comment-alt
+        ***********************************-->
 
         <!--**********************************
-            Sidebar 
+            Sidebar start
         ***********************************-->
         @include('admin.component.sidebar')
         <!--**********************************
@@ -99,55 +79,31 @@
         ***********************************-->
         <div class="content-body">
             <div class="container-fluid">
-                <div class="row page-titles mx-0">
-                    <div class="col-sm-6 p-md-0">
-                        <div class="welcome-text">
-                            <h4>Hi, welcome back!</h4>
-                            <span class="ml-1">Datatable</span>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0)">Table</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0)">Datatable</a></li>
-                        </ol>
-                    </div>
-                </div>
+                @include('admin.component.greeting')
                 <!-- row -->
 
 
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title text-center">Basic Datatable</h4>
-                            </div>
-                            <div class="card-header">
-                                <a href="javascript:void(0)" class="btn btn-primary text-end">Tambah Guru</a>
+                            <div class="card-header d-flex justify-content-center">
+                                <h2 class="card-title ">Data Guru</h2>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="tabel_guru" class="display" style="min-width: 845px">
+                                    <table id="tabel_guru" class="display" style="width:100%; align-item:center;">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Position</th>
-                                                <th>Office</th>
-                                                <th>Age</th>
-                                                <th>Start date</th>
-                                                <th>Salary</th>
+                                                <th>No</th>
+                                                <th>Nama Guru</th>
+                                                <th>Nip</th>
+                                                <th>Nomer Handphone</th>
+                                                <th>Alamat</th>
+                                                <th>Opsi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                            </tr>
-                                            
+                                           
                                         </tbody>
                                         
                                     </table>
@@ -163,12 +119,23 @@
             Content body end
         ***********************************-->
 
-
+        @include('admin.modals.addGuru')
+        
         <!--**********************************
             Footer start
         ***********************************-->
-       @include('admin.component.footer')
-      
+        @include('admin.component.footer')
+        <!--**********************************
+            Footer end
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button start
+        ***********************************-->
+
+        <!--**********************************
+           Support ticket button end
+        ***********************************-->
 
         
     </div>
@@ -183,13 +150,40 @@
     <script src="/admin/vendor/global/global.min.js"></script>
     <script src="/admin/js/quixnav-init.js"></script>
     <script src="/admin/js/custom.min.js"></script>
+    <script src="/admin/js/modal.js"></script>
     
 
 
     <!-- Datatable -->
     <script src="/admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="/admin/js/datatables.init.js"></script>
+    <script src="/admin/js/plugins-init/datatables.init.js"></script>
+    
+    <script>
+    $( document ).ready(function() {
 
+        var table = $('#tabel_guru').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: "/guru",
+          columns: [
+              {data: null,"sortable": false, 
+                 render: function (data, type, row, meta) {
+                 return meta.row + meta.settings._iDisplayStart + 1;
+                }  },
+              {data: 'nama_guru', name: 'nama_guru'},
+              {data: 'nip', name: 'nip'},
+              {data: 'no_hp', name: 'no_hp'},
+              {data: 'alamat', name: 'alamat'},
+              {data: 'action', name: 'action', orderable: false, searchable: false},
+          ]
+      });
+    });
+   
+      
+      
+        
+  
+    </script>
 </body>
 
 </html>
