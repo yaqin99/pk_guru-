@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Focus - Bootstrap Admin Dashboard </title>
+    <title>PK Guru Al - Ghazali</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/admin/images/ghazali.png">
     <!-- Datatable -->
     <link href="/admin/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <!-- Custom Stylesheet -->
@@ -98,6 +98,7 @@
                                                 <th>Nama Guru</th>
                                                 <th>Nip</th>
                                                 <th>Nomer Handphone</th>
+                                                <th>Email</th>
                                                 <th>Alamat</th>
                                                 <th>Opsi</th>
                                             </tr>
@@ -120,6 +121,7 @@
         ***********************************-->
 
         @include('admin.modals.addGuru')
+        @include('admin.modals.editGuru')
         
         <!--**********************************
             Footer start
@@ -157,9 +159,15 @@
     <!-- Datatable -->
     <script src="/admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
     <script src="/admin/js/plugins-init/datatables.init.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="/admin/js/addData.js"></script>
+    <script src="/admin/js/deleteData.js"></script>
+    <script src="/admin/js/editData.js"></script>
     <script>
-    $( document ).ready(function() {
+
+    function getGuru(){
+         $("#tabel_guru").dataTable().fnDestroy();
 
         var table = $('#tabel_guru').DataTable({
           processing: true,
@@ -174,9 +182,14 @@
               {data: 'nip', name: 'nip'},
               {data: 'no_hp', name: 'no_hp'},
               {data: 'alamat', name: 'alamat'},
+              {data: 'email', name: 'email'},
               {data: 'action', name: 'action', orderable: false, searchable: false},
           ]
       });
+        }
+
+    $( document ).ready(function() {     
+        getGuru()
     });
    
       

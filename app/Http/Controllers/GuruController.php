@@ -16,17 +16,17 @@ class GuruController extends Controller
     {
         $pages = 'guru' ; 
         if ($request->ajax()) {
-            $data = Guru::select(['nama_guru','nip','no_hp' , 'alamat','id'])->get();
+            $data = Guru::select(['nama_guru','nip','no_hp' , 'alamat','email','id'])->get();
             $string = 'Konfirmasi Penghapusan Data' ; 
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
-                           <a onclick=\'editGuru(`'.$row.'`)\' class="edit btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditWilayah">
+                           <a onclick=\'editGuru(`'.$row.'`)\' class="edit btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
                            <i class="bi bi-pencil-fill" ></i>
                            </a>
-                           <a href="/admin/hapusGuru/'.$row['id'].'" onclick="return confirm(\'Konfirmasi Penghapusan Data ?\')"  class="edit btn btn-outline-secondary btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                           <a href="javascript:void(0)" onclick=\'deleteGuru(`'.$row['id'].'`)\' class="edit btn btn-outline-secondary btn-sm"><i class="bi bi-trash3-fill"></i></a>
                            
                            </div>
                            
@@ -49,6 +49,41 @@ class GuruController extends Controller
        $data = Guru::all();
        return response()->json($data);
 
+    }
+    public function addGuru()
+    {
+      $add = Guru::create([
+        'nama_guru' => request('nama'), 
+        'nip' => request('nip'), 
+        'no_hp' => request('no_hp'), 
+        'email' => request('email'), 
+        'alamat' => request('alamat'), 
+        'username' => request('username'), 
+        'password' => bcrypt(request('password')), 
+      ]);
+
+
+      
+
+    }
+    public function editGuru()
+    {
+      $add = Guru::where('id',request('id'))->update([
+        'nama_guru' => request('nama'), 
+        'nip' => request('nip'), 
+        'no_hp' => request('no_hp'), 
+        'email' => request('email'), 
+        'alamat' => request('alamat'), 
+        
+      ]);
+
+
+      
+
+    }
+    public function deleteGuru($id)
+    {
+      $deltete = Guru::find($id)->delete();
     }
 
     /**

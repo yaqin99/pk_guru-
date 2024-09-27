@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/guru', [GuruController::class,'index']);
 Route::get('/getGuru', [GuruController::class,'getGuru']);
+Route::post('/addGuru', [GuruController::class,'addGuru']);
+Route::get('/deleteGuru/{id}', [GuruController::class,'deleteGuru']);
+Route::put('/editGuru', [GuruController::class,'editGuru']);
