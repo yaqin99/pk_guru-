@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengajuan;
 use App\Models\Guru;
 use Illuminate\Http\Request;
-use App\DataTables\GurusDataTable;
 use Yajra\DataTables\Facades\DataTables;
 
-class GuruController extends Controller
+class PengajuanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $pages = 'guru' ; 
+        $pages = 'pengajuan' ; 
         if ($request->ajax()) {
-            $data = Guru::select(['nama_guru','nip','no_hp' , 'alamat','email','id'])->get();
-            $string = 'Konfirmasi Penghapusan Data' ; 
+            $data = Guru::select(['nama_guru','nip','no_hp' , 'alamat','email','id'])->with('pengajuan')->get();
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
@@ -39,51 +38,17 @@ class GuruController extends Controller
                     ->make(true);
         }
 
-        return view('admin.pages.guru' , [
+        return view('admin.pages.pengajuan' , [
             'pages' => $pages , 
         ]);
     }
-    
-    public function getGuru()
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
-       $data = Guru::all();
-       return response()->json($data);
-
-    }
-    public function addGuru()
-    {
-      $add = Guru::create([
-        'nama_guru' => request('nama'), 
-        'nip' => request('nip'), 
-        'no_hp' => request('no_hp'), 
-        'email' => request('email'), 
-        'alamat' => request('alamat'), 
-        'username' => request('username'), 
-        'password' => bcrypt(request('password')), 
-      ]);
-
-
-      
-
-    }
-    public function editGuru()
-    {
-      $add = Guru::where('id',request('id'))->update([
-        'nama_guru' => request('nama'), 
-        'nip' => request('nip'), 
-        'no_hp' => request('no_hp'), 
-        'email' => request('email'), 
-        'alamat' => request('alamat'), 
-        
-      ]);
-
-
-      
-
-    }
-    public function deleteGuru($id)
-    {
-      $deltete = Guru::find($id)->delete();
+        //
     }
 
     /**
@@ -97,7 +62,7 @@ class GuruController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Guru $guru)
+    public function show(Pengajuan $pengajuan)
     {
         //
     }
@@ -105,7 +70,7 @@ class GuruController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Guru $guru)
+    public function edit(Pengajuan $pengajuan)
     {
         //
     }
@@ -113,7 +78,7 @@ class GuruController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Guru $guru)
+    public function update(Request $request, Pengajuan $pengajuan)
     {
         //
     }
@@ -121,7 +86,7 @@ class GuruController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Guru $guru)
+    public function destroy(Pengajuan $pengajuan)
     {
         //
     }

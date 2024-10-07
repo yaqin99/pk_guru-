@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\PengajuanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//guru All Routes
 
 Route::get('/guru', [GuruController::class,'index']);
 Route::get('/getGuru', [GuruController::class,'getGuru']);
 Route::post('/addGuru', [GuruController::class,'addGuru']);
 Route::get('/deleteGuru/{id}', [GuruController::class,'deleteGuru']);
 Route::put('/editGuru', [GuruController::class,'editGuru']);
+
+//Pengajuan All Routes
+
+Route::get('/pengajuan', [PengajuanController::class,'index']);

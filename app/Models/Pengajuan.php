@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Guru extends Model
+class Pengajuan extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    public function pengajuan(){
-        return $this->belongsTo(Pengajuan::class);
+
+    public function guru(){
+        return $this->hasMany(Guru::class);
      }
 }

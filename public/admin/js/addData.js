@@ -59,6 +59,13 @@ $(document).ready(function (){
                             text: "Data Guru Telah Ditambahkan",
                             icon: "success"
                           });
+                          $('#nama').val('');
+                          $('#nip').val('');
+                          $('#no_hp').val('');
+                          $('#alamat').val('');
+                          $('#email').val('');
+                          $('#username').val('');
+                          $('#password').val('');
                            getGuru()
                     },
                     error:function(error){
@@ -75,6 +82,13 @@ $(document).ready(function (){
               /* Read more about handling dismissals below */
               result.dismiss === Swal.DismissReason.cancel
             ) {
+              $('#nama').val('');
+              $('#nip').val('');
+              $('#no_hp').val('');
+              $('#alamat').val('');
+              $('#email').val('');
+              $('#username').val('');
+              $('#password').val('');
               swalWithBootstrapButtons.fire({
                 title: "Batal",
                 text: "Data Guru Tidak Ditambah",
