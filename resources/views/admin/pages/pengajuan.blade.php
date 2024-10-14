@@ -8,7 +8,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="tabel_guru" class="display" style="width:100%; align-item:center;">
+                    <table id="tabel_pengajuan" class="display" style="width:100%; align-item:center;">
                         <thead>
                             <tr>
                                 <th>No</th>

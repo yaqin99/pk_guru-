@@ -134,39 +134,8 @@
     <script src="/admin/js/addData.js"></script>
     <script src="/admin/js/deleteData.js"></script>
     <script src="/admin/js/editData.js"></script>
-    <script>
-
-    function getGuru(){
-         $("#tabel_guru").dataTable().fnDestroy();
-
-        var table = $('#tabel_guru').DataTable({
-          processing: true,
-          serverSide: true,
-          ajax: "/guru",
-          columns: [
-              {data: null,"sortable": false, 
-                 render: function (data, type, row, meta) {
-                 return meta.row + meta.settings._iDisplayStart + 1;
-                }  },
-              {data: 'nama_guru', name: 'nama_guru'},
-              {data: 'nip', name: 'nip'},
-              {data: 'no_hp', name: 'no_hp'},
-              {data: 'alamat', name: 'alamat'},
-              {data: 'email', name: 'email'},
-              {data: 'action', name: 'action', orderable: false, searchable: false},
-          ]
-      });
-        }
-
-    $( document ).ready(function() {     
-        getGuru()
-    });
-   
-      
-      
-        
-  
-    </script>
+    <script src="/admin/js/guru.js"></script>
+    <script src="/admin/js/pengajuan.js"></script>
 </body>
 
 </html>

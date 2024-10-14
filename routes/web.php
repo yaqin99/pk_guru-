@@ -26,3 +26,4 @@ Route::put('/editGuru', [GuruController::class,'editGuru']);
 //Pengajuan All Routes
 
 Route::get('/pengajuan', [PengajuanController::class,'index']);
+Route::get('/getPengajuan', [PengajuanController::class,'getOengajuan']);

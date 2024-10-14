@@ -16,7 +16,7 @@ class PengajuanController extends Controller
     {
         $pages = 'pengajuan' ; 
         if ($request->ajax()) {
-            $data = Guru::select(['nama_guru','nip','no_hp' , 'alamat','email','id'])->with('pengajuan')->get();
+            $data = Guru::with('pengajuan')->select(['nama_guru','nip','no_hp' , 'alamat','email','id']);
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
@@ -46,9 +46,12 @@ class PengajuanController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function getPengajuan()
     {
-        //
+        $data = Guru::with('pengajuan')->select(['nama_guru','nip','no_hp' , 'alamat','email','id']);
+        
+        return response()->json($data);
+
     }
 
     /**
