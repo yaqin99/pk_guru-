@@ -13,8 +13,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Guru</th>
-                                <th>NIP</th>
-                                <th>Program</th>
+                                <th>Program Kerja</th>
                                 <th>Catatan</th>
                                 <th>Poin</th>
                                 <th>Opsi</th>

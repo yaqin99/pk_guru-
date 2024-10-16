@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengajuan;
-use App\Models\Guru;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -16,9 +16,16 @@ class PengajuanController extends Controller
     {
         $pages = 'pengajuan' ; 
         if ($request->ajax()) {
-            $data = Guru::with('pengajuan')->select(['nama_guru','nip','no_hp' , 'alamat','email','id']);
+            $data = User::with('pengajuan')->get();
             return Datatables::of($data)
                     ->addIndexColumn()
+                    
+                    ->addColumn('nama_kegiatan', function($row){
+                    return $row->pengajuan[0]['nama_kegiatan'];})
+                    ->addColumn('catatan', function($row){
+                    return $row->pengajuan[0]['catatan'];})
+                    ->addColumn('jumlah_poin', function($row){
+                    return $row->pengajuan[0]['jumlah_poin'];})
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
@@ -48,7 +55,7 @@ class PengajuanController extends Controller
      */
     public function getPengajuan()
     {
-        $data = Guru::with('pengajuan')->select(['nama_guru','nip','no_hp' , 'alamat','email','id']);
+        $data = User::with('pengajuan');
         
         return response()->json($data);
 

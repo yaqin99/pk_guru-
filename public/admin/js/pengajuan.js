@@ -8,14 +8,13 @@ function getPengajuan(){
      columns: [
          {data: null,"sortable": false, 
             render: function (data, type, row, meta) {
-                console.log(data)
+                console.log(data.pengajuan)
             return meta.row + meta.settings._iDisplayStart + 1;
            }  },
-         {data: 'nama_guru', name: 'nama_guru'},
-         {data: 'nip', name: 'nip'},
-         {data: 'no_hp', name: 'no_hp'},
-         {data: 'alamat', name: 'alamat'},
-         {data: 'email', name: 'email'},
+         {data: 'nama_user', name: 'nama_user'},
+         {data: 'nama_kegiatan', name: 'nama_kegiatan'},
+         {data: 'catatan', name: 'catatan'},
+         {data: 'jumlah_poin', name: 'jumlah_poin'},
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
  });

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Guru;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\DataTables\GurusDataTable;
 use Yajra\DataTables\Facades\DataTables;
@@ -16,7 +16,7 @@ class GuruController extends Controller
     {
         $pages = 'guru' ; 
         if ($request->ajax()) {
-            $data = Guru::select(['nama_guru','nip','no_hp' , 'alamat','email','id'])->get();
+            $data = User::all();
             $string = 'Konfirmasi Penghapusan Data' ; 
             return Datatables::of($data)
                     ->addIndexColumn()
@@ -46,13 +46,13 @@ class GuruController extends Controller
     
     public function getGuru()
     {
-       $data = Guru::all();
+       $data = User::all();
        return response()->json($data);
 
     }
     public function addGuru()
     {
-      $add = Guru::create([
+      $add = User::create([
         'nama_guru' => request('nama'), 
         'nip' => request('nip'), 
         'no_hp' => request('no_hp'), 
@@ -68,7 +68,7 @@ class GuruController extends Controller
     }
     public function editGuru()
     {
-      $add = Guru::where('id',request('id'))->update([
+      $add = User::where('id',request('id'))->update([
         'nama_guru' => request('nama'), 
         'nip' => request('nip'), 
         'no_hp' => request('no_hp'), 
@@ -83,7 +83,7 @@ class GuruController extends Controller
     }
     public function deleteGuru($id)
     {
-      $deltete = Guru::find($id)->delete();
+      $deltete = User::find($id)->delete();
     }
 
     /**
@@ -97,32 +97,5 @@ class GuruController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Guru $guru)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Guru $guru)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Guru $guru)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Guru $guru)
-    {
-        //
-    }
+  
 }

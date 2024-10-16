@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('pengajuans', function (Blueprint $table) {
             $table->id();
+            $table->string('nama_kegiatan');
+            $table->foreignId('user_id');
+            $table->string('catatan');
+            $table->string('jumlah_poin');
             $table->timestamps();
         });
     }

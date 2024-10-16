@@ -10,6 +10,6 @@ class Guru extends Model
     use HasFactory;
     protected $guarded = ['id'];
     public function pengajuan(){
-        return $this->belongsTo(Pengajuan::class);
+        return $this->hasMany(Pengajuan::class);
      }
 }

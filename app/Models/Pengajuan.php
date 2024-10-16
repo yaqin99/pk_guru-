@@ -11,6 +11,6 @@ class Pengajuan extends Model
     protected $guarded = ['id'];
 
     public function guru(){
-        return $this->hasMany(Guru::class);
+        return $this->belongsToMany(User::class);
      }
 }
