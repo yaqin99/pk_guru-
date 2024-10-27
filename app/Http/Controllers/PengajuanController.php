@@ -17,15 +17,22 @@ class PengajuanController extends Controller
         $pages = 'pengajuan' ; 
         if ($request->ajax()) {
             $data = User::with('pengajuan')->get();
+            dd($data->pengajuan);
+
             return Datatables::of($data)
                     ->addIndexColumn()
-                    
+                    ->addColumn('nama_user', function($row){
+                    return $row->nama_user;})
                     ->addColumn('nama_kegiatan', function($row){
-                    return $row->pengajuan[0]['nama_kegiatan'];})
+                    return $row->pengajuan[1]['nama_kegiatan'];})
                     ->addColumn('catatan', function($row){
-                    return $row->pengajuan[0]['catatan'];})
+                    return $row->pengajuan[1]['catatan'];})
+                    ->addColumn('estimasi', function($row){
+                    return $row->pengajuan[1]['estimasi'];})
                     ->addColumn('jumlah_poin', function($row){
-                    return $row->pengajuan[0]['jumlah_poin'];})
+                    return $row->pengajuan[1]['jumlah_poin'];})
+                    ->addColumn('rpp', function($row){
+                    return $row->pengajuan[1]['rpp'];})
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
@@ -64,9 +71,23 @@ class PengajuanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function addPengajuan(Request $request)
     {
-        //
+
+        $rpp_name = uniqid().'.'.request()->file('rpp')->extension() ; 
+        request()->file('rpp')->storeAs('rpp' , $rpp_name , ['disk' => 'public']);
+            
+        $add = Pengajuan::create([
+            'nama_kegiatan' => request('nama_kegiatan'), 
+            'user_id' => 1, 
+            'catatan' => 'aaaa', 
+            'estimasi' => request('waktu'), 
+            'jumlah_poin' => request('jumlah_poin'), 
+            'rpp' => request('rpp'), 
+            
+          ]);
+          
+        
     }
 
     /**

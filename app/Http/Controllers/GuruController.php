@@ -53,13 +53,14 @@ class GuruController extends Controller
     public function addGuru()
     {
       $add = User::create([
-        'nama_guru' => request('nama'), 
+        'nama_user' => request('nama'), 
         'nip' => request('nip'), 
         'no_hp' => request('no_hp'), 
         'email' => request('email'), 
         'alamat' => request('alamat'), 
         'username' => request('username'), 
         'password' => bcrypt(request('password')), 
+        'role' =>1, 
       ]);
 
 

@@ -19,7 +19,9 @@ class PengajuanSeeder extends Seeder
                 'nama_kegiatan' => 'Meningkatkan Pembelajaran Bahasa Inggris' , 
                 'user_id' => 1 , 
                 'catatan' => 'Sistem ini akan dilaksanakan dalam waktu seharian full' , 
+                'estimasi' => '2 Semester' , 
                 'jumlah_poin' => '10' , 
+                'rpp' => '22222.pdf' , 
                 
             ]
             );
