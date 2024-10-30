@@ -17,7 +17,6 @@
                                 <th>Catatan</th>
                                 <th>Estimasi</th>
                                 <th>Poin</th>
-                                <th>Rpp / Modul</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
@@ -33,4 +32,5 @@
    
 </div>
 @include('admin.modals.addPengajuan')
+@include('admin.modals.editPengajuan')
 @endsection

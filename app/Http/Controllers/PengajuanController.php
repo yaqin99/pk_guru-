@@ -6,6 +6,8 @@ use App\Models\Pengajuan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Storage;
+
 
 class PengajuanController extends Controller
 {
@@ -16,30 +18,29 @@ class PengajuanController extends Controller
     {
         $pages = 'pengajuan' ; 
         if ($request->ajax()) {
-            $data = User::with('pengajuan')->get();
-            dd($data->pengajuan);
+            $data = Pengajuan::with('guru')->get();
 
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('nama_user', function($row){
-                    return $row->nama_user;})
+                    return $row->guru->nama_user;})
                     ->addColumn('nama_kegiatan', function($row){
-                    return $row->pengajuan[1]['nama_kegiatan'];})
+                    return $row->nama_kegiatan;})
                     ->addColumn('catatan', function($row){
-                    return $row->pengajuan[1]['catatan'];})
+                    return $row->catatan;})
                     ->addColumn('estimasi', function($row){
-                    return $row->pengajuan[1]['estimasi'];})
+                    return $row->estimasi;})
                     ->addColumn('jumlah_poin', function($row){
-                    return $row->pengajuan[1]['jumlah_poin'];})
-                    ->addColumn('rpp', function($row){
-                    return $row->pengajuan[1]['rpp'];})
+                    return $row->jumlah_poin;})
+                   
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
-                           <a onclick=\'editGuru(`'.$row.'`)\' class="edit btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
                            <i class="bi bi-pencil-fill" ></i>
                            </a>
-                           <a href="javascript:void(0)" onclick=\'deleteGuru(`'.$row['id'].'`)\' class="edit btn btn-outline-secondary btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                           
+                           <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-outline-secondary btn-sm"><i class="bi bi-trash3-fill"></i></a>
                            
                            </div>
                            
@@ -73,9 +74,9 @@ class PengajuanController extends Controller
      */
     public function addPengajuan(Request $request)
     {
-
-        $rpp_name = uniqid().'.'.request()->file('rpp')->extension() ; 
-        request()->file('rpp')->storeAs('rpp' , $rpp_name , ['disk' => 'public']);
+        $nameFile =  request()->file('rpp')->getClientOriginalName();
+        // $rpp_name = uniqid().'.'.request()->file('rpp')->extension() ; 
+        request()->file('rpp')->storeAs('rpp' , $nameFile , ['disk' => 'public']);
             
         $add = Pengajuan::create([
             'nama_kegiatan' => request('nama_kegiatan'), 
@@ -83,35 +84,52 @@ class PengajuanController extends Controller
             'catatan' => 'aaaa', 
             'estimasi' => request('waktu'), 
             'jumlah_poin' => request('jumlah_poin'), 
-            'rpp' => request('rpp'), 
+            'rpp' =>  $nameFile, 
             
           ]);
           
         
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pengajuan $pengajuan)
-    {
-        //
-    }
+    public function editPengajuan()
+    {  
+        $name =  request()->file('rpp');
+        $nama_rpp =  request('rpp_name');
+        $data = Pengajuan::find(request('id'));
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Pengajuan $pengajuan)
-    {
-        //
-    }
+        if ($name != null) {
+            Storage::disk('public')->delete('rpp/'.$data->rpp);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Pengajuan $pengajuan)
+            $nameFile =  request()->file('rpp')->getClientOriginalName();
+            request()->file('rpp')->storeAs('rpp' , $nameFile , ['disk' => 'public']);
+            $add = Pengajuan::where('id',request('id'))->update([
+              'nama_kegiatan' => request('nama_kegiatan'), 
+                  'user_id' => 1, 
+                  'catatan' => 'aaaa', 
+                  'estimasi' => request('waktu'), 
+                  'jumlah_poin' => request('jumlah_poin'), 
+                  'rpp' =>  $nameFile, 
+            ]);
+        } else {
+            $add = Pengajuan::where('id',request('id'))->update([
+                'nama_kegiatan' => request('nama_kegiatan'), 
+                    'user_id' => 1, 
+                    'catatan' => 'aaaa', 
+                    'estimasi' => request('waktu'), 
+                    'jumlah_poin' => request('jumlah_poin'), 
+              ]);
+        }
+        
+
+
+      
+
+    }
+    public function deletePengajuan($id)
     {
-        //
+      $data = Pengajuan::find($id);
+      Storage::disk('public')->delete('rpp/'.$data->rpp);
+      $deltete = Pengajuan::where('id' , $id)->delete();
     }
 
     /**

@@ -34,3 +34,7 @@ Route::put('/editGuru', [GuruController::class,'editGuru']);
 Route::get('/pengajuan', [PengajuanController::class,'index']);
 Route::get('/getPengajuan', [PengajuanController::class,'getPengajuan']);
 Route::post('/addPengajuan', [PengajuanController::class,'addPengajuan']);
+Route::post('/editPengajuan', [PengajuanController::class,'editPengajuan']);
+Route::get('/deletePengajuan/{id}', [PengajuanController::class,'deletePengajuan']);
+
+
