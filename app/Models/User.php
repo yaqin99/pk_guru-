@@ -16,6 +16,9 @@ class User extends Authenticatable
     public function pengajuan(){
         return $this->hasMany(Pengajuan::class);
      }
+    public function surat(){
+        return $this->hasMany(Surat::class);
+     }
     /**
      * The attributes that should be hidden for serialization.
      *

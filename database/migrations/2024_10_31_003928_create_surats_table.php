@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('surat_kinerjas', function (Blueprint $table) {
+        Schema::create('surats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->string('detail_surat');
-            $table->tinyInteger('tipe');
-            $table->date('tanggal');
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('surat_kinerjas');
+        Schema::dropIfExists('surats');
     }
 };

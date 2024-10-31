@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\SuratController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,3 +39,5 @@ Route::post('/editPengajuan', [PengajuanController::class,'editPengajuan']);
 Route::get('/deletePengajuan/{id}', [PengajuanController::class,'deletePengajuan']);
 
 
+// Data Surat pengajuan dan teguran
+Route::get('/surat', [SuratController::class,'index']);

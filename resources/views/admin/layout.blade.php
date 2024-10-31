@@ -138,6 +138,7 @@
     <script src="/admin/js/editData.js"></script>
     <script src="/admin/js/guru.js"></script>
     <script src="/admin/js/pengajuan.js"></script>
+    <script src="/admin/js/surat.js"></script>
 </body>
 
 </html>
