@@ -29,11 +29,14 @@ class SuratController extends Controller
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
-                           <a onclick=\'editPengajuan(`'.$row.'`)\' class="edit btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <i class="bi bi-printer-fill" ></i>
+                           </a>
+                           <a onclick=\'editSurat(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editGuru">
                            <i class="bi bi-pencil-fill" ></i>
                            </a>
                            
-                           <a href="javascript:void(0)" onclick=\'deleteSurat(`'.$row->id.'`)\' class="edit btn btn-outline-secondary btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                           <a href="javascript:void(0)" onclick=\'deleteSurat(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
                            
                            </div>
                            
