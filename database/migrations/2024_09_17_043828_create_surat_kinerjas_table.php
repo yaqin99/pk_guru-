@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('surat_kinerjas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->string('detail_surat');
+            $table->string('nama_surat')->nullable();
             $table->tinyInteger('tipe');
             $table->date('tanggal');
+            $table->text('keterangan');
             $table->timestamps();
         });
     }

@@ -30,6 +30,6 @@
     </div>
    
 </div>
-{{-- @include('admin.modals.addPengajuan')
-@include('admin.modals.editPengajuan') --}}
+@include('admin.modals.addSurat')
+@include('admin.modals.editSurat')
 @endsection

@@ -21,3 +21,14 @@ function showAddPengajuan (){
     $('#addPengajuan').modal('show');
     $('#addPengajuan').modal({"backdrop": "static"})
 }
+function showAddSurat (){
+    // $('#nama').val('');
+    // $('#nip').val('');
+    // $('#no_hp').val('');
+    // $('#alamat').val('');
+    // $('#email').val('');
+    // $('#username').val('');
+    // $('#password').val('');
+    $('#addSurat').modal('show');
+    $('#addSurat').modal({"backdrop": "static"})
+}

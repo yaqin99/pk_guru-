@@ -2,7 +2,7 @@ function editGuru (data){
     let fixedData =  JSON.parse(data)
     $('#editGuru').modal('show')
 
-    $('#nama_edit').val(fixedData.nama_guru);
+    $('#nama_edit').val(fixedData.nama_user);
     $('#nip_edit').val(fixedData.nip);
     $('#no_hp_edit').val(fixedData.no_hp);
     $('#alamat_edit').val(fixedData.alamat);

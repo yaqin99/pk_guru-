@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Surat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon ; 
 
 class SuratController extends Controller
 {
     public function index(Request $request)
     {
         $pages = 'surat' ; 
+        $guru = User::select('nama_user' , 'id')->get();
         if ($request->ajax()) {
             $data = Surat::with('user')->get();
 
@@ -19,8 +22,8 @@ class SuratController extends Controller
                     ->addIndexColumn()
                     ->addColumn('nama_user', function($row){
                     return $row->user->nama_user;})
-                    ->addColumn('detail_surat', function($row){
-                    return $row->detail_surat;})
+                    ->addColumn('nama_surat', function($row){
+                    return $row->nama_surat;})
                     ->addColumn('tipe', function($row){
                     return $row->tipe;})
                     ->addColumn('tanggal', function($row){
@@ -51,21 +54,49 @@ class SuratController extends Controller
 
         return view('admin.pages.surat' , [
             'pages' => $pages , 
+            'gurus' => $guru, 
         ]);
     }
-    public function create()
+    public function editSurat(Request $request)
     {
-        //
+        
+        $add = Surat::where('id', $request->id)->update([
+            'user_id' => request('nama_user'), 
+            'nama_surat' => request('nama_surat_edit'), 
+            'tipe' => request('tipe_surat'),
+            'tanggal' => request('tanggal'), 
+            'keterangan' => request('keterangan'), 
+          ]);
+        
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function addSurat(Request $request)
     {
-        //
+        
+        if(request('tipe_surat') == 1){
+            $add = Surat::create([
+                'user_id' => request('nama_user'), 
+                'nama_surat' => 'Surat Kinerja'.' '.date("Y"), 
+                'tipe' => request('tipe_surat'),
+                'tanggal' => request('tanggal'), 
+                'keterangan' => request('keterangan'), 
+                
+              ]);
+        } else {
+            $add = Surat::create([
+                'user_id' => request('nama_user'), 
+                'nama_surat' => 'Surat Teguran'.' '.date("Y"), 
+                'tipe' => request('tipe_surat'),
+                'tanggal' => request('tanggal'), 
+                'keterangan' => request('keterangan'), 
+                
+              ]);
+        }
+        
+       
+          
+        
     }
-
+    
     /**
      * Display the specified resource.
      */

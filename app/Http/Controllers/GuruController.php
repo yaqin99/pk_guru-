@@ -70,7 +70,7 @@ class GuruController extends Controller
     public function editGuru()
     {
       $add = User::where('id',request('id'))->update([
-        'nama_guru' => request('nama'), 
+        'nama_user' => request('nama'), 
         'nip' => request('nip'), 
         'no_hp' => request('no_hp'), 
         'email' => request('email'), 

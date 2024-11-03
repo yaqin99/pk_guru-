@@ -41,3 +41,5 @@ Route::get('/deletePengajuan/{id}', [PengajuanController::class,'deletePengajuan
 
 // Data Surat pengajuan dan teguran
 Route::get('/surat', [SuratController::class,'index']);
+Route::post('/addSurat', [SuratController::class,'addSurat']);
+Route::post('/editSurat', [SuratController::class,'editSurat']);
