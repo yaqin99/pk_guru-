@@ -11,7 +11,7 @@
                         <div class="col-md-12">
                             <label for="nama_guru" class="form-label">Nama Guru</label>
                             <select id="nama_guru" name="nama_guru" class="form-select form-control">
-                                <option selected>-Pilih-</option>
+                                <option selected value="0">-Pilih-</option>
                                 @foreach ($gurus as $guru)
                                 
                                 <option value="{{$guru->id}}">{{$guru->nama_user}}</option>
@@ -21,7 +21,7 @@
                         <div class="col-md-12">
                             <label for="tipe_surat" class="form-label">Tipe Surat</label>
                             <select id="tipe_surat" name="tipe_surat" class="form-select form-control">
-                                <option selected>-Pilih-</option>
+                                <option selected value="0">-Pilih-</option>
                                 <option value="1">Surat Penilaian Kinerja</option>
                                 <option value="2">Surat Teguran Kinerja</option>
                             </select>

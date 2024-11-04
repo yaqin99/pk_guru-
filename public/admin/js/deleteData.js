@@ -121,3 +121,64 @@ function deletePengajuan(id ){
 
     
 }
+function deleteSurat(id ){
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: "Konfirmasi Penghapusan Surat?",
+        text: "Data Yang Dihapus Tidak Dapat Dikembalikan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Hapus",
+        cancelButtonText: "Batal",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+
+                url: `/deleteSurat/${id}`,
+                type: "GET",
+                cache: false,
+                data: {
+                    id:id , 
+                },
+                success:function(response){
+                    swalWithBootstrapButtons.fire({
+                        title: "Berhasil!",
+                        text: "Data Surat Telah Terhapus",
+                        icon: "success"
+                      });
+                       getSurat()
+                },
+                error:function(error){
+                    
+                  
+        
+                }
+        
+            })
+
+
+          
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire({
+            title: "Batal",
+            text: "Data Surat Tidak Terhapus",
+            icon: "error"
+          });
+        }
+      });
+
+
+
+
+    
+}

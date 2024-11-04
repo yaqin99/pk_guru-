@@ -19,9 +19,7 @@ class SuratSeeder extends Seeder
                 'nama_surat' => 'Surat Kinerja 2024' , 
                 'tipe' => 1 , 
                 'tanggal' => '2024-11-1' , 
-                'keterangan' => 'Lorem ipsum dolor sit amet 
-                consectetur adipisicing elit. Molestias quas 
-                tempore provident quisquam similique ' , 
+                'keterangan' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias quas tempore provident quisquam similique ' , 
                 
             ]
             );

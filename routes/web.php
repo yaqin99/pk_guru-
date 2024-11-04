@@ -43,3 +43,4 @@ Route::get('/deletePengajuan/{id}', [PengajuanController::class,'deletePengajuan
 Route::get('/surat', [SuratController::class,'index']);
 Route::post('/addSurat', [SuratController::class,'addSurat']);
 Route::post('/editSurat', [SuratController::class,'editSurat']);
+Route::get('/deleteSurat/{id}', [SuratController::class,'deleteSurat']);

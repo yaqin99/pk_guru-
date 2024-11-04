@@ -1,3 +1,17 @@
+function setNamaSurat(){
+  let tahun = new Date().getFullYear();
+  let tipe = $('#tipe_surat_edit').val()
+  let set = '';
+  if (tipe == 1 ) {
+    set = 'Surat Kinerja'+ ' ' +tahun ; 
+  } 
+  else {
+    set = 'Surat Teguran'+ ' ' +tahun ; 
+
+  }
+  $('#nama_surat_edit').val(set)
+}
+
 function editSurat(row){
   let data = JSON.parse(row);
  $('#id_surat').val(data.id);
@@ -178,8 +192,10 @@ function getSurat(){
                           text: "Data Surat Telah Ditambahkan",
                           icon: "success"
                         });
-                        $('#nama_guru').val('');
-                        $('#tipe_surat').val('');
+                        $('#nama_guru').val('0').trigger('change');
+                        $('#tipe_surat').val('0').trigger('change');
+
+                      
                         $('#tanggal').val('');
                         $('#keterangan').val('');
                          getSurat()

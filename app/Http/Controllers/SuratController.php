@@ -100,32 +100,9 @@ class SuratController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Surat $surat)
+    public function deleteSurat($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Surat $surat)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Surat $surat)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Surat $surat)
-    {
-        //
+      $data = Surat::find($id);
+      $deltete = Surat::where('id' , $id)->delete();
     }
 }

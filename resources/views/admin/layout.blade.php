@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>PK Guru Al - Ghazali</title>
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="/admin/images/ghazali.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/admin/images/yala.png">
     <!-- Datatable -->
     <link href="/admin/vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <!-- Custom Stylesheet -->
@@ -44,9 +44,9 @@
         ***********************************-->
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
-                <img class="logo-abbr" src="/admin/images/logo.png" alt="">
-                <img class="logo-compact" src="/admin/images/logo-text.png" alt="">
-                <img class="brand-title" src="/admin/images/logo-text.png" alt="">
+                <img class="logo-abbr" src="/admin/images/pk_guru_logo.png" alt="">
+                <img class="logo-compact" src="/admin/images/pk_guru.png" alt="">
+                <img class="brand-title" src="/admin/images/pk_guru.png" alt="">
             </a>
 
             <div class="nav-control">

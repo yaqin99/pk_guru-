@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-md-12">
                             <label for="tipe_surat_edit" class="form-label">Tipe Surat</label>
-                            <select id="tipe_surat_edit" name="tipe_surat_edit" class="form-select form-control">
+                            <select id="tipe_surat_edit" name="tipe_surat_edit" onchange="setNamaSurat()" class="form-select form-control">
                                 <option value="1">Surat Penilaian Kinerja</option>
                                 <option value="2">Surat Teguran Kinerja</option>
                             </select>
