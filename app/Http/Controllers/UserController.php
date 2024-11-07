@@ -12,17 +12,17 @@ class UserController extends Controller
     }
 
     public function logOut(Request $req){
-        Auth::guard('admin')->logout();
+        Auth::guard('web')->logout();
         //$request dan request() itu sama aja 
     $req->session()->invalidate();
  
     $req->session()->regenerateToken();
  
-    return redirect('/loginView');
+    return redirect('/login');
      }
 
      
-    public function loginMethod (Request $req){
+    public function loginMethod(Request $req){
 
         $req->validate([
             'username' => 'required' , 

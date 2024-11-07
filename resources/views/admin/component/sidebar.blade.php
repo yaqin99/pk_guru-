@@ -25,9 +25,7 @@
                 </li>
             </ul>
             </li>
-            <li><a href="/pengajuan" aria-expanded="false"><i class="bi bi-file-earmark-bar-graph"></i><span
-                        class="nav-text">Data Pengajuan</span></a>
-            </li>
+            
             <li><a href="/surat" aria-expanded="false"><i class="bi bi-envelope"></i><span
                         class="nav-text">Data Surat</span></a>
             </li>

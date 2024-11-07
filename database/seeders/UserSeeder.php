@@ -26,5 +26,31 @@ class UserSeeder extends Seeder
                 
             ]
             );
+        DB::table('users')->insert(
+            [
+                'nama_user' => 'Febri Wasilaturrahmah' ,
+                'nip' =>  '0072198476' ,
+                'no_hp' =>  '085232324069' ,
+                'alamat' => 'Jl. Sersam Mesrul Gg. 3B' , 
+                'email' => 'yaqin.9a23@gmail.com' , 
+                'username' => 'febri' , 
+                'password' => bcrypt('febri') ,
+                'role' => 2 ,
+                
+            ]
+            );
+        DB::table('users')->insert(
+            [
+                'nama_user' => 'Rizal Ferlianto' ,
+                'nip' =>  '0072198476' ,
+                'no_hp' =>  '085232324069' ,
+                'alamat' => 'Jl. Sersam Mesrul Gg. 3B' , 
+                'email' => 'yaqin.9a23@gmail.com' , 
+                'username' => 'rizal' , 
+                'password' => bcrypt('rizal') ,
+                'role' => 3 ,
+                
+            ]
+            );
     }
 }
