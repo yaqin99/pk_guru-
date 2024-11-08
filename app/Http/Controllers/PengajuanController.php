@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 
 class PengajuanController extends Controller
@@ -74,9 +75,16 @@ class PengajuanController extends Controller
      */
     public function addPengajuan(Request $request)
     {
+        $user = Auth::user();
         $nameFile =  request()->file('rpp')->getClientOriginalName();
+
+        if(!Storage::disk('public')->exists($user->nama_user)) {
+
+            Storage::disk('public')->makeDirectory($user->nama_user, 0775, true); //creates directory
+        
+        }            
         // $rpp_name = uniqid().'.'.request()->file('rpp')->extension() ; 
-        request()->file('rpp')->storeAs('rpp' , $nameFile , ['disk' => 'public']);
+        request()->file('rpp')->storeAs($user->nama_user.'/rpp' , $nameFile , ['disk' => 'public']);
             
         $add = Pengajuan::create([
             'nama_kegiatan' => request('nama_kegiatan'), 
@@ -92,16 +100,17 @@ class PengajuanController extends Controller
     }
 
     public function editPengajuan()
-    {  
+    {         
+        $user = Auth::user();
         $name =  request()->file('rpp');
         $nama_rpp =  request('rpp_name');
         $data = Pengajuan::find(request('id'));
 
         if ($name != null) {
-            Storage::disk('public')->delete('rpp/'.$data->rpp);
+            Storage::disk('public')->delete($user->nama_user.'/rpp'.'/'.$data->rpp);
 
             $nameFile =  request()->file('rpp')->getClientOriginalName();
-            request()->file('rpp')->storeAs('rpp' , $nameFile , ['disk' => 'public']);
+            request()->file('rpp')->storeAs($user->nama_user.'/rpp' , $nameFile , ['disk' => 'public']);
             $add = Pengajuan::where('id',request('id'))->update([
               'nama_kegiatan' => request('nama_kegiatan'), 
                   'user_id' => 1, 
@@ -127,8 +136,9 @@ class PengajuanController extends Controller
     }
     public function deletePengajuan($id)
     {
+      $user = Auth::user();
       $data = Pengajuan::find($id);
-      Storage::disk('public')->delete('rpp/'.$data->rpp);
+      Storage::disk('public')->delete($user->nama_user.'/rpp'.'/'.$data->rpp);
       $deltete = Pengajuan::where('id' , $id)->delete();
     }
 

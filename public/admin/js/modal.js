@@ -11,24 +11,17 @@ function showAddGuru (){
 }
 
 function showAddPengajuan (){
-    // $('#nama').val('');
-    // $('#nip').val('');
-    // $('#no_hp').val('');
-    // $('#alamat').val('');
-    // $('#email').val('');
-    // $('#username').val('');
-    // $('#password').val('');
+    
     $('#addPengajuan').modal('show');
     $('#addPengajuan').modal({"backdrop": "static"})
 }
 function showAddSurat (){
-    // $('#nama').val('');
-    // $('#nip').val('');
-    // $('#no_hp').val('');
-    // $('#alamat').val('');
-    // $('#email').val('');
-    // $('#username').val('');
-    // $('#password').val('');
+   
     $('#addSurat').modal('show');
     $('#addSurat').modal({"backdrop": "static"})
+}
+function showAddPedagogik (){
+   
+    $('#addPedagogik').modal('show');
+    $('#addPedagogik').modal({"backdrop": "static"})
 }

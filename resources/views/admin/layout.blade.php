@@ -134,6 +134,8 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="/admin/js/addData.js"></script>
+    <script src="/admin/js/aspek/pedagogik.js"></script>
+
     <script src="/admin/js/deleteData.js"></script>
     <script src="/admin/js/editData.js"></script>
     <script src="/admin/js/guru.js"></script>

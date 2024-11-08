@@ -10,6 +10,18 @@
             @elseif ($pages == 'surat')
             <li class="breadcrumb-item"><button onclick="showAddSurat()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Surat</button></li>
            
+            @elseif ($pages == 'pedagogik')
+            <li class="breadcrumb-item"><button onclick="showAddPedagogik()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pedagogik</button></li>
+           
+            @elseif ($pages == 'sosial')
+            <li class="breadcrumb-item"><button onclick="showAddSosial()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Sosial</button></li>
+           
+            @elseif ($pages == 'profesional')
+            <li class="breadcrumb-item"><button onclick="showAddProfesional()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Profesional</button></li>
+           
+            @elseif ($pages == 'kepribadian')
+            <li class="breadcrumb-item"><button onclick="showAddKepribadian()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Kepribadian</button></li>
+           
             @endif
         </ol>
     </div>

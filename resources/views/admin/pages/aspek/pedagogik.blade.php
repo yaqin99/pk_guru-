@@ -4,11 +4,11 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header d-flex justify-content-center">
-                <h2 class="card-title ">Data Peedagogik</h2>
+                <h2 class="card-title ">Data Pedagogik</h2>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="tabel_pengajuan" class="display" style="width:100%; align-item:center;">
+                    <table id="tabel_pedagogik" class="display" style="width:100%; align-item:center;">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -29,6 +29,6 @@
     </div>
    
 </div>
-@include('admin.modals.addPengajuan')
-@include('admin.modals.editPengajuan')
+@include('admin.modals.aspek.addPedagogik')
+@include('admin.modals.aspek.editPedagogik')
 @endsection

@@ -19,6 +19,18 @@ class User extends Authenticatable
     public function surat(){
         return $this->hasMany(Surat::class);
      }
+    public function pedagogik(){
+        return $this->hasMany(Pedagogik::class);
+     }
+    public function sosial(){
+        return $this->hasMany(Sosial::class);
+     }
+    public function kepribadian(){
+        return $this->hasMany(Kepribadian::class);
+     }
+    public function profesional(){
+        return $this->hasMany(Profesional::class);
+     }
     /**
      * The attributes that should be hidden for serialization.
      *
