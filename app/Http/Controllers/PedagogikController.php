@@ -73,16 +73,12 @@ class PedagogikController extends Controller
           
         
     }
-    public function update(Request $request, Pedagogik $pedagogik)
+    public function deletePedagogik($id)
     {
-        //
+      $user = Auth::user();
+      $data = Pedagogik::find($id);
+      Storage::disk('public')->delete($user->nama_user.'/pedagogik'.'/'.$data->dokumen);
+      $deltete = Pedagogik::where('id' , $id)->delete();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Pedagogik $pedagogik)
-    {
-        //
-    }
 }

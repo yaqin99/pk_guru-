@@ -54,4 +54,4 @@ Route::get('/deleteSurat/{id}', [SuratController::class,'deleteSurat']);
 Route::get('/aspek/pedagogik', [PedagogikController::class,'index'])->middleware('auth');
 Route::post('/aspek/pedagogik/addPedagogik', [PedagogikController::class,'addPedagogik']);
 Route::post('/aspek/pedagogik/editPedagogik', [PedagogikController::class,'editPedagogik']);
-Route::get('/aspek/pedagogik/deletePedagogik{id}', [PedagogikController::class,'deletePedagogik']);
+Route::get('/aspek/pedagogik/deletePedagogik/{id}', [PedagogikController::class,'deletePedagogik']);

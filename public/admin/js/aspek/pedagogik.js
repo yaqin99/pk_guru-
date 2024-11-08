@@ -120,3 +120,65 @@ function getPedagogik(){
     $('#filePedagogik').click();
   
   }
+
+  function deletePedagogik(id ){
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: "Konfirmasi Penghapusan Pedagogik?",
+        text: "Data Yang Dihapus Tidak Dapat Dikembalikan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Hapus",
+        cancelButtonText: "Batal",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+
+                url: `/aspek/pedagogik/deletePedagogik/${id}`,
+                type: "GET",
+                cache: false,
+                data: {
+                    id:id , 
+                },
+                success:function(response){
+                    swalWithBootstrapButtons.fire({
+                        title: "Berhasil!",
+                        text: "Data Pedagogik Telah Terhapus",
+                        icon: "success"
+                      });
+                       getPedagogik()
+                },
+                error:function(error){
+                    
+                  
+        
+                }
+        
+            })
+
+
+          
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire({
+            title: "Batal",
+            text: "Data Pedagogik Tidak Terhapus",
+            icon: "error"
+          });
+        }
+      });
+
+
+
+
+    
+}
