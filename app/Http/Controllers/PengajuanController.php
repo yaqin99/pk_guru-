@@ -88,7 +88,7 @@ class PengajuanController extends Controller
             
         $add = Pengajuan::create([
             'nama_kegiatan' => request('nama_kegiatan'), 
-            'user_id' => 1, 
+            'user_id' =>  $user = Auth::user()->id, 
             'catatan' => 'aaaa', 
             'estimasi' => request('waktu'), 
             'jumlah_poin' => request('jumlah_poin'), 
@@ -113,7 +113,7 @@ class PengajuanController extends Controller
             request()->file('rpp')->storeAs($user->nama_user.'/rpp' , $nameFile , ['disk' => 'public']);
             $add = Pengajuan::where('id',request('id'))->update([
               'nama_kegiatan' => request('nama_kegiatan'), 
-                  'user_id' => 1, 
+                  'user_id' =>  $user = Auth::user()->id,
                   'catatan' => 'aaaa', 
                   'estimasi' => request('waktu'), 
                   'jumlah_poin' => request('jumlah_poin'), 
@@ -122,7 +122,7 @@ class PengajuanController extends Controller
         } else {
             $add = Pengajuan::where('id',request('id'))->update([
                 'nama_kegiatan' => request('nama_kegiatan'), 
-                    'user_id' => 1, 
+                    'user_id' =>  $user = Auth::user()->id, 
                     'catatan' => 'aaaa', 
                     'estimasi' => request('waktu'), 
                     'jumlah_poin' => request('jumlah_poin'), 

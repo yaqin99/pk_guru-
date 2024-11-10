@@ -135,6 +135,9 @@
 
     <script src="/admin/js/addData.js"></script>
     <script src="/admin/js/aspek/pedagogik.js"></script>
+    <script src="/admin/js/aspek/kepribadian.js"></script>
+    <script src="/admin/js/aspek/profesional.js"></script>
+    <script src="/admin/js/aspek/sosial.js"></script>
 
     <script src="/admin/js/deleteData.js"></script>
     <script src="/admin/js/editData.js"></script>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\KepribadianController;
 use App\Http\Controllers\PedagogikController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SuratController;
@@ -55,3 +56,9 @@ Route::get('/aspek/pedagogik', [PedagogikController::class,'index'])->middleware
 Route::post('/aspek/pedagogik/addPedagogik', [PedagogikController::class,'addPedagogik']);
 Route::post('/aspek/pedagogik/editPedagogik', [PedagogikController::class,'editPedagogik']);
 Route::get('/aspek/pedagogik/deletePedagogik/{id}', [PedagogikController::class,'deletePedagogik']);
+
+//kepribadian
+Route::get('/aspek/kepribadian', [KepribadianController::class,'index'])->middleware('auth');
+Route::post('/aspek/kepribadian/addKepribadian', [KepribadianController::class,'addKepribadian']);
+Route::post('/aspek/kepribadian/ediKepribadian', [KepribadianController::class,'ediKepribadian']);
+Route::get('/aspek/kepribadian/deleteKepribadian/{id}', [KepribadianController::class,'deleteKepribadian']);

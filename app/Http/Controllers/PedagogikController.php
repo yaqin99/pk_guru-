@@ -59,7 +59,7 @@ class PedagogikController extends Controller
 
         if(!Storage::disk('public')->exists($user->nama_user)) {
 
-            Storage::disk('public')->makeDirectory($user->nama_user, 0775, true); //creates directory
+            Storage::disk('public')->makeDirectory($user->nama_user); //creates directory
         
         }
         request()->file('dokumen')->storeAs($user->nama_user.'/pedagogik' , $nameFile , ['disk' => 'public']);
@@ -73,6 +73,38 @@ class PedagogikController extends Controller
           
         
     }
+
+    public function editPedagogik()
+    {         
+        $user = Auth::user();
+        $name =  request()->file('dokumen');
+        $nama_p =  request('namaFilePedagogik_edit');
+        $data = Pedagogik::find(request('id'));
+
+        if ($name != null) {
+
+            Storage::disk('public')->delete($user->nama_user.'/pedagogik'.'/'.$data->dokumen);
+
+            $nameFile =  request()->file('dokumen')->getClientOriginalName();
+            request()->file('dokumen')->storeAs($user->nama_user.'/pedagogik' , $nameFile , ['disk' => 'public']);
+            $add = Pedagogik::where('id',request('id'))->update([
+                 'nama_pedagogik' => request('nama_pedagogik'), 
+                    
+                  'dokumen' =>  $nameFile, 
+            ]);
+        } else {
+            $add = Pedagogik::where('id',request('id'))->update([
+                'nama_pedagogik' => request('nama_pedagogik'), 
+
+              ]);
+        }
+        
+
+
+      
+
+    }
+
     public function deletePedagogik($id)
     {
       $user = Auth::user();

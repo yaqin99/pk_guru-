@@ -8,7 +8,6 @@
                 <form id="formEditPengajuan" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <input type="hidden" name="_token" id="token_pedagogik" value="{{ csrf_token() }}">
-                        <input type="hidden" name="id" id="theId" >
 
                         <div class="col-md-6">
                             <label class="control-label">Nama Pedagogik</label>
