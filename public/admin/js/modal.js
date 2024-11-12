@@ -25,3 +25,18 @@ function showAddPedagogik (){
     $('#addPedagogik').modal('show');
     $('#addPedagogik').modal({"backdrop": "static"})
 }
+function showAddKepribadian(){
+   
+    $('#addKepribadian').modal('show');
+    $('#addKepribadian').modal({"backdrop": "static"})
+}
+function showAddProfesional(){
+   
+    $('#addProfesional').modal('show');
+    $('#addProfesional').modal({"backdrop": "static"})
+}
+function showAddSosial(){
+   
+    $('#addSosial').modal('show');
+    $('#addSosial').modal({"backdrop": "static"})
+}

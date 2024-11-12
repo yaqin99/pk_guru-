@@ -4,6 +4,8 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KepribadianController;
 use App\Http\Controllers\PedagogikController;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\ProfesionalController;
+use App\Http\Controllers\SosialController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -60,5 +62,17 @@ Route::get('/aspek/pedagogik/deletePedagogik/{id}', [PedagogikController::class,
 //kepribadian
 Route::get('/aspek/kepribadian', [KepribadianController::class,'index'])->middleware('auth');
 Route::post('/aspek/kepribadian/addKepribadian', [KepribadianController::class,'addKepribadian']);
-Route::post('/aspek/kepribadian/ediKepribadian', [KepribadianController::class,'ediKepribadian']);
+Route::post('/aspek/kepribadian/editKepribadian', [KepribadianController::class,'editKepribadian']);
 Route::get('/aspek/kepribadian/deleteKepribadian/{id}', [KepribadianController::class,'deleteKepribadian']);
+
+//profesional
+Route::get('/aspek/profesional', [ProfesionalController::class,'index'])->middleware('auth');
+Route::post('/aspek/profesional/addProfesional', [ProfesionalController::class,'addProfesional']);
+Route::post('/aspek/profesional/editProfesional', [ProfesionalController::class,'editProfesional']);
+Route::get('/aspek/profesional/deleteProfesional/{id}', [ProfesionalController::class,'deleteProfesional']);
+
+//sosial
+Route::get('/aspek/sosial', [SosialController::class,'index'])->middleware('auth');
+Route::post('/aspek/sosial/addSosial', [SosialController::class,'addSosial']);
+Route::post('/aspek/sosial/editSosial', [SosialController::class,'editSosial']);
+Route::get('/aspek/sosial/deleteSosial/{id}', [SosialController::class,'deleteSosial']);

@@ -38,8 +38,8 @@ function getKepribadian(){
     
         //define variable
         let nama_Kepribadian   = $('#nama_kepribadian_edit').val();
-        let id   = $('#idPegagogik_edit').val();
-        let token   = $('#token_Kepribadian_edit').val();
+        let id   = $('#idKepribadian_edit').val();
+        let token   = $('#token_kepribadian_edit').val();
        
                 
         var file_data = $('#fileKepribadian_edit').prop('files')[0];
@@ -124,16 +124,16 @@ function getKepribadian(){
         $('#addKepribadian').modal({"backdrop": "static"})
     
         //define variable
-        let nama_Kepribadian   = $('#nama_kepribadian').val();
-        let namaFileKepribadian_edit   = $('#namaFileKepribadian_edit').val();
+        let nama_kepribadian   = $('#nama_kepribadian').val();
+        let namaFileKepribadian   = $('#namaFileKepribadian').val();
         let token   = $('#token_kepribadian').val();
        
                 
         var file_data = $('#fileKepribadian').prop('files')[0];
         var form_data = new FormData();
         form_data.append('dokumen', file_data);
-        form_data.append('nama_kepribadian', nama_Kepribadian);
-        form_data.append('namaFileKepribadian_edit', namaFileKepribadian_edit);
+        form_data.append('nama_kepribadian', nama_kepribadian);
+        form_data.append('namaFileKepribadian', namaFileKepribadian);
         form_data.append('_token', token);
       
        
@@ -175,8 +175,8 @@ function getKepribadian(){
                             text: "Data Kepribadian Telah Ditambahkan",
                             icon: "success"
                           });
-                         $('#nama_Kepribadian').val('');
-                         $('#namaFileKepribadian').val('');
+                          $('#nama_kepribadian').val('');
+                          $('#namaFileKepribadian').val('');
 
                           getKepribadian()
      
@@ -195,8 +195,8 @@ function getKepribadian(){
               /* Read more about handling dismissals below */
               result.dismiss === Swal.DismissReason.cancel
             ) {
-              $('#nama').val('');
-              $('#nip').val('');
+              $('#nama_kepribadian').val('');
+              $('#namaFileKepribadian').val('');
               
               swalWithBootstrapButtons.fire({
                 title: "Batal",
@@ -285,9 +285,9 @@ function editKepribadian(row){
   let data = JSON.parse(row) ; 
   console.log(data)
   $('#namaFileKepribadian_edit').val(data.dokumen);
-  $('#idPegagogik_edit').val(data.id);
+  $('#idKepribadian_edit').val(data.id);
   
-  $('#nama_kepribadian_edit').val(data.nama_Kepribadian);
+  $('#nama_kepribadian_edit').val(data.nama_kepribadian);
   $('#editKepribadian').modal('show');
 
  

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class KepribadianController extends Controller
 {
@@ -49,48 +50,61 @@ class KepribadianController extends Controller
             'pages' => $pages , 
         ]);
     }
-    public function create()
+    
+    public function addKepribadian(Request $request)
     {
-        //
+        $nameFile =  request()->file('dokumen')->getClientOriginalName();
+        $user = Auth::user();
+
+        if(!Storage::disk('public')->exists($user->nama_user)) {
+
+            Storage::disk('public')->makeDirectory($user->nama_user); //creates directory
+        
+        }
+        request()->file('dokumen')->storeAs($user->nama_user.'/kepribadian' , $nameFile , ['disk' => 'public']);
+            
+        $add = Kepribadian::create([
+            'nama_kepribadian' => request('nama_kepribadian'), 
+            'user_id' => $user->id, 
+            'dokumen' =>  $nameFile, 
+            
+          ]);
+          
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    public function editKepribadian()
+    {         
+        $user = Auth::user();
+        $name =  request()->file('dokumen');
+        $nama_p =  request('namaFileKepribadian_edit');
+        $data = Kepribadian::find(request('id'));
+
+        if ($name != null) {
+
+            Storage::disk('public')->delete($user->nama_user.'/kepribadian'.'/'.$data->dokumen);
+
+            $nameFile =  request()->file('dokumen')->getClientOriginalName();
+            request()->file('dokumen')->storeAs($user->nama_user.'/kepribadian' , $nameFile , ['disk' => 'public']);
+            $add = Kepribadian::where('id',request('id'))->update([
+                 'nama_kepribadian' => request('nama_kepribadian'), 
+                    
+                  'dokumen' =>  $nameFile, 
+            ]);
+        } else {
+            $add = Kepribadian::where('id',request('id'))->update([
+                'nama_kepribadian' => request('nama_kepribadian'), 
+
+              ]);
+        }
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Kepribadian $kepribadian)
+    public function deleteKepribadian($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Kepribadian $kepribadian)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Kepribadian $kepribadian)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Kepribadian $kepribadian)
-    {
-        //
+      $user = Auth::user();
+      $data = Kepribadian::find($id);
+      Storage::disk('public')->delete($user->nama_user.'/kepribadian'.'/'.$data->dokumen);
+      $deltete = Kepribadian::where('id' , $id)->delete();
     }
 }
