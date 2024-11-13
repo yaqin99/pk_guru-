@@ -1,3 +1,72 @@
+let hitung = 0 ; 
+function pedagogik (){
+  $('#btnPedagogik').attr('class' , 'btn btn-secondary')
+  $('#btnKepribadian').attr('class' , 'btn btn-outline-secondary')
+  $('#btnProfesional').attr('class' , 'btn btn-outline-secondary')
+  $('#btnSosial').attr('class' , 'btn btn-outline-secondary')
+
+  hitung = 1 ; 
+}
+function kepribadian (){
+  $('#btnKepribadian').attr('class' , 'btn btn-secondary')
+  $('#btnPedagogik').attr('class' , 'btn btn-outline-secondary')
+  $('#btnProfesional').attr('class' , 'btn btn-outline-secondary')
+  $('#btnSosial').attr('class' , 'btn btn-outline-secondary')
+  hitung = 2 ; 
+}
+function profesional (){
+  $('#btnProfesional').attr('class' , 'btn btn-secondary')
+  $('#btnPedagogik').attr('class' , 'btn btn-outline-secondary')
+  $('#btnKepribadian').attr('class' , 'btn btn-outline-secondary')
+  $('#btnSosial').attr('class' , 'btn btn-outline-secondary')
+  hitung = 3 ; 
+}
+function sosial (){
+  $('#btnSosial').attr('class' , 'btn btn-secondary')
+  $('#btnProfesional').attr('class' , 'btn btn-outline-secondary')
+  $('#btnPedagogik').attr('class' , 'btn btn-outline-secondary')
+  $('#btnKepribadian').attr('class' , 'btn btn-outline-secondary')
+  hitung = 4 ; 
+}
+
+
+
+
+function hitungAspek(){
+  let totalSkor = $('#totalSkor').val()
+  let skorMaksimal = $('#skorMaksimal').val()
+  let x = totalSkor / skorMaksimal ; 
+  let y = x*100 ; 
+  if (hitung == 1 ) {
+    $('#pedagogik').html(y.toFixed(1))
+    $('#totalSkor').val('')
+    $('#skorMaksimal').val('')
+    $('#nomer').html(1)
+  } 
+  if (hitung == 2 ){
+    $('#kepribadian').html(y.toFixed(1))
+    $('#totalSkor').val('')
+    $('#skorMaksimal').val('')
+    $('#nomer').html(1)
+
+  }
+  if (hitung == 3 ){
+    $('#profesional').html(y.toFixed(1))
+    $('#totalSkor').val('')
+    $('#skorMaksimal').val('')
+    $('#nomer').html(1)
+
+  }
+  if (hitung == 4 ){
+    $('#sosial').html(y.toFixed(1))
+    $('#totalSkor').val('')
+    $('#skorMaksimal').val('')
+    $('#nomer').html(1)
+
+  }
+}
+
+
 function setNamaSurat(){
   let tahun = new Date().getFullYear();
   let tipe = $('#tipe_surat_edit').val()
@@ -21,6 +90,18 @@ function editSurat(row){
  $('#tanggal_edit').val(data.tanggal);
  $('#keterangan_edit').val(data.keterangan);
  $('#editSurat').modal('show');
+}
+
+function editAspek(row){
+  let data = JSON.parse(row);
+  console.log(data)
+//  $('#id_surat').val(data.id);
+//  $('#nama_guru_edit').val(data.user_id).trigger('change');
+//  $('#nama_surat_edit').val(data.nama_surat);
+//  $('#tipe_surat_edit').val(data.tipe).trigger('change');
+//  $('#tanggal_edit').val(data.tanggal);
+//  $('#keterangan_edit').val(data.keterangan);
+ $('#editAspek').modal('show');
 }
 
 function getSurat(){

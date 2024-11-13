@@ -31,6 +31,7 @@ class User extends Authenticatable
     public function profesional(){
         return $this->hasMany(Profesional::class);
      }
+   
     /**
      * The attributes that should be hidden for serialization.
      *

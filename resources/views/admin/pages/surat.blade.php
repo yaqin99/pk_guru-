@@ -32,4 +32,5 @@
 </div>
 @include('admin.modals.addSurat')
 @include('admin.modals.editSurat')
+@include('admin.modals.aspek.editAspek')
 @endsection

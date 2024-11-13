@@ -16,4 +16,8 @@ class Surat extends Model
         return $this->belongsTo(User::class , 'user_id');
      }
 
+     public function aspek(){
+        return $this->hasOne(Aspek::class , 'surat_kinerja_id');
+     }
+
 }

@@ -14,9 +14,10 @@ class SuratController extends Controller
     public function index(Request $request)
     {
         $pages = 'surat' ; 
+        
         $guru = User::select('nama_user' , 'id')->get();
         if ($request->ajax()) {
-            $data = Surat::with('user')->get();
+            $data = Surat::with(['user' , 'aspek'])->get();
 
             return Datatables::of($data)
                     ->addIndexColumn()
@@ -32,10 +33,13 @@ class SuratController extends Controller
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
-                           <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
                            <i class="bi bi-printer-fill" ></i>
                            </a>
-                           <a onclick=\'editSurat(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <a onclick=\'editAspek(`'.$row->aspek.'`)\' class="edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
+                           <i class="bi bi-file-earmark-bar-graph" ></i>
+                           </a>
+                           <a onclick=\'editSurat(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editSurat">
                            <i class="bi bi-pencil-fill" ></i>
                            </a>
                            

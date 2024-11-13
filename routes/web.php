@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AspekController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KepribadianController;
 use App\Http\Controllers\PedagogikController;
@@ -76,3 +77,10 @@ Route::get('/aspek/sosial', [SosialController::class,'index'])->middleware('auth
 Route::post('/aspek/sosial/addSosial', [SosialController::class,'addSosial']);
 Route::post('/aspek/sosial/editSosial', [SosialController::class,'editSosial']);
 Route::get('/aspek/sosial/deleteSosial/{id}', [SosialController::class,'deleteSosial']);
+
+//aspek
+
+Route::get('/aspek', [AspekController::class,'index'])->middleware('auth');
+Route::post('/aspek/addAspek', [AspekController::class,'addAspek']);
+Route::post('/aspek/editAspek', [AspekController::class,'editAspek']);
+Route::get('/aspek/deleteAspek/{id}', [AspekController::class,'deleteAspek']);
