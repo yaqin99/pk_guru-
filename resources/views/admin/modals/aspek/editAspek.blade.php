@@ -43,6 +43,8 @@
                             <input class="form-control" id="skorMaksimal" type="number" name="nip">
                         </div>
                         
+                        <input class="form-control" id="surat_id" type="text" hidden>
+                        
                         <div class="col-md-2">
                             <label class="control-label" style="color: transparent;">Tombol</label>
                             <button class="btn btn-success text-light w-100" type="button" onclick="hitungAspek()" id="addToTabel"><i class="bi bi-plus-lg"></i></button>
@@ -83,7 +85,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-danger waves-effect waves-light save-category" id="simpan_edit" data-dismiss="modal">Simpan</button>
+                <button type="button" class="btn btn-danger waves-effect waves-light save-category" id="editAspekButton" data-dismiss="modal">Simpan</button>
             </div>
         </div>
     </div>

@@ -81,6 +81,6 @@ Route::get('/aspek/sosial/deleteSosial/{id}', [SosialController::class,'deleteSo
 //aspek
 
 Route::get('/aspek', [AspekController::class,'index'])->middleware('auth');
-Route::post('/aspek/addAspek', [AspekController::class,'addAspek']);
+Route::get('/aspek/getAspek/{id}', [AspekController::class,'getAspek']);
 Route::post('/aspek/editAspek', [AspekController::class,'editAspek']);
 Route::get('/aspek/deleteAspek/{id}', [AspekController::class,'deleteAspek']);

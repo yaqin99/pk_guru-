@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Surat;
 use App\Models\User;
+use App\Models\Aspek;
+
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +38,7 @@ class SuratController extends Controller
                            <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
                            <i class="bi bi-printer-fill" ></i>
                            </a>
-                           <a onclick=\'editAspek(`'.$row->aspek.'`)\' class="edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
+                           <a onclick=\'editAspek(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
                            <i class="bi bi-file-earmark-bar-graph" ></i>
                            </a>
                            <a onclick=\'editSurat(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editSurat">
@@ -85,6 +87,15 @@ class SuratController extends Controller
                 'keterangan' => request('keterangan'), 
                 
               ]);
+
+              Aspek::create([
+                'surat_kinerja_id' => $add->id  , 
+                'pedagogik' => null, 
+                'kepribadian' => null, 
+                'profesional' => null,
+                'sosial' => null, 
+              ]);
+
         } else {
             $add = Surat::create([
                 'user_id' => request('nama_user'), 
@@ -93,6 +104,14 @@ class SuratController extends Controller
                 'tanggal' => request('tanggal'), 
                 'keterangan' => request('keterangan'), 
                 
+              ]);
+
+              Aspek::create([
+                'surat_kinerja_id' => $add->id  , 
+                'pedagogik' => null, 
+                'kepribadian' => null, 
+                'profesional' => null,
+                'sosial' => null, 
               ]);
         }
         
@@ -107,6 +126,12 @@ class SuratController extends Controller
     public function deleteSurat($id)
     {
       $data = Surat::find($id);
-      $deltete = Surat::where('id' , $id)->delete();
+      Surat::where('id' , $id)->delete();
+      Aspek::where('surat_kinerja_id' , $id)->delete();
     }
+
+    
+
 }
+
+

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('aspeks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('surat_kinerja_id');
-            $table->integer('pedagogik');
-            $table->integer('kepribadian');
-            $table->integer('profesional');
-            $table->integer('sosial');
+            $table->integer('pedagogik')->nullable();
+            $table->integer('kepribadian')->nullable();
+            $table->integer('profesional')->nullable();
+            $table->integer('sosial')->nullable();
             $table->timestamps();
         });
     }

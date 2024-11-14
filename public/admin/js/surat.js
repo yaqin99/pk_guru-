@@ -39,6 +39,7 @@ function hitungAspek(){
   let y = x*100 ; 
   if (hitung == 1 ) {
     $('#pedagogik').html(y.toFixed(1))
+    
     $('#totalSkor').val('')
     $('#skorMaksimal').val('')
     $('#nomer').html(1)
@@ -92,16 +93,56 @@ function editSurat(row){
  $('#editSurat').modal('show');
 }
 
-function editAspek(row){
-  let data = JSON.parse(row);
-  console.log(data)
-//  $('#id_surat').val(data.id);
-//  $('#nama_guru_edit').val(data.user_id).trigger('change');
-//  $('#nama_surat_edit').val(data.nama_surat);
-//  $('#tipe_surat_edit').val(data.tipe).trigger('change');
-//  $('#tanggal_edit').val(data.tanggal);
-//  $('#keterangan_edit').val(data.keterangan);
- $('#editAspek').modal('show');
+function editAspek(id){
+
+  $.ajax({
+
+    url: `/aspek/getAspek/${id}`,
+    type: "GET",
+    cache: false,
+    data: {id:id},
+    success:function(response){
+      console.log('get aspek called');
+      console.log(response[0].pedagogik);
+      $('#idAspek').val(response[0].id);
+      $('#pedagogik').html(response[0].pedagogik);
+      $('#kepribadian').html(response[0].kepribadian);
+      $('#profesional').html(response[0].profesional);
+      $('#sosial').html(response[0].sosial);
+      $('#surat_id').val(response[0].surat_kinerja_id);
+      $('#editAspek').modal('show');
+
+    },
+    error:function(error){
+
+    }
+
+});
+}
+
+function getAspek(id){
+  $.ajax({
+
+    url: `/aspek/getAspek/${id}`,
+    type: "GET",
+    cache: false,
+    data: {id:id},
+    success:function(response){
+      console.log('get aspek called');
+      console.log(response[0].pedagogik);
+      $('#idAspek').val(response[0].id);
+      $('#pedagogik').html(response[0].pedagogik);
+      $('#kepribadian').html(response[0].kepribadian);
+      $('#profesional').html(response[0].profesional);
+      $('#sosial').html(response[0].sosial);
+      $('#surat_id').val(response[0].surat_kinerja_id);
+    },
+    error:function(error){
+
+    }
+
+});
+
 }
 
 function getSurat(){
@@ -127,6 +168,85 @@ function getSurat(){
 
    
    $(document).ready(function(){
+    $('#editAspekButton').click(function(e) {
+      e.preventDefault();
+
+      //define variable
+      let token   = $('#tokenAspek').val();
+      let id   = $('#idAspek').val();
+      let pedagogik   = $('#pedagogik').html();
+      let kepribadian   = $('#kepribadian').html();
+      let profesional   = $('#profesional').html();
+      let sosial   = $('#sosial').html();
+      let surat_id   = $('#surat_id').val();
+      
+      
+      let data = {
+          _token: token,
+          id : id , 
+          pedagogik : pedagogik , 
+          kepribadian : kepribadian , 
+          profesional : profesional , 
+          sosial : sosial , 
+         
+
+      }
+      //ajax
+      const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger"
+          },
+          buttonsStyling: false
+        });
+        swalWithBootstrapButtons.fire({
+          title: "Konfirmasi Perubahan Data Aspek?",
+          text: "Data Akan Langsung Ditambahkan Pada Tabel!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Simpan",
+          cancelButtonText: "Batal",
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+              $.ajax({
+
+                  url: `/aspek/editAspek`,
+                  type: "POST",
+                  cache: false,
+                  data: data,
+                  success:function(response){
+                      swalWithBootstrapButtons.fire({
+                          title: "Berhasil!",
+                          text: "Data Aspek Telah Dirubah",
+                          icon: "success"
+                        });
+                      getAspek(surat_id)
+                  },
+                  error:function(error){
+
+                  }
+      
+              });
+  
+  
+            
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            
+            swalWithBootstrapButtons.fire({
+              title: "Batal",
+              text: "Data Aspek Tidak Dirubah",
+              icon: "error"
+            });
+          }
+        });
+
+
+  });
     $('#buttonEdit').click(function(e) {
       e.preventDefault();
 
