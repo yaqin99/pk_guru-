@@ -11,6 +11,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
+use Dompdf\Dompdf;
 
 class SuratController extends Controller
 {
@@ -135,6 +136,7 @@ class SuratController extends Controller
     public function cetak(){
       
      $pdf = Pdf::setOptions(['isHtml5ParseEnabled' => true , 'isRemoteEnabled' => true])->loadView('admin.pages.cetak.suratKinerja');
+     
      $pdf->setPaper('folio','potrait');
     
      return $pdf->stream('suratKinerja.pdf'); 
