@@ -8,8 +8,9 @@ use App\Models\Aspek;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon ; 
+
+use Barryvdh\DomPDF\Facade\Pdf;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
 
 class SuratController extends Controller
 {
@@ -130,6 +131,19 @@ class SuratController extends Controller
       Aspek::where('surat_kinerja_id' , $id)->delete();
     }
 
+
+    public function cetak(){
+      
+     $pdf = Pdf::setOptions(['isHtml5ParseEnabled' => true , 'isRemoteEnabled' => true])->loadView('admin.pages.cetak.suratKinerja');
+     $pdf->setPaper('folio','potrait');
+    
+     return $pdf->stream('suratKinerja.pdf'); 
+    //  return view('admin.pages.cetak.suratKinerja')
+     // nama ekstensinya menentukan tipe download file
+      // return $pdf->download('invoice.pdf');
+
+
+    }
     
 
 }
