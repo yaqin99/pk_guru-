@@ -170,6 +170,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class , 
+        NahidulHasan\Html2pdf\Html2pdfServiceProvider::class,
+
 
 
     ])->toArray(),
@@ -188,6 +190,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'DataTables' => \Yajra\DataTables\Facades\DataTables::class , 
         'PDF' =>  \Barryvdh\DomPDF\Facade\Pdf::class , 
+        'Pdf'  => NahidulHasan\Html2pdf\Facades\Pdf::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

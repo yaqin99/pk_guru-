@@ -29,7 +29,10 @@ function sosial (){
   hitung = 4 ; 
 }
 
+function cetakSurat(){
+  window.open('/surat/cetakSurat', '_blank');
 
+};
 
 
 function hitungAspek(){

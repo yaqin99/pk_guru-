@@ -8,10 +8,12 @@ use App\Models\Aspek;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-
+use Spipu\Html2Pdf\Html2Pdf;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Barryvdh\DomPDF\PDF as DomPDFPDF;
-use Dompdf\Dompdf;
+// use Barryvdh\DomPDF\PDF as DomPDFPDF;
+// use Dompdf\Dompdf;
+// use NahidulHasan\Html2pdf\Pdf;
+// use TCPDF_FONTS;
 
 class SuratController extends Controller
 {
@@ -135,16 +137,15 @@ class SuratController extends Controller
 
     public function cetak(){
       
-     $pdf = Pdf::setOptions(['isHtml5ParseEnabled' => true , 'isRemoteEnabled' => true])->loadView('admin.pages.cetak.suratKinerja');
+     $pdf = Pdf::loadView('admin.pages.cetak.suratKinerja');
      
      $pdf->setPaper('folio','potrait');
-    
      return $pdf->stream('suratKinerja.pdf'); 
-    //  return view('admin.pages.cetak.suratKinerja')
-     // nama ekstensinya menentukan tipe download file
-      // return $pdf->download('invoice.pdf');
-
-
+    //  return view('admin.pages.cetak.suratKinerja');
+    //  nama ekstensinya menentukan tipe download file
+    //   return $pdf->download('invoice.pdf');
+    
+;
     }
     
 
