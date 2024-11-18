@@ -11,9 +11,7 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "nahidulhasan/html2pdf": "^1.4",
-        "spipu/html2pdf": "^5.2.8",
-        "tecnickcom/tcpdf": "*",
+      
         "yajra/laravel-datatables": "10.0"
     },
     "require-dev": {

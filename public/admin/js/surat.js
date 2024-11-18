@@ -29,8 +29,24 @@ function sosial (){
   hitung = 4 ; 
 }
 
-function cetakSurat(){
-  window.open('/surat/cetakSurat', '_blank');
+function cetakSurat(data){
+ 
+  $.ajax({
+
+    url: `/surat/cetakSurat/${data}`,
+    type: "GET",
+    cache: false,
+    data: data,
+    success:function(response){
+      window.open(`/surat/cetakSurat/${data}`, '_blank');
+    },
+    error:function(error){
+
+    }
+
+});
+
+ 
 
 };
 
@@ -225,7 +241,8 @@ function getSurat(){
                           text: "Data Aspek Telah Dirubah",
                           icon: "success"
                         });
-                      getAspek(surat_id)
+                      getAspek(surat_id);
+                      getSurat();
                   },
                   error:function(error){
 

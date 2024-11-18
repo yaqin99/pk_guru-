@@ -34,7 +34,8 @@
                         
                         <div class="col-md-12">
                             <label class="control-label">Keterangan</label>
-                            <textarea class="col-md-12" name="ketarangan" id="keterangan" cols="30" rows="5"></textarea>
+                            <textarea class="col-md-12" name="ketarangan" id="keterangan" cols="30" rows="5" placeholder="telah melaksanakan program kegiatan yang diajukan dengan baik sesuai dengan kurikulum yang
+berlaku dan memiliki kinerja yang baik"></textarea>
                         </div>
                         
                         

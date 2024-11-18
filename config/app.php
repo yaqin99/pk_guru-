@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'id',
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +109,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => 'id_ID',
 
     /*
     |--------------------------------------------------------------------------
@@ -170,7 +170,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class , 
-        NahidulHasan\Html2pdf\Html2pdfServiceProvider::class,
 
 
 
@@ -190,7 +189,6 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'DataTables' => \Yajra\DataTables\Facades\DataTables::class , 
         'PDF' =>  \Barryvdh\DomPDF\Facade\Pdf::class , 
-        'Pdf'  => NahidulHasan\Html2pdf\Facades\Pdf::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

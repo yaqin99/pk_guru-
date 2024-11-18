@@ -8,12 +8,8 @@ use App\Models\Aspek;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-use Spipu\Html2Pdf\Html2Pdf;
 use Barryvdh\DomPDF\Facade\Pdf;
-// use Barryvdh\DomPDF\PDF as DomPDFPDF;
-// use Dompdf\Dompdf;
-// use NahidulHasan\Html2pdf\Pdf;
-// use TCPDF_FONTS;
+
 
 class SuratController extends Controller
 {
@@ -39,7 +35,7 @@ class SuratController extends Controller
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
-                           <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
+                           <a onclick=\'cetakSurat(`'.encrypt($row).'`)\' class="edit btn btn-primary btn-sm text-light" >
                            <i class="bi bi-printer-fill" ></i>
                            </a>
                            <a onclick=\'editAspek(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
@@ -83,14 +79,27 @@ class SuratController extends Controller
     {
         
         if(request('tipe_surat') == 1){
+          if (request('keterangan') == ''){
+            $keterangan = 'telah melaksanakan program kegiatan yang diajukan dengan baik sesuai dengan kurikulum yang berlaku dan memiliki kinerja yang baik';
             $add = Surat::create([
-                'user_id' => request('nama_user'), 
-                'nama_surat' => 'Surat Kinerja'.' '.date("Y"), 
-                'tipe' => request('tipe_surat'),
-                'tanggal' => request('tanggal'), 
-                'keterangan' => request('keterangan'), 
-                
-              ]);
+              'user_id' => request('nama_user'), 
+              'nama_surat' => 'Surat Kinerja'.' '.date("Y"), 
+              'tipe' => request('tipe_surat'),
+              'tanggal' => request('tanggal'), 
+              'keterangan' => $keterangan, 
+              
+            ]);
+          } else {
+            $add = Surat::create([
+              'user_id' => request('nama_user'), 
+              'nama_surat' => 'Surat Kinerja'.' '.date("Y"), 
+              'tipe' => request('tipe_surat'),
+              'tanggal' => request('tanggal'), 
+              'keterangan' => request('keterangan'), 
+              
+            ]);
+          }
+            
 
               Aspek::create([
                 'surat_kinerja_id' => $add->id  , 
@@ -101,14 +110,31 @@ class SuratController extends Controller
               ]);
 
         } else {
+
+
+          if (request('keterangan') == ''){
+            $keterangan = 'telah melaksanakan program kegiatan yang diajukan dengan baik sesuai dengan kurikulum yang berlaku dan memiliki kinerja yang baik';
             $add = Surat::create([
-                'user_id' => request('nama_user'), 
-                'nama_surat' => 'Surat Teguran'.' '.date("Y"), 
-                'tipe' => request('tipe_surat'),
-                'tanggal' => request('tanggal'), 
-                'keterangan' => request('keterangan'), 
-                
-              ]);
+              'user_id' => request('nama_user'), 
+              'nama_surat' => 'Surat Teguran'.' '.date("Y"), 
+              'tipe' => request('tipe_surat'),
+              'tanggal' => request('tanggal'), 
+              'keterangan' => $keterangan, 
+              
+            ]);
+          } else {
+            $add = Surat::create([
+              'user_id' => request('nama_user'), 
+              'nama_surat' => 'Surat Teguran'.' '.date("Y"), 
+              'tipe' => request('tipe_surat'),
+              'tanggal' => request('tanggal'), 
+              'keterangan' => request('keterangan'), 
+              
+            ]);
+          }
+
+
+           
 
               Aspek::create([
                 'surat_kinerja_id' => $add->id  , 
@@ -135,18 +161,22 @@ class SuratController extends Controller
     }
 
 
-    public function cetak(){
+    public function cetak($data){
+      $row = decrypt($data);
+
+      if ($row->tipe == '1') {
+        $pdf = Pdf::loadView('admin.pages.cetak.suratKinerja' , ['row' => $row]);
+        $pdf->setPaper('folio','potrait');
+        return $pdf->stream('suratKinerja.pdf'); 
+      } else {
+        $pdf = Pdf::loadView('admin.pages.cetak.suratTeguran' , ['row' => $row]);
+        $pdf->setPaper('folio','potrait');
+        return $pdf->stream('suratTeguran.pdf');
+      }
       
-     $pdf = Pdf::loadView('admin.pages.cetak.suratKinerja');
-     
-     $pdf->setPaper('folio','potrait');
-     return $pdf->stream('suratKinerja.pdf'); 
-    //  return view('admin.pages.cetak.suratKinerja');
-    //  nama ekstensinya menentukan tipe download file
-    //   return $pdf->download('invoice.pdf');
-    
-;
+
     }
+   
     
 
 }
