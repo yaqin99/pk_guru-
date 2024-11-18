@@ -7,10 +7,12 @@
             <li><a href="/" aria-expanded="false"><i class="bi bi-house"></i>
                 <span class="nav-text">Dashboard</span></a>
             </li>
-            
+            @if (Auth::user()->role == 2)
             <li><a href="/guru" aria-expanded="false"><i class="bi bi-person-fill"></i><span
-                        class="nav-text">Data Guru</span></a>
-            </li>
+                class="nav-text">Data Guru</span></a>
+             </li>
+            @endif
+            
             <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="bi bi-file-earmark-bar-graph"></i>
             </i><span class="nav-text">Data Kinerja</span></a>
             <ul aria-expanded="false">

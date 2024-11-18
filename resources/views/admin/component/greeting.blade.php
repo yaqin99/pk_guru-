@@ -6,21 +6,34 @@
             @if ($pages == 'guru')
             <li class="breadcrumb-item"><button onclick="showAddGuru()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Guru</button></li>
             @elseif ($pages == 'pengajuan')
-            <li class="breadcrumb-item"><button onclick="showAddPengajuan()" data-bs-toggle="modal" data-bs-target="#modalJenisTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pengajuan</button></li>
+                @if (Auth::user()->role == 1)
+                <li class="breadcrumb-item"><button onclick="showAddPengajuan()" data-bs-toggle="modal" data-bs-target="#modalJenisTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pengajuan</button></li>
+                @endif
             @elseif ($pages == 'surat')
             <li class="breadcrumb-item"><button onclick="showAddSurat()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Surat</button></li>
            
             @elseif ($pages == 'pedagogik')
-            <li class="breadcrumb-item"><button onclick="showAddPedagogik()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pedagogik</button></li>
+                @if (Auth::user()->role == 1)
+                <li class="breadcrumb-item"><button onclick="showAddPedagogik()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pedagogik</button></li>
+                @endif
            
             @elseif ($pages == 'sosial')
-            <li class="breadcrumb-item"><button onclick="showAddSosial()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Sosial</button></li>
+                @if (Auth::user()->role == 1)
+                    
+                <li class="breadcrumb-item"><button onclick="showAddSosial()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Sosial</button></li>
+                @endif
            
             @elseif ($pages == 'profesional')
-            <li class="breadcrumb-item"><button onclick="showAddProfesional()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Profesional</button></li>
+                @if (Auth::user()->role == 1)
+                    
+                <li class="breadcrumb-item"><button onclick="showAddProfesional()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Profesional</button></li>
+                @endif
            
             @elseif ($pages == 'kepribadian')
+            @if (Auth::user()->role == 1)
+                
             <li class="breadcrumb-item"><button onclick="showAddKepribadian()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Kepribadian</button></li>
+            @endif
            
             @endif
         </ol>

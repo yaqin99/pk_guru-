@@ -35,20 +35,37 @@ class PengajuanController extends Controller
                     return $row->jumlah_poin;})
                    
                     ->addColumn('action', function($row){
-                           $btn = '
-                           <div class="btn-group">
-                           <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
-                           <i class="bi bi-pencil-fill" ></i>
-                           </a>
+                         if (Auth::user()->role == 1) {
+                            $btn = '
+                            <div class="btn-group">
+                            <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <i class="bi bi-pencil-fill" ></i>
+                            </a>
+                            
+                            <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                         } elseif (Auth::user()->role == 2) {
+                            $btn = '
+                            <div class="btn-group">
+                            <a href="\'asset(`/storage/'.$row->guru->nama_user.'`)\' class="edit btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <i class="bi bi-printer-fill" ></i>
+                            </a>
+                            
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                         }
                            
-                           <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm"><i class="bi bi-trash3-fill"></i></a>
-                           
-                           </div>
-                           
-                           ';
-                           
-    
-                            return $btn;
                     })
                     ->rawColumns(['action'])
                     ->make(true);

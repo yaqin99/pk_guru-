@@ -83,7 +83,7 @@
                         <div class="dropdown-menu dropdown-menu-right">
                             <a href="#" class="dropdown-item">
                                 <i class="icon-user"></i>
-                                <span class="ml-2">Profile </span>
+                                <span class="ml-2">{{Auth::user()->nama_user}} </span>
                             </a>
                             <a href="#" class="dropdown-item">
                                 <i class="icon-envelope-open"></i>

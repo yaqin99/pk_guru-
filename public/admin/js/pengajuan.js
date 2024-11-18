@@ -20,6 +20,9 @@ function getPengajuan(){
  });
    }
 
+
+
+
 $( document ).ready(function() {     
    getPengajuan()
   //  $('#guru').select2();
