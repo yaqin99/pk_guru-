@@ -20,12 +20,18 @@ function getPengajuan(){
  });
    }
 
+   function cekRpp(row){
+    let data = JSON.parse(row);
+    $('#btnRpp').attr('href',`{{ asset("/storage/${data.nama_user}/rpp/${data.rpp}") }}`)
+
+   }
 
 
 
 $( document ).ready(function() {     
-   getPengajuan()
+   getPengajuan();
   //  $('#guru').select2();
+
 
 
   $('#addPengajuanButton').click(function(e) {
