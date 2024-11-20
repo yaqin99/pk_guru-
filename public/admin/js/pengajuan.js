@@ -21,8 +21,9 @@ function getPengajuan(){
    }
 
    function cekRpp(row){
+    console.log('called')
     let data = JSON.parse(row);
-    $('#btnRpp').attr('href',`{{ asset("/storage/${data.nama_user}/rpp/${data.rpp}") }}`)
+    window.location.href = `/aspek/pedagogik` ; 
 
    }
 

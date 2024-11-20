@@ -53,7 +53,7 @@ class PengajuanController extends Controller
                          } elseif (Auth::user()->role == 2) {
                             $btn = '
                             <div class="btn-group">
-                            <a href="{{asset("/storage/'.$row->guru->nama_user.'/rpp'.'/'.$row->rpp.'")}}" id="btnRpp"  onclick=\'cekRpp(`'.$row.'`)\' class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
                            <i class="bi bi-printer-fill" ></i>
                             </a>
                             

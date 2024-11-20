@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\User;
 use App\Models\Aspek;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -33,7 +34,20 @@ class SuratController extends Controller
                     return $row->tanggal;})
                     
                     ->addColumn('action', function($row){
-                           $btn = '
+                      if (Auth::user()->role == 1) {
+                        $btn = '
+                        <div class="btn-group">
+                        <a onclick=\'cetakSurat(`'.encrypt($row).'`)\' class="edit btn btn-primary btn-sm text-light" >
+                        <i class="bi bi-printer-fill" ></i>
+                        </a>
+                        </div>
+                        
+                        ';
+                        
+ 
+                         return $btn;
+                      } else {
+                        $btn = '
                            <div class="btn-group">
                            <a onclick=\'cetakSurat(`'.encrypt($row).'`)\' class="edit btn btn-primary btn-sm text-light" >
                            <i class="bi bi-printer-fill" ></i>
@@ -53,6 +67,8 @@ class SuratController extends Controller
                            
     
                             return $btn;
+                      }
+                           
                     })
                     ->rawColumns(['action'])
                     ->make(true);

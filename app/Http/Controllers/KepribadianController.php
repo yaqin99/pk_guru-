@@ -27,20 +27,37 @@ class KepribadianController extends Controller
                     return $row->dokumen;})
                     
                     ->addColumn('action', function($row){
-                           $btn = '
+                           if (Auth::user()->role == 1) {
+                            $btn = '
                           
-                           <a onclick=\'editKepribadian(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editKepribadian">
-                           <i class="bi bi-pencil-fill" ></i>
-                           </a>
+                            <a onclick=\'editKepribadian(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editKepribadian">
+                            <i class="bi bi-pencil-fill" ></i>
+                            </a>
+                            
+                            <a href="javascript:void(0)" onclick=\'deleteKepribadian(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                           } else {
+                            $btn = '
+                            <div class="btn-group">
+                            <a href="/storage/'.$row->guru->nama_user.'/kepribadian'.'/'.''.$row->dokumen.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <i class="bi bi-printer-fill" ></i>
+                            </a>
+                            
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                           }
                            
-                           <a href="javascript:void(0)" onclick=\'deleteKepribadian(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
-                           
-                           </div>
-                           
-                           ';
-                           
-    
-                            return $btn;
                     })
                     ->rawColumns(['action'])
                     ->make(true);
