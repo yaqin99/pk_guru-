@@ -162,7 +162,7 @@ style='font-size:12.0pt'>Dengan ini menerangkan bahwa : </span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->user->nama_user}}</span></p>
+  style='font-size:12.0pt'>{{$row['nama_user']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -179,7 +179,7 @@ style='font-size:12.0pt'>Dengan ini menerangkan bahwa : </span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->user->nip}}</span></p>
+  style='font-size:12.0pt'>{{$row['nip']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -196,7 +196,7 @@ style='font-size:12.0pt'>Dengan ini menerangkan bahwa : </span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->user->no_hp}}</span></p>
+  style='font-size:12.0pt'>{{$row['no_hp']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -213,7 +213,7 @@ style='font-size:12.0pt'>Dengan ini menerangkan bahwa : </span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='margin-left:-5.1pt;line-height:10.0pt'><span
-  lang=EN-US style='font-size:12.0pt'>&nbsp;&nbsp;{{$row->user->alamat}}</span></p>
+  lang=EN-US style='font-size:12.0pt'>&nbsp;&nbsp;{{$row['alamat']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -226,7 +226,7 @@ style='font-size:12.0pt'>Dengan ini menerangkan bahwa : </span></p>
 style='font-size:12.0pt'>&nbsp;</span></p>
 
 <p class=MsoNormal style='text-align:justify;line-height:150%'><span
-lang=EN-US style='font-size:12.0pt;line-height:150%'>Nama diatas {{$row->keterangan}}</span></p>
+lang=EN-US style='font-size:12.0pt;line-height:150%'>Nama diatas {{$row['keterangan']}}</span></p>
 
 <p class=MsoNormal style='text-align:justify;line-height:150%'><span
 lang=EN-US style='font-size:12.0pt;line-height:150%'>Demikian surat keputusan
@@ -237,7 +237,7 @@ mana mestinya.</span></p>
 style='font-size:12.0pt'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-style='font-size:12.0pt'>Sumenep, {{ \Carbon\Carbon::parse($row->tanggal)->isoFormat('D MMMM Y')}}</span></p>
+style='font-size:12.0pt'>Sumenep, {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y')}}</span></p>
 
 <p class=MsoNormal style='margin-left:326.05pt'>
 
@@ -367,7 +367,7 @@ style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->user->nama_user}}</span></p>
+  style='font-size:12.0pt'>{{$row['nama_user']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -384,7 +384,7 @@ style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->user->nip}}</span></p>
+  style='font-size:12.0pt'>{{$row['nip']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -401,7 +401,7 @@ style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->user->no_hp}}</span></p>
+  style='font-size:12.0pt'>{{$row['no_hp']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -418,7 +418,7 @@ style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
   <td width=566 valign=top style='width:424.7pt;padding:0cm 5.4pt 0cm 5.4pt'>
   <p class=MsoNormal style='margin-left:-5.1pt;line-height:10.0pt'><span
-  lang=EN-US style='font-size:12.0pt'>&nbsp;&nbsp;{{$row->user->alamat}}</span></p>
+  lang=EN-US style='font-size:12.0pt'>&nbsp;&nbsp;{{$row['alamat']}}</span></p>
   <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US
   style='font-size:12.0pt'>&nbsp;</span></p>
   </td>
@@ -482,25 +482,25 @@ lang=EN-US style='font-size:14.0pt'>&nbsp;</span></p>
   solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->aspek->pedagogik}}</span></p>
+  style='font-size:12.0pt'>{{$row['pedagogik']}}</span></p>
   </td>
   <td width=151 style='width:4.0cm;border-top:none;border-left:none;border-bottom:
   solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->aspek->kepribadian}}</span></p>
+  style='font-size:12.0pt'>{{$row['kepribadian']}}</span></p>
   </td>
   <td width=151 style='width:4.0cm;border-top:none;border-left:none;border-bottom:
   solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->aspek->profesional}}</span></p>
+  style='font-size:12.0pt'>{{$row['profesional']}}</span></p>
   </td>
   <td width=142 style='width:106.3pt;border-top:none;border-left:none;
   border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row->aspek->sosial}}</span></p>
+  style='font-size:12.0pt'>{{$row['sosial']}}</span></p>
   </td>
   <td style='height:28.7pt;border:none' width=0 height=38></td>
  </tr>
@@ -514,7 +514,7 @@ lang=EN-US style='font-size:14.0pt'>&nbsp;</span></p>
 lang=EN-US style='font-size:12.0pt'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-style='font-size:12.0pt'>Sumenep,  {{ \Carbon\Carbon::parse($row->tanggal)->isoFormat('D MMMM Y')}}</span></p>
+style='font-size:12.0pt'>Sumenep,  {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y')}}</span></p>
 
 <p class=MsoNormal style='margin-left:326.05pt'>
 

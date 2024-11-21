@@ -6,6 +6,7 @@ use App\Models\Surat;
 use App\Models\User;
 use App\Models\Aspek;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -32,12 +33,39 @@ class SuratController extends Controller
                     return $row->tipe;})
                     ->addColumn('tanggal', function($row){
                     return $row->tanggal;})
+                    ->addColumn('status', function($row){
+                      if ($row->status == null || $row->status == 0) {
+                       
+                        return $status = 'Menunggu' ; 
+                        
+ 
+                        
+                      } else {
+                        return $status = 'Disetujui' ; 
+
+                      };
+                    })
                     
                     ->addColumn('action', function($row){
+                      if (Auth::user()->role == 3) {
+                        $btn = '
+                        <div class="btn-group">
+                        <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
+                        <i class="bi bi-printer-fill" ></i>
+                        </a>
+                        <a onclick=\'approve()\' class="edit btn btn-success btn-sm text-light" >
+                        <i class="bi bi-check-lg" ></i>
+                        </a>
+                        </div>
+                        
+                        ';
+                        return $btn;
+
+                      }
                       if (Auth::user()->role == 1) {
                         $btn = '
                         <div class="btn-group">
-                        <a onclick=\'cetakSurat(`'.encrypt($row).'`)\' class="edit btn btn-primary btn-sm text-light" >
+                        <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
                         <i class="bi bi-printer-fill" ></i>
                         </a>
                         </div>
@@ -46,10 +74,10 @@ class SuratController extends Controller
                         
  
                          return $btn;
-                      } else {
+                      } if (Auth::user()->role == 2) {
                         $btn = '
                            <div class="btn-group">
-                           <a onclick=\'cetakSurat(`'.encrypt($row).'`)\' class="edit btn btn-primary btn-sm text-light" >
+                           <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
                            <i class="bi bi-printer-fill" ></i>
                            </a>
                            <a onclick=\'editAspek(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
@@ -70,7 +98,7 @@ class SuratController extends Controller
                       }
                            
                     })
-                    ->rawColumns(['action'])
+                    ->rawColumns(['status','action'])
                     ->make(true);
         }
 
@@ -177,10 +205,23 @@ class SuratController extends Controller
     }
 
 
-    public function cetak($data){
-      $row = decrypt($data);
-
-      if ($row->tipe == '1') {
+    public function cetak(){
+      $row = [
+        'nama_user' => request()->user['nama_user'] , 
+        'nip' => request()->user['nip'] , 
+        'no_hp' => request()->user['no_hp'] , 
+        'alamat' => request()->user['alamat'] , 
+        'tanggal' => request()->tanggal , 
+        'keterangan' => request()->keterangan , 
+        'tipe' => request()->tipe , 
+        'pedagogik' => request()->aspek['pedagogik'] , 
+        'kepribadian' => request()->aspek['kepribadian'] , 
+        'profesional' => request()->aspek['profesional'] , 
+        'sosial' => request()->aspek['sosial'] , 
+      ];
+      
+      
+      if ($row['tipe'] == '1') {
         $pdf = Pdf::loadView('admin.pages.cetak.suratKinerja' , ['row' => $row]);
         $pdf->setPaper('folio','potrait');
         return $pdf->stream('suratKinerja.pdf'); 

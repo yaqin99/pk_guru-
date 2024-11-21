@@ -16,8 +16,8 @@ class SosialSeeder extends Seeder
         DB::table('sosials')->insert(
             [
                 'user_id' => 1 ,
-                'nama_sosial' =>  'Pedagogik 2024' ,
-                'dokumen' =>  'pedagogik2024.pdf' ,
+                'nama_sosial' =>  'Sosial 2024' ,
+                'dokumen' =>  'sosial2024.pdf' ,
                 
                 
             ]

@@ -1,5 +1,7 @@
 @extends('admin.layout')
 @section('main')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -16,6 +18,7 @@
                                 <th>Surat</th>
                                 <th>Tipe Surat</th>
                                 <th>Tanggal</th>
+                                <th>Status</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>

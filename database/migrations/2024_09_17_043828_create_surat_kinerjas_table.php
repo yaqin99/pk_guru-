@@ -18,6 +18,7 @@ return new class extends Migration
             $table->tinyInteger('tipe');
             $table->date('tanggal');
             $table->text('keterangan');
+            $table->tinyInteger('status')->nullable();;
             $table->timestamps();
         });
     }

@@ -30,18 +30,22 @@ function sosial (){
 }
 
 function cetakSurat(data){
- 
+ let row = JSON.parse(data);
   $.ajax({
 
-    url: `/surat/cetakSurat/${data}`,
-    type: "GET",
+    url: `/surat/cetakSurat`,
+    type: "POST",
+    headers:{
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
     cache: false,
-    data: data,
+    data: row,
     success:function(response){
-      window.open(`/surat/cetakSurat/${data}`, '_blank');
+      let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+      window.open(`/surat/cetakSurat`, '_blank');
     },
     error:function(error){
-
+      console.log(error)
     }
 
 });
@@ -180,13 +184,24 @@ function getSurat(){
            {data: 'nama_surat', name: 'nama_surat'},
            {data: 'tipe', name: 'tipe'},
            {data: 'tanggal', name: 'tanggal'},
+           {data: 'status', name: 'status'},
            {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
  });
    }
 
+   function tipesurat(){
+    let tipe = $('#tipe_surat').val();
+    if(tipe == 1){
+      $('#keteranganSurat').attr('hidden' , false);
+    } else {
+      $('#keteranganSurat').attr('hidden' , true);
+
+    }
+   }
    
    $(document).ready(function(){
+    
     $('#editAspekButton').click(function(e) {
       e.preventDefault();
 

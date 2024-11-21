@@ -15,39 +15,39 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert(
             [
-                'nama_user' => 'Moh. Ainul Yaqin' ,
+                'nama_user' => 'Guru Febri' ,
                 'nip' =>  '0072198476' ,
                 'no_hp' =>  '085232324069' ,
-                'alamat' => 'Jl. Sersam Mesrul Gg. 3B' , 
-                'email' => 'yaqin.9a23@gmail.com' , 
-                'username' => 'yaqin' , 
-                'password' => bcrypt('yaqin') ,
+                'alamat' => 'Jl. Amin Djakfar' , 
+                'email' => 'febri.9a23@gmail.com' , 
+                'username' => 'guru' , 
+                'password' => bcrypt('guru') ,
                 'role' => 1 ,
                 
             ]
             );
         DB::table('users')->insert(
             [
-                'nama_user' => 'Febri Wasilaturrahmah' ,
+                'nama_user' => 'Admin Febri' ,
                 'nip' =>  '0072198476' ,
                 'no_hp' =>  '085232324069' ,
-                'alamat' => 'Jl. Sersam Mesrul Gg. 3B' , 
-                'email' => 'yaqin.9a23@gmail.com' , 
-                'username' => 'febri' , 
-                'password' => bcrypt('febri') ,
+                'alamat' => 'Jl. Amin Djakfar' , 
+                'email' => 'febri.9a23@gmail.com' , 
+                'username' => 'admin' , 
+                'password' => bcrypt('admin') ,
                 'role' => 2 ,
                 
             ]
             );
         DB::table('users')->insert(
             [
-                'nama_user' => 'Rizal Ferlianto' ,
+                'nama_user' => 'Kepala Sekolah' ,
                 'nip' =>  '0072198476' ,
                 'no_hp' =>  '085232324069' ,
-                'alamat' => 'Jl. Sersam Mesrul Gg. 3B' , 
-                'email' => 'yaqin.9a23@gmail.com' , 
-                'username' => 'rizal' , 
-                'password' => bcrypt('rizal') ,
+                'alamat' => 'Jl. Amin Djakfar' , 
+                'email' => 'febri.9a23@gmail.com' , 
+                'username' => 'kepsek' , 
+                'password' => bcrypt('kepsek') ,
                 'role' => 3 ,
                 
             ]

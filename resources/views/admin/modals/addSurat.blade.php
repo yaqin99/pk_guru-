@@ -20,7 +20,7 @@
                         </div>
                         <div class="col-md-12">
                             <label for="tipe_surat" class="form-label">Tipe Surat</label>
-                            <select id="tipe_surat" name="tipe_surat" class="form-select form-control">
+                            <select id="tipe_surat" name="tipe_surat" onchange="tipesurat()" class="form-select form-control">
                                 <option selected value="0">-Pilih-</option>
                                 <option value="1">Surat Penilaian Kinerja</option>
                                 <option value="2">Surat Teguran Kinerja</option>
@@ -32,7 +32,7 @@
                             <input class="form-control" id="tanggal" type="date" name="tanggal">
                         </div>
                         
-                        <div class="col-md-12">
+                        <div class="col-md-12" id="keteranganSurat">
                             <label class="control-label">Keterangan</label>
                             <textarea class="col-md-12" name="ketarangan" id="keterangan" cols="30" rows="5" placeholder="telah melaksanakan program kegiatan yang diajukan dengan baik sesuai dengan kurikulum yang
 berlaku dan memiliki kinerja yang baik"></textarea>
