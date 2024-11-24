@@ -41,6 +41,7 @@ Route::put('/editGuru', [GuruController::class,'editGuru']);
 //Pengajuan All Routes
 
 Route::get('/pengajuan', [PengajuanController::class,'index'])->middleware('auth');
+Route::post('/pengajuan/approve', [PengajuanController::class,'approve'])->middleware('auth');
 Route::get('/getPengajuan', [PengajuanController::class,'getPengajuan'])->middleware('auth');
 Route::post('/addPengajuan', [PengajuanController::class,'addPengajuan']);
 Route::post('/editPengajuan', [PengajuanController::class,'editPengajuan']);

@@ -15,6 +15,7 @@ function getPengajuan(){
          {data: 'catatan', name: 'catatan'},
          {data: 'estimasi', name: 'estimasi'},
          {data: 'jumlah_poin', name: 'jumlah_poin'},
+         {data: 'status', name: 'status'},
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
  });
@@ -274,3 +275,62 @@ $(document).ready(function(){
 
   });
 });
+
+function approvePengajuan(id){
+
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "btn btn-success",
+      cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+  });
+  swalWithBootstrapButtons.fire({
+    title: "Konfirmasi Persetujuan Pengajuan Kinerja?",
+    text: "Data Akan Langsung Diupdate!",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonText: "Simpan",
+    cancelButtonText: "Batal",
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+
+        $.ajax({
+
+            url: `/pengajuan/approve`,
+            type: "POST",
+            headers:{
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+            cache: false,
+            data: {id:id},
+            success:function(response){
+                swalWithBootstrapButtons.fire({
+                    title: "Berhasil!",
+                    text: "Pengajuan Disetujui!",
+                    icon: "success"
+                  });
+                getPengajuan();
+            },
+            error:function(error){
+
+            }
+
+        });
+
+
+      
+    } else if (
+      /* Read more about handling dismissals below */
+      result.dismiss === Swal.DismissReason.cancel
+    ) {
+      
+      swalWithBootstrapButtons.fire({
+        title: "Batal",
+        text: "Data Pengajuan Tidak Disetujui",
+        icon: "error"
+      });
+    }
+  });
+
+}

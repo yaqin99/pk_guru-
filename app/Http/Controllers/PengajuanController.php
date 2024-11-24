@@ -33,8 +33,37 @@ class PengajuanController extends Controller
                     return $row->estimasi;})
                     ->addColumn('jumlah_poin', function($row){
                     return $row->jumlah_poin;})
+                    ->addColumn('status', function($row){
+                        if ($row->status == null || $row->status == 0) {
+                         
+                          return $status = 'Menunggu' ; 
+                          
+   
+                          
+                        } else {
+                          return $status = 'Disetujui' ; 
+  
+                        };
+                      })
                    
                     ->addColumn('action', function($row){
+                        if (Auth::user()->role == 3) {
+                            $btn = '
+                            <div class="btn-group">
+                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                           <i class="bi bi-printer-fill" ></i>
+                            </a>
+                            <a onclick=\'approvePengajuan(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" >
+                            <i class="bi bi-check-lg" ></i>
+                            </a>
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                         }
                          if (Auth::user()->role == 1) {
                             $btn = '
                             <div class="btn-group">
@@ -85,6 +114,13 @@ class PengajuanController extends Controller
         
         return response()->json($data);
 
+    }
+
+    public function approve(Request $request)
+    {
+        $add = Pengajuan::where('id', $request->id)->update([
+            'status' => 1, 
+          ]);
     }
 
     /**

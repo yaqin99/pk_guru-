@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('estimasi');
             $table->string('jumlah_poin');
             $table->string('rpp');
+            $table->tinyInteger('status')->nullable();
             $table->timestamps();
         });
     }

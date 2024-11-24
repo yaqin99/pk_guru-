@@ -1,5 +1,7 @@
 @extends('admin.layout')
 @section('main')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -17,6 +19,7 @@
                                 <th>Catatan</th>
                                 <th>Estimasi</th>
                                 <th>Poin</th>
+                                <th>Status</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
