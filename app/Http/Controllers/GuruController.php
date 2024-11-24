@@ -16,7 +16,7 @@ class GuruController extends Controller
     {
         $pages = 'guru' ; 
         if ($request->ajax()) {
-            $data = User::all();
+            $data = User::where('role' , 1)->get();
             $string = 'Konfirmasi Penghapusan Data' ; 
             return Datatables::of($data)
                     ->addIndexColumn()

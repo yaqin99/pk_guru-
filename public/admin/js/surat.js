@@ -91,6 +91,7 @@ function hitungAspek(){
 }
 
 
+
 function setNamaSurat(){
   let tahun = new Date().getFullYear();
   let tipe = $('#tipe_surat_edit').val()
@@ -470,7 +471,65 @@ function getSurat(){
 
   });
 
+  function approve(id){
 
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+      title: "Konfirmasi Persetujuan Surat?",
+      text: "Data Akan Langsung Diupdate!",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Simpan",
+      cancelButtonText: "Batal",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+  
+          $.ajax({
+  
+              url: `/surat/approve`,
+              type: "POST",
+              headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+              cache: false,
+              data: {id:id},
+              success:function(response){
+                  swalWithBootstrapButtons.fire({
+                      title: "Berhasil!",
+                      text: "Surat Disetujui!",
+                      icon: "success"
+                    });
+                  getAspek(id);
+                  getSurat();
+              },
+              error:function(error){
+  
+              }
+  
+          });
+  
+  
+        
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        
+        swalWithBootstrapButtons.fire({
+          title: "Batal",
+          text: "Data Surat Tidak Disetujui",
+          icon: "error"
+        });
+      }
+    });
+  
+  }
 
 
   

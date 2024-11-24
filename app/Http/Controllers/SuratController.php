@@ -19,9 +19,14 @@ class SuratController extends Controller
     {
         $pages = 'surat' ; 
         
-        $guru = User::select('nama_user' , 'id')->get();
+        $guru = User::select('nama_user' , 'id')->where('role' , 1)->get();
         if ($request->ajax()) {
+          if (Auth::user()->role == 1) {
+            $data = Surat::with(['user' , 'aspek'])->where('status' , 1)->get();
+          } 
+          else {
             $data = Surat::with(['user' , 'aspek'])->get();
+          }
 
             return Datatables::of($data)
                     ->addIndexColumn()
@@ -53,7 +58,7 @@ class SuratController extends Controller
                         <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
                         <i class="bi bi-printer-fill" ></i>
                         </a>
-                        <a onclick=\'approve()\' class="edit btn btn-success btn-sm text-light" >
+                        <a onclick=\'approve(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" >
                         <i class="bi bi-check-lg" ></i>
                         </a>
                         </div>
@@ -116,6 +121,15 @@ class SuratController extends Controller
             'tipe' => request('tipe_surat'),
             'tanggal' => request('tanggal'), 
             'keterangan' => request('keterangan'), 
+          ]);
+        
+    }
+    public function approve(Request $request)
+    {
+        
+        $add = Surat::where('id', $request->id)->update([
+            'status' => 1, 
+            
           ]);
         
     }
