@@ -17,7 +17,13 @@ class PedagogikController extends Controller
     {
         $pages = 'pedagogik' ; 
         if ($request->ajax()) {
-            $data = Pedagogik::with('guru')->get();
+            if (Auth::user()->role == 1) {
+                # code...
+                $data = Pedagogik::with('guru')->where('user_id' , Auth::user()->id)->get();
+            } else {
+                $data = Pedagogik::with('guru')->get();
+
+            }
 
             return Datatables::of($data)
                     ->addIndexColumn()

@@ -14,7 +14,7 @@ class SosialController extends Controller
     {
         $pages = 'sosial' ; 
         if ($request->ajax()) {
-            $data = Sosial::with('guru')->get();
+            $data = Sosial::with('guru')->where('user_id' , Auth::user()->id)->get();
 
             return Datatables::of($data)
                     ->addIndexColumn()

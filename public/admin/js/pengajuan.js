@@ -28,6 +28,12 @@ function getPengajuan(){
 
    }
 
+   function editCatatan(data){
+    $('#catatan').html(data.catatan);
+    $('#idCatatan').val(data.id);
+    $('#editCatatan').modal('show');
+    
+   }
 
 
 $( document ).ready(function() {     
@@ -36,6 +42,93 @@ $( document ).ready(function() {
 
 
 
+  $('#btnCatatan').click(function(e) {
+    e.preventDefault();
+    $('#editCatatan').modal({"backdrop": "static"})
+
+    //define variable
+    let idCatatan   = $('#idCatatan').val();
+    let catatan = $('#catatan').val();
+
+    let data = {
+        idCatatan : idCatatan , 
+        catatan : catatan , 
+        
+           }
+
+           var form_data = new FormData();
+    form_data.append('id', idCatatan);
+    form_data.append('catatan', catatan);
+   
+   
+
+       const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: "Konfirmasi Catatan?",
+        text: "Data Akan Langsung Ditambahkan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Simpan",
+        cancelButtonText: "Batal",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+
+                url: `/pengajuan/catatan`,
+                type: "POST",
+                cache: false,
+                headers:{
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+                processData: false,
+                contentType: false,
+                data: form_data,
+                enctype: 'multipart/form-data',
+
+                success:function(response){
+                    swalWithBootstrapButtons.fire({
+                        title: "Berhasil!",
+                        text: "Catatan Telah Ditambahkan",
+                        icon: "success"
+                      });
+                     
+                      getPengajuan()
+ 
+                },
+                error:function(error){
+                    
+                  
+    
+                }
+    
+            });
+
+
+          
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+         
+          swalWithBootstrapButtons.fire({
+            title: "Batal",
+            text: "Catatan Tidak Ditambah",
+            icon: "error"
+          });
+        }
+      });
+
+
+
+
+
+});
   $('#addPengajuanButton').click(function(e) {
     e.preventDefault();
     $('#addPengajuan').modal({"backdrop": "static"})
@@ -333,4 +426,46 @@ function approvePengajuan(id){
     }
   });
 
+}
+
+function formatTanggal(dateString) {
+  // Daftar nama hari dan bulan dalam bahasa Indonesia
+  const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const namaBulan = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  // Konversi string ISO ke objek Date
+  const date = new Date(dateString);
+
+  // Ambil elemen tanggal
+  const hari = namaHari[date.getUTCDay()];
+  const tanggal = date.getUTCDate();
+  const bulan = namaBulan[date.getUTCMonth()];
+  const tahun = date.getUTCFullYear();
+
+  // Gabungkan elemen dalam format yang diinginkan
+  return `${hari}, ${tanggal} ${bulan} ${tahun}`;
+}
+
+
+function opsi (row){
+  let data = JSON.parse(row);
+  Swal.fire({
+    title: `Program Telah Diajukan Sejak ${formatTanggal(data.created_at)}`,
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Setujui",
+    denyButtonText: `Berikan Catatan`
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      approvePengajuan(data.id)
+    } else if (result.isDenied) {
+      editCatatan(data)
+      $('#editCatatan').modal('show');
+      // Swal.fire("Changes are not saved", "", "info");
+    }
+  });
 }

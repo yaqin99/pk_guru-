@@ -19,7 +19,13 @@ class PengajuanController extends Controller
     {
         $pages = 'pengajuan' ; 
         if ($request->ajax()) {
-            $data = Pengajuan::with('guru')->get();
+            if (Auth::user()->role == 1) {
+                # code...
+                $data = Pengajuan::with('guru')->where('user_id' , Auth::user()->id)->get();
+            } else {
+                $data = Pengajuan::with('guru')->get();
+
+            }
 
             return Datatables::of($data)
                     ->addIndexColumn()
@@ -53,8 +59,8 @@ class PengajuanController extends Controller
                             <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
                            <i class="bi bi-printer-fill" ></i>
                             </a>
-                            <a onclick=\'approvePengajuan(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" >
-                            <i class="bi bi-check-lg" ></i>
+                            <a onclick=\'opsi(`'.$row.'`)\' class="edit btn btn-success btn-sm text-light" >
+                            <i class="bi bi-gear"></i>
                             </a>
                             
                             </div>
@@ -123,6 +129,15 @@ class PengajuanController extends Controller
           ]);
     }
 
+
+    public function catatan(Request $request)
+    {
+        
+        $add = Pengajuan::where('id', request('id'))->update([
+            'catatan' => request('catatan'), 
+          ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -142,7 +157,7 @@ class PengajuanController extends Controller
         $add = Pengajuan::create([
             'nama_kegiatan' => request('nama_kegiatan'), 
             'user_id' =>  $user = Auth::user()->id, 
-            'catatan' => 'aaaa', 
+            'catatan' => '', 
             'estimasi' => request('waktu'), 
             'jumlah_poin' => request('jumlah_poin'), 
             'rpp' =>  $nameFile, 

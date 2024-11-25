@@ -13,7 +13,14 @@ class ProfesionalController extends Controller
     {
         $pages = 'profesional' ; 
         if ($request->ajax()) {
-            $data = Profesional::with('guru')->get();
+            if (Auth::user()->role == 1) {
+                # code...
+                $data = Profesional::with('guru')->where('user_id' , Auth::user()->id)->get();
+            } else {
+                $data = Profesional::with('guru')->get();
+
+            }
+
 
             return Datatables::of($data)
                     ->addIndexColumn()

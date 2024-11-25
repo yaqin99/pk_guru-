@@ -15,7 +15,14 @@ class KepribadianController extends Controller
     {
         $pages = 'kepribadian' ; 
         if ($request->ajax()) {
-            $data = Kepribadian::with('guru')->get();
+
+            if (Auth::user()->role == 1) {
+                # code...
+                $data = Kepribadian::with('guru')->where('user_id' , Auth::user()->id)->get();
+            } else {
+                $data = Kepribadian::with('guru')->get();
+
+            }
 
             return Datatables::of($data)
                     ->addIndexColumn()

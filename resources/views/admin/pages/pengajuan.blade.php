@@ -35,5 +35,6 @@
    
 </div>
 @include('admin.modals.addPengajuan')
+@include('admin.modals.editCatatan')
 @include('admin.modals.editPengajuan')
 @endsection

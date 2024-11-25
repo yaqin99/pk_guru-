@@ -31,7 +31,7 @@ Route::get('/logout', [UserController::class,'logout']);
 
 //guru All Routes
 
-Route::get('/', [GuruController::class,'index'])->middleware('auth');
+Route::get('/', [PengajuanController::class,'index'])->middleware('auth');
 Route::get('/guru', [GuruController::class,'index'])->middleware('auth');
 Route::get('/getGuru', [GuruController::class,'getGuru'])->middleware('auth');
 Route::post('/addGuru', [GuruController::class,'addGuru']);
@@ -42,6 +42,7 @@ Route::put('/editGuru', [GuruController::class,'editGuru']);
 
 Route::get('/pengajuan', [PengajuanController::class,'index'])->middleware('auth');
 Route::post('/pengajuan/approve', [PengajuanController::class,'approve'])->middleware('auth');
+Route::post('/pengajuan/catatan', [PengajuanController::class,'catatan'])->middleware('auth');
 Route::get('/getPengajuan', [PengajuanController::class,'getPengajuan'])->middleware('auth');
 Route::post('/addPengajuan', [PengajuanController::class,'addPengajuan']);
 Route::post('/editPengajuan', [PengajuanController::class,'editPengajuan']);
