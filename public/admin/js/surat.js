@@ -33,10 +33,9 @@ function cetakSurat(data){
  let row = JSON.parse(data);
   $.ajax({
 
-    url: `/surat/cetakSurat`,
-    type: "POST",
-    headers:{
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+    url: `/surat/cetakSurat/getVersion/`+data,
+    type: "GET",
+   
     cache: false,
     data: row,
     success:function(response){

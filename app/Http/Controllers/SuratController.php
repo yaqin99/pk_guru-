@@ -247,6 +247,38 @@ class SuratController extends Controller
       
 
     }
+    public function cetakGet($data){
+      $row = json_decode($data, true);
+
+
+     
+      $row = [
+        'nama_user' => $row['user']['nama_user'] , 
+        'nip' => $row['user']['nip'] , 
+        'no_hp' => $row['user']['no_hp'] , 
+        'alamat' => $row['user']['alamat'] , 
+        'tanggal' => $row['tanggal'] , 
+        'keterangan' => $row['keterangan'] , 
+        'tipe' => $row['tipe'] , 
+        'pedagogik' => $row['aspek']['pedagogik'] , 
+        'kepribadian' => $row['aspek']['kepribadian'] , 
+        'profesional' => $row['aspek']['profesional'] , 
+        'sosial' => $row['aspek']['sosial'] , 
+      ];
+      
+      
+      if ($row['tipe'] == '1') {
+        $pdf = Pdf::loadView('admin.pages.cetak.suratKinerja' , ['row' => $row]);
+        $pdf->setPaper('folio','potrait');
+        return $pdf->stream('suratKinerja.pdf'); 
+      } else {
+        $pdf = Pdf::loadView('admin.pages.cetak.suratTeguran' , ['row' => $row]);
+        $pdf->setPaper('folio','potrait');
+        return $pdf->stream('suratTeguran.pdf');
+      }
+      
+
+    }
    
     
 
