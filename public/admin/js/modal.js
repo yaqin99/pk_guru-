@@ -10,6 +10,12 @@ function showAddGuru (){
     $('#addGuru').modal({"backdrop": "static"})
 }
 
+function showAddProgram (){
+    $('#formProgram')[0].reset();
+
+    $('#addProgram').modal('show');
+    $('#addProgram').modal({"backdrop": "static"})
+}
 function showAddPengajuan (){
     
     $('#addPengajuan').modal('show');

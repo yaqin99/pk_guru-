@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfesionalController;
 use App\Http\Controllers\SosialController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProgramController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -89,3 +90,9 @@ Route::get('/aspek', [AspekController::class,'index'])->middleware('auth');
 Route::get('/aspek/getAspek/{id}', [AspekController::class,'getAspek']);
 Route::post('/aspek/editAspek', [AspekController::class,'editAspek']);
 Route::get('/aspek/deleteAspek/{id}', [AspekController::class,'deleteAspek']);
+
+
+Route::get('/program', [ProgramController::class,'index'])->middleware('auth');
+Route::post('/addProgram', [ProgramController::class,'addProgram']);
+Route::post('/editProgram', [ProgramController::class,'editProgram']);
+Route::get('/deleteProgram/{id}', [ProgramController::class,'deleteProgram']);

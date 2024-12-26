@@ -34,6 +34,12 @@
                 
             <li class="breadcrumb-item"><button onclick="showAddKepribadian()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Kepribadian</button></li>
             @endif
+
+            @elseif ($pages == 'program')
+            @if (Auth::user()->role == 2)
+                
+            <li class="breadcrumb-item"><button onclick="showAddProgram()" data-bs-toggle="modal" data-bs-target="#modalProgram" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Program Kegiatan</button></li>
+            @endif
            
             @endif
         </ol>

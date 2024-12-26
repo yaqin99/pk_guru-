@@ -15,6 +15,7 @@ function getGuru(){
          {data: 'no_hp', name: 'no_hp'},
          {data: 'alamat', name: 'alamat'},
          {data: 'email', name: 'email'},
+         {data: 'poin', name: 'poin'},
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
  });

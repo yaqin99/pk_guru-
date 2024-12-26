@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\DataTables\GurusDataTable;
 use Yajra\DataTables\Facades\DataTables;
 
 class GuruController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(Request $request)
     {
         $pages = 'guru' ; 
@@ -20,6 +17,8 @@ class GuruController extends Controller
             $string = 'Konfirmasi Penghapusan Data' ; 
             return Datatables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('poin', function($row){
+                      return $row->poin;})
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">

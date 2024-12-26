@@ -33,15 +33,15 @@ function cetakSurat(data){
  let row = JSON.parse(data);
   $.ajax({
 
-    url: `/surat/cetakSurat/getVersion/`+data,
-    type: "GET",
-   
+    url: `/surat/cetakSurat`,
+    type: "POST",
+    headers:{
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
     cache: false,
     data: row,
     success:function(response){
       let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-      window.open(`/surat/cetakSurat`, '_blank');
     },
     error:function(error){
       console.log(error)

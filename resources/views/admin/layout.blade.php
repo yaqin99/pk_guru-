@@ -145,6 +145,7 @@
     <script src="/admin/js/guru.js"></script>
     <script src="/admin/js/pengajuan.js"></script>
     <script src="/admin/js/surat.js"></script>
+    <script src="/admin/js/program.js"></script>
 </body>
 
 </html>

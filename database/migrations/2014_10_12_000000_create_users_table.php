@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('no_hp')->nullable();
             $table->string('alamat')->nullable();
             $table->string('email')->nullable();
+            $table->string('poin')->nullable();
             $table->string('username');
             $table->string('password');
             $table->integer('role');
