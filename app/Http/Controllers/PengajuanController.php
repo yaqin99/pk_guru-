@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengajuan;
+use App\Models\Program;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -18,12 +19,13 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pages = 'pengajuan' ; 
+        $programs = Program::all();
         if ($request->ajax()) {
             if (Auth::user()->role == 1) {
                 # code...
-                $data = Pengajuan::with('guru')->where('user_id' , Auth::user()->id)->get();
+                $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->get();
             } else {
-                $data = Pengajuan::with('guru')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->get();
 
             }
 
@@ -32,13 +34,13 @@ class PengajuanController extends Controller
                     ->addColumn('nama_user', function($row){
                     return $row->guru->nama_user;})
                     ->addColumn('nama_kegiatan', function($row){
-                    return $row->nama_kegiatan;})
+                    return $row->program->nama_program;})
                     ->addColumn('catatan', function($row){
                     return $row->catatan;})
                     ->addColumn('estimasi', function($row){
-                    return $row->estimasi;})
+                    return $row->estimasi.' '.'Semester';})
                     ->addColumn('jumlah_poin', function($row){
-                    return $row->jumlah_poin;})
+                    return $row->jumlah_poin.' '.'Poin';})
                     ->addColumn('status', function($row){
                         if ($row->status == null || $row->status == 0) {
                          
@@ -108,6 +110,7 @@ class PengajuanController extends Controller
 
         return view('admin.pages.pengajuan' , [
             'pages' => $pages , 
+            'program' => $programs,
         ]);
     }
 
@@ -122,6 +125,13 @@ class PengajuanController extends Controller
 
     }
 
+    public function getSingleProgram()
+    {
+        $id = request('id');
+        $data = Program::find($id);
+        return response()->json($data); ; 
+    }
+
     public function approve(Request $request)
     {
         $add = Pengajuan::where('id', $request->id)->update([
@@ -132,7 +142,6 @@ class PengajuanController extends Controller
 
     public function catatan(Request $request)
     {
-        
         $add = Pengajuan::where('id', request('id'))->update([
             'catatan' => request('catatan'), 
           ]);
@@ -148,7 +157,7 @@ class PengajuanController extends Controller
 
         if(!Storage::disk('public')->exists($user->nama_user)) {
 
-            Storage::disk('public')->makeDirectory($user->nama_user, 0775, true); //creates directory
+            Storage::disk('public')->makeDirectory($user->nama_user); //creates directory
         
         }            
         // $rpp_name = uniqid().'.'.request()->file('rpp')->extension() ; 
@@ -182,7 +191,6 @@ class PengajuanController extends Controller
             $add = Pengajuan::where('id',request('id'))->update([
               'nama_kegiatan' => request('nama_kegiatan'), 
                   'user_id' =>  $user = Auth::user()->id,
-                  'catatan' => 'aaaa', 
                   'estimasi' => request('waktu'), 
                   'jumlah_poin' => request('jumlah_poin'), 
                   'rpp' =>  $nameFile, 
@@ -191,7 +199,6 @@ class PengajuanController extends Controller
             $add = Pengajuan::where('id',request('id'))->update([
                 'nama_kegiatan' => request('nama_kegiatan'), 
                     'user_id' =>  $user = Auth::user()->id, 
-                    'catatan' => 'aaaa', 
                     'estimasi' => request('waktu'), 
                     'jumlah_poin' => request('jumlah_poin'), 
               ]);

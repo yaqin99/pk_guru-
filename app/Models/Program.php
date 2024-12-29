@@ -9,5 +9,7 @@ class Program extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-
+    public function pengajuan(){
+        return $this->hasOne(Pengajuan::class);
+     }
 }

@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             SosialSeeder::class , 
             ProfesionalSeeder::class , 
             PedagogikSeeder::class , 
-            
+            ProgramSeeder::class , 
         ]);
     }
 }

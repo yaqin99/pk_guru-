@@ -48,6 +48,7 @@ Route::get('/getPengajuan', [PengajuanController::class,'getPengajuan'])->middle
 Route::post('/addPengajuan', [PengajuanController::class,'addPengajuan']);
 Route::post('/editPengajuan', [PengajuanController::class,'editPengajuan']);
 Route::get('/deletePengajuan/{id}', [PengajuanController::class,'deletePengajuan']);
+Route::post('/getSingleProgram', [PengajuanController::class,'getSingleProgram']);
 
 
 // Data Surat pengajuan dan teguran

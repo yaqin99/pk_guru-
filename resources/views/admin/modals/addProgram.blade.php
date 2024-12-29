@@ -7,7 +7,7 @@
             <div class="modal-body">
                 <form id="formProgram" method="POST">
                     <div class="row">
-                        
+                        <input type="text" id="idProgram" name="idProgram" hidden>
                         <div class="col-md-12">
                             <label class="control-label">Nama Program Kegiatan</label>
                             <textarea class="col-md-12" name="nama_program" id="nama_program" cols="30" rows="5" "></textarea>

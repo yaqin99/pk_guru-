@@ -1,5 +1,5 @@
 <div class="modal fade none-border" id="editPengajuan">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><strong >Tambah Data Pengajuan</strong></h4>
@@ -10,23 +10,22 @@
                         <input type="hidden" name="_token" id="token_pengajuan_id" value="{{ csrf_token() }}">
                         <input type="hidden" name="id" id="theId" >
 
-                        <div class="col-md-6">
-                            <label class="control-label">Nama Kegiatan</label>
-                            <input class="form-control form-white" id="nama_kegiatan_id" type="text" name="nama_kegiatan">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="waktu_id" class="form-label">Waktu Pelaksanaan</label>
-                            <select id="waktu_id" name="waktu" class="form-select form-control">
+                        <div class="col-md-12">
+                            <label for="nama_kegiatan_id" class="form-label">Program Kegiatan Kinerja</label>
+                            <select id="nama_kegiatan_id" name="nama_kegiatan_id" onchange="getSingleProgramEdit()" class="form-select form-control">
                                 <option selected>-Pilih-</option>
-                                <option value="1 Semester">1 Semester</option>
-                                <option value="2 Semester">2 Semester</option>
+                                @foreach ($program as $pro)
+                                <option value="{{$pro->id}}">{{$pro->nama_program}}</option>
+                                @endforeach
                             </select>
                         </div>
-                    
+                        <div class="col-md-6">
+                            <label class="control-label">Waktu Pelaksanaan</label>
+                            <input class="form-control form-white" id="waktu_id" type="text" name="waktu_id" readonly> 
+                        </div>
                         <div class="col-md-6">
                             <label class="control-label">Estimasi Poin</label>
-                            <input class="form-control form-white" id="jumlah_poin_id" type="number" name="jumlah_poin">
+                            <input class="form-control form-white" id="jumlah_poin_id" type="text" name="jumlah_poin_id" readonly> 
                         </div>
                         <div class="input-group col-md-6" id="old">
                             <label class="control-label">Rpp Modul</label>

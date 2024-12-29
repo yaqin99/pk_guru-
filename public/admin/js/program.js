@@ -1,4 +1,4 @@
-function getPelaksanaan(){
+function getProgram(){
     $("#tabel_program").dataTable().fnDestroy();
 
    var table = $('#tabel_program').DataTable({
@@ -19,8 +19,21 @@ function getPelaksanaan(){
  });
    }
 
+
+   function editProgram(row){
+    let data = JSON.parse(row)
+    console.log(data);
+    $('#idProgram').val(data.id);
+    $('#nama_program').val(data.nama_program);
+    $('#poin').val(data.poin).trigger('change');
+    $('#pelaksanaan').val(data.pelaksanaan).trigger('change');
+    $('#addProgram').modal('show');
+    
+   }
+
+   
 $( document ).ready(function() {     
-   getPelaksanaan();
+   getProgram();
 
    $('#simpanProgram').click(function(e) {
     e.preventDefault();
@@ -63,7 +76,7 @@ $( document ).ready(function() {
                         icon: "success"
                       });
                     $('#formProgram')[0].reset();
-                    getPelaksanaan();
+                    getProgram();
                 },
                 error:function(error){
 
@@ -90,3 +103,68 @@ $( document ).ready(function() {
 });
 
 });
+
+
+function deleteProgram(id){
+
+  const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+      title: "Konfirmasi Penghapusan Data?",
+      text: "Data Yang Dihapus Tidak Dapat Dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+          $.ajax({
+
+              url: `/deleteProgram/${id}`,
+              type: "GET",
+              cache: false,
+              data: {
+                  id:id , 
+              },
+              success:function(response){
+                  swalWithBootstrapButtons.fire({
+                      title: "Berhasil!",
+                      text: "Data Program Telah Terhapus",
+                      icon: "success"
+                    });
+                     getProgram();
+              },
+              error:function(error){
+                  
+                
+      
+              }
+      
+          })
+
+
+        
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire({
+          title: "Batal",
+          text: "Data Guru Tidak Terhapus",
+          icon: "error"
+        });
+      }
+    });
+
+
+
+
+  
+}
+

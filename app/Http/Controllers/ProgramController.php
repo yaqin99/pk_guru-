@@ -20,9 +20,14 @@ class ProgramController extends Controller
                     ->addColumn('nama_program', function($row){
                         return $row->nama_program;})
                     ->addColumn('poin', function($row){
-                        return $row->poin;})
+                        return $row->poin.' '.'Poin';})
                     ->addColumn('pelaksanaan', function($row){
-                        return $row->pelaksanaan;})
+                        
+                       
+                        return $row->pelaksanaan.' '.'Semester';
+                    
+                    
+                    })
                     ->addColumn('action', function($row){
                            $btn = '
                            <div class="btn-group">
@@ -48,19 +53,22 @@ class ProgramController extends Controller
     }
     
   
+   
     public function addProgram()
     {
-    
-        $add = Program::create([
-          'nama_program' => request('nama_program'), 
-          'poin' => request('poin'), 
-          'pelaksanaan' => request('pelaksanaan'), 
-        ]);
-      
-
-
-      
-
+        if (request('idProgram') == '') {
+            $add = Program::create([
+                'nama_program' => request('nama_program'), 
+                'poin' => request('poin'), 
+                'pelaksanaan' => request('pelaksanaan'), 
+              ]);
+        } else {
+            $add = Program::where('id' , request('idProgram') )->update([
+                'nama_program' => request('nama_program'), 
+                'poin' => request('poin'), 
+                'pelaksanaan' => request('pelaksanaan'), 
+              ]);
+        }
     }
     public function deleteProgram($id)
     {

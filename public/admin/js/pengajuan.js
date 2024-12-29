@@ -21,6 +21,57 @@ function getPengajuan(){
  });
    }
 
+   function getSingleProgramEdit(){
+     let id = $('#nama_kegiatan_id').val();
+     console.log(id)
+    $.ajax({
+  
+      url: `/getSingleProgram`,
+      type: "POST",
+      cache: false,
+      data: {
+        id:id , 
+      }, 
+    
+      headers:{
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+      success:function(response){
+          $('#waktu_id').val(`${response.pelaksanaan} Semester`);
+          $('#jumlah_poin_id').val(`${response.poin} Poin`);
+      },
+      error:function(error){
+        console.log(error)
+  
+      }
+  
+  });
+  }
+   function getSingleProgram(){
+     let id = $('#nama_kegiatan').val();
+     console.log(id)
+    $.ajax({
+  
+      url: `/getSingleProgram`,
+      type: "POST",
+      cache: false,
+      data: {
+        id:id , 
+      }, 
+    
+      headers:{
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+      success:function(response){
+          $('#waktu').val(`${response.pelaksanaan} Semester`);
+          $('#jumlah_poin').val(`${response.poin} Poin`);
+      },
+      error:function(error){
+        console.log(error)
+  
+      }
+  
+  });
+  }
+
    function cekRpp(row){
     console.log('called')
     let data = JSON.parse(row);
@@ -28,13 +79,7 @@ function getPengajuan(){
 
    }
 
-   function editCatatan(data){
-    $('#catatan').html(data.catatan);
-    $('#idCatatan').val(data.id);
-    $('#editCatatan').modal('show');
-    
-   }
-
+  
 
 $( document ).ready(function() {     
    getPengajuan();
@@ -140,12 +185,13 @@ $( document ).ready(function() {
     let rpp   = $('#rpp').val();   
     let nameData   = $('#cek').val();   
     let token = $('#token_pengajuan').val();
-
+    let waktuFix = Array.from(waktu)[0];
+    let poinFix = jumlah_poin.replace(/\D/g, "");
     let data = {
         _token: $('#token_pengajuan').val(),
         nama_kegiatan : nama_kegiatan , 
-        waktu : waktu , 
-        jumlah_poin : jumlah_poin , 
+        waktu : waktuFix , 
+        jumlah_poin : poinFix , 
         rpp : rpp , 
            }
     //ajax
@@ -157,10 +203,10 @@ $( document ).ready(function() {
     form_data.append('rpp', file_data);
     form_data.append('_token', token);
     form_data.append('nama_kegiatan', nama_kegiatan);
-    form_data.append('waktu', waktu);
-    form_data.append('jumlah_poin', jumlah_poin);
+    form_data.append('waktu', waktuFix);
+    form_data.append('jumlah_poin', poinFix);
    
-    // console.log(form_data);
+    
     for (var pair of form_data.entries()) {
       console.log(pair[0]+ ', ' + pair[1]); 
   }
@@ -250,7 +296,8 @@ $( document ).ready(function() {
     let name   = $('#cek').val();
     let id   = $('#theId').val();
     let token = $('#token_pengajuan_id').val();
-
+    let waktuFixx = Array.from(waktu)[0];
+    let poinFixx = jumlah_poin.replace(/\D/g, "");
     let data = {
         _token: $('#token_pengajuan_id').val(),
         nama_kegiatan : nama_kegiatan , 
@@ -269,8 +316,8 @@ $( document ).ready(function() {
     form_data.append('id', id);
     form_data.append('_token', token);
     form_data.append('nama_kegiatan', nama_kegiatan);
-    form_data.append('waktu', waktu);
-    form_data.append('jumlah_poin', jumlah_poin); 
+    form_data.append('waktu', waktuFixx);
+    form_data.append('jumlah_poin', poinFixx); 
     console.log(data);
     // console.log(form_data);
     for (var pair of form_data.entries()) {
@@ -347,8 +394,8 @@ function editPengajuan(row){
   console.log(data)
   $('#editPengajuan').modal('show');
   $('#nama_kegiatan_id').val(data.nama_kegiatan);
-  $('#waktu_id').val(data.estimasi).trigger('change');
-  $('#jumlah_poin_id').val(data.jumlah_poin);
+  $('#waktu_id').val(`${data.estimasi} Semester`);
+  $('#jumlah_poin_id').val(`${data.jumlah_poin} Poin`);
   $('#theId').val(data.id);
 
   $('#cek').val(data.rpp);
@@ -464,8 +511,13 @@ function opsi (row){
       approvePengajuan(data.id)
     } else if (result.isDenied) {
       editCatatan(data)
-      $('#editCatatan').modal('show');
       // Swal.fire("Changes are not saved", "", "info");
     }
   });
+}
+
+function editCatatan(row){
+  $('#idCatatan').val(row.id);
+  $('#editCatatan').modal('show');
+
 }
