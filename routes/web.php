@@ -46,6 +46,7 @@ Route::post('/pengajuan/approve', [PengajuanController::class,'approve'])->middl
 Route::post('/pengajuan/catatan', [PengajuanController::class,'catatan'])->middleware('auth');
 Route::get('/getPengajuan', [PengajuanController::class,'getPengajuan'])->middleware('auth');
 Route::post('/addPengajuan', [PengajuanController::class,'addPengajuan']);
+Route::post('/pengajuan/addBuktiKegiatan', [PengajuanController::class,'addBuktiKegiatan']);
 Route::post('/editPengajuan', [PengajuanController::class,'editPengajuan']);
 Route::get('/deletePengajuan/{id}', [PengajuanController::class,'deletePengajuan']);
 Route::post('/getSingleProgram', [PengajuanController::class,'getSingleProgram']);

@@ -14,6 +14,6 @@ class Pengajuan extends Model
         return $this->belongsTo(User::class , 'user_id');
      }
     public function program(){
-        return $this->belongsTo(Program::class , 'nama_kegiatan');
+    return $this->belongsTo(Program::class , 'nama_kegiatan');
      }
 }

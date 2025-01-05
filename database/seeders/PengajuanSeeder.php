@@ -21,7 +21,8 @@ class PengajuanSeeder extends Seeder
                 'catatan' => 'Sistem ini akan dilaksanakan dalam waktu seharian full' , 
                 'estimasi' => '2 Semester' , 
                 'jumlah_poin' => '10' , 
-                'rpp' => '22222.pdf' , 
+                'rpp' => 'contoh_rpp.pdf' , 
+                'bukti' => 'contoh_bukti.pdf' , 
                 
             ]
             );

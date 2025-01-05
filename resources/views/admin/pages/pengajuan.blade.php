@@ -37,4 +37,5 @@
 @include('admin.modals.addPengajuan')
 @include('admin.modals.editCatatan')
 @include('admin.modals.editPengajuan')
+@include('admin.modals.addBuktiKegiatan')
 @endsection

@@ -84,9 +84,90 @@ function getPengajuan(){
 $( document ).ready(function() {     
    getPengajuan();
   //  $('#guru').select2();
+    $('#fileBuktiKegiatan').change(function(e){
+        var fileName = e.target.files[0].name;
+        $('#namaFileBuktiKegiatan').val(fileName);
+  
+    });
+
+
+  $('#addBuktiKegiatanSave').click(function(e) {
+    e.preventDefault();
+    $('#addBuktiKegiatan').modal({"backdrop": "static"})
+
+    //define variable
+   
+           var form_data = new FormData();
+   
+   
+
+       const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+      });
+      swalWithBootstrapButtons.fire({
+        title: "Konfirmasi Catatan?",
+        text: "Data Akan Langsung Ditambahkan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Simpan",
+        cancelButtonText: "Batal",
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+
+                url: `/pengajuan/addBuktiKegiatan`,
+                type: "POST",
+                cache: false,
+                headers:{
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+                processData: false,
+                contentType: false,
+                data: form_data,
+                enctype: 'multipart/form-data',
+
+                success:function(response){
+                    swalWithBootstrapButtons.fire({
+                        title: "Berhasil!",
+                        text: "Bukti Telah Ditambahkan",
+                        icon: "success"
+                      });
+                     
+                      getPengajuan()
+ 
+                },
+                error:function(error){
+                    
+                  
+    
+                }
+    
+            });
+
+
+          
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+         
+          swalWithBootstrapButtons.fire({
+            title: "Batal",
+            text: "Catatan Tidak Ditambah",
+            icon: "error"
+          });
+        }
+      });
 
 
 
+
+
+});
   $('#btnCatatan').click(function(e) {
     e.preventDefault();
     $('#editCatatan').modal({"backdrop": "static"})
@@ -520,4 +601,16 @@ function editCatatan(row){
   $('#idCatatan').val(row.id);
   $('#editCatatan').modal('show');
 
+}
+
+function buktiKegiatan(data){
+  let row = JSON.parse(data);
+  console.log(row)
+  $('#idBuktiKegiatan').val(row.id);
+  $('#namaFileBuktiKegiatan').val(row.bukti);
+  $('#addBuktiKegiatan').modal('show');
+}
+
+function buktiKegiatanClick(){
+  $('#fileBuktiKegiatan').click();
 }
