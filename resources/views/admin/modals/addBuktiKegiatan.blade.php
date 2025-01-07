@@ -13,7 +13,7 @@
                             <label class="control-label">Dokumen Terkait</label>
                             <div class="input-group mb-3">
 
-                                <input type="text" class="form-control" placeholder="" id="namaFileBuktiKegiatan" aria-label="Example text with button addon" readonly aria-describedby="button-addon1">
+                                <input type="text" class="form-control" placeholder="" name="namaFileBuktiKegiatan" id="namaFileBuktiKegiatan" aria-label="Example text with button addon" readonly aria-describedby="button-addon1">
                                 <input class="form-control form-white" id="fileBuktiKegiatan" type="file" name="fileBuktiKegiatanNama" hidden>
 
                                 <button class="btn btn-primary" type="button" id="bukti_kegiatan_butt" onclick="buktiKegiatanClick()">Add</button>

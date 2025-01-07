@@ -97,7 +97,7 @@ $( document ).ready(function() {
 
     //define variable
    
-           var form_data = new FormData();
+           var form_data = new FormData($('#formBuktiKegiatan')[0]);
    
    
 
@@ -109,7 +109,7 @@ $( document ).ready(function() {
         buttonsStyling: false
       });
       swalWithBootstrapButtons.fire({
-        title: "Konfirmasi Catatan?",
+        title: "Konfirmasi Bukti Kegiatan?",
         text: "Data Akan Langsung Ditambahkan!",
         icon: "warning",
         showCancelButton: true,

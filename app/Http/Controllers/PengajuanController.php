@@ -93,6 +93,10 @@ class PengajuanController extends Controller
                          } elseif (Auth::user()->role == 2) {
                             $btn = '
                             <div class="btn-group">
+                            <a onclick=\'adminValidasi(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>                            
+                            </a>
+                            
                             <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
                            <i class="bi bi-printer-fill" ></i>
                             </a>
@@ -155,21 +159,29 @@ class PengajuanController extends Controller
      */
     public function addBuktiKegiatan(Request $request)
     {
-        dd(request()->all());
         $user = Auth::user();
         $id = request('idBuktiKegiatan');
-        $nameFile =  request()->file('fileBuktiKegiatanNama')->getClientOriginalName();
+        $data = Pengajuan::find($id);
 
+        $nameFile =  request()->file('fileBuktiKegiatanNama')->getClientOriginalName();
         if(!Storage::disk('public')->exists($user->nama_user)) {
 
             Storage::disk('public')->makeDirectory($user->nama_user); //creates directory
         
-        }            
-        // $rpp_name = uniqid().'.'.request()->file('rpp')->extension() ; 
-        request()->file('fileBuktiKegiatanNama')->storeAs($user->nama_user.'/buktiKegiatan' , $nameFile , ['disk' => 'public']);
-            
+        }   
+
+        if(request('namaFileBuktiKegiatan') == ''){
+            request()->file('fileBuktiKegiatanNama')->storeAs($user->nama_user.'/buktiKegiatan' , $nameFile , ['disk' => 'public']);
+           
+
+        } else {
+            Storage::disk('public')->delete($user->nama_user.'/buktiKegiatan'.'/'.$data->bukti);
+            request()->file('fileBuktiKegiatanNama')->storeAs($user->nama_user.'/buktiKegiatan' , $nameFile , ['disk' => 'public']);
+
+        }
+
         $add = Pengajuan::where('id' , $id)->update([
-            'bukti' => request('namaFileBuktiKegiatan') , 
+            'bukti' => $nameFile, 
         ]);
     }
     public function addPengajuan(Request $request)
