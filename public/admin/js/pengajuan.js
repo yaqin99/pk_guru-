@@ -46,6 +46,74 @@ function getPengajuan(){
   
   });
   }
+
+
+  function sendToKepsek(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+      title: "Konfirmasi Penerusan Program Kinerja?",
+      text: "Data Akan Langsung Dirubah Pada Tabel!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Simpan",
+      cancelButtonText: "Batal",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+          $.ajax({
+
+              url: `/sendToKepsek`,
+              type: "POST",
+              cache: false,
+              headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+              data: {
+                id:id , 
+              },
+              enctype: 'multipart/form-data',
+
+              success:function(response){
+                  swalWithBootstrapButtons.fire({
+                      title: "Berhasil!",
+                      text: "Program Telah Diteruskan",
+                      icon: "success"
+                    });
+                   
+                    getPengajuan()
+
+              },
+              error:function(error){
+                  
+                
+  
+              }
+  
+          });
+
+
+        
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+       
+        swalWithBootstrapButtons.fire({
+          title: "Batal",
+          text: "Data Pengajuan Tidak Diteruskan",
+          icon: "error"
+        });
+      }
+    });
+
+  }
+
+
    function getSingleProgram(){
      let id = $('#nama_kegiatan').val();
      console.log(id)

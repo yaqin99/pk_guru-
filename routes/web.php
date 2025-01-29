@@ -50,6 +50,7 @@ Route::post('/pengajuan/addBuktiKegiatan', [PengajuanController::class,'addBukti
 Route::post('/editPengajuan', [PengajuanController::class,'editPengajuan']);
 Route::get('/deletePengajuan/{id}', [PengajuanController::class,'deletePengajuan']);
 Route::post('/getSingleProgram', [PengajuanController::class,'getSingleProgram']);
+Route::post('/sendToKepsek', [PengajuanController::class,'sendToKepsek']);
 
 
 // Data Surat pengajuan dan teguran

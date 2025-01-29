@@ -24,8 +24,13 @@ class PengajuanController extends Controller
             if (Auth::user()->role == 1) {
                 # code...
                 $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->get();
-            } else {
-                $data = Pengajuan::with(['guru' , 'program'])->get();
+            }
+            if (Auth::user()->role == 2) {
+                $data = Pengajuan::with(['guru' , 'program'])->where('status' , 1)->get();
+
+            }
+            if (Auth::user()->role == 3) {
+                $data = Pengajuan::with(['guru' , 'program'])->where('status' , 2)->get();
 
             }
 
@@ -42,16 +47,15 @@ class PengajuanController extends Controller
                     ->addColumn('jumlah_poin', function($row){
                     return $row->jumlah_poin.' '.'Poin';})
                     ->addColumn('status', function($row){
-                        if ($row->status == null || $row->status == 0) {
-                         
+                        if ($row->status == null || $row->status == 1) {                
                           return $status = 'Menunggu' ; 
-                          
-   
-                          
-                        } else {
-                          return $status = 'Disetujui' ; 
-  
-                        };
+                        } 
+                        if ($row->status == 2) {                
+                          return $status = 'Diteruskan' ; 
+                        } 
+                        if ($row->status == 3) {                
+                          return $status = 'Selesai' ; 
+                        } 
                       })
                    
                     ->addColumn('action', function($row){
@@ -96,6 +100,10 @@ class PengajuanController extends Controller
                             <a onclick=\'adminValidasi(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
                             <i class="bi bi-file-earmark-pdf-fill"></i>                            
                             </a>
+
+                            <a onclick=\'sendToKepsek(`'.json_encode($row->id).'`)\' class="edit btn btn-warning text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <i class="bi bi-send-fill"></i>
+                            </a>
                             
                             <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
                            <i class="bi bi-printer-fill" ></i>
@@ -124,6 +132,13 @@ class PengajuanController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    public function sendToKepsek()
+    {
+        $add = Pengajuan::where('id',request('id'))->update([
+                'status' => 2, 
+          ]);
+
+    }
     public function getPengajuan()
     {
         $data = User::with('pengajuan');
@@ -205,6 +220,7 @@ class PengajuanController extends Controller
             'jumlah_poin' => request('jumlah_poin'), 
             'rpp' =>  $nameFile, 
             'bukti' =>  '', 
+            'status' => 1 , 
           ]);
     }
 
