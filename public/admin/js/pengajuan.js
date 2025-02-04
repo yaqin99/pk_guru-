@@ -21,6 +21,75 @@ function getPengajuan(){
  });
    }
 
+   function adminValidasi(row){
+    let data = JSON.parse(row);
+    console.log(data)
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+      title: "Konfirmasi Penyelesaian Program Kinerja?",
+      text: "Data Akan Langsung Dirubah Pada Tabel!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Simpan",
+      cancelButtonText: "Batal",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+          $.ajax({
+
+              url: `/adminValidasi`,
+              type: "POST",
+              cache: false,
+              headers:{
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+              data: {
+                id:data.id , 
+                jumlah_poin:data.jumlah_poin , 
+                user_id:data.user_id , 
+              },
+              enctype: 'multipart/form-data',
+
+              success:function(response){
+                  swalWithBootstrapButtons.fire({
+                      title: "Berhasil!",
+                      text: "Program Telah Tervalidasi",
+                      icon: "success"
+                    });
+                   
+                    getPengajuan()
+
+              },
+              error:function(error){
+                  
+                
+  
+              }
+  
+          });
+
+
+        
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+       
+        swalWithBootstrapButtons.fire({
+          title: "Batal",
+          text: "Data Pengajuan Tidak Validasi",
+          icon: "error"
+        });
+      }
+    });
+
+  }
+
    function getSingleProgramEdit(){
      let id = $('#nama_kegiatan_id').val();
      console.log(id)

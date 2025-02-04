@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
                 'no_hp' =>  '085232324069' ,
                 'alamat' => 'Jl. Amin Djakfar' , 
                 'email' => 'febri.9a23@gmail.com' , 
+                'poin' => 0 , 
                 'username' => 'guru' , 
                 'password' => bcrypt('guru') ,
                 'role' => 1 ,
@@ -33,6 +34,8 @@ class UserSeeder extends Seeder
                 'no_hp' =>  '085232324069' ,
                 'alamat' => 'Jl. Amin Djakfar' , 
                 'email' => 'febri.9a23@gmail.com' , 
+                'poin' => 0 , 
+
                 'username' => 'admin' , 
                 'password' => bcrypt('admin') ,
                 'role' => 2 ,
@@ -46,6 +49,8 @@ class UserSeeder extends Seeder
                 'no_hp' =>  '085232324069' ,
                 'alamat' => 'Jl. Amin Djakfar' , 
                 'email' => 'febri.9a23@gmail.com' , 
+                'poin' => 0 , 
+
                 'username' => 'kepsek' , 
                 'password' => bcrypt('kepsek') ,
                 'role' => 3 ,

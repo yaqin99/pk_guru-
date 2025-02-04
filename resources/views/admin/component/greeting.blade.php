@@ -10,7 +10,9 @@
                 <li class="breadcrumb-item"><button onclick="showAddPengajuan()" data-bs-toggle="modal" data-bs-target="#modalJenisTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pengajuan</button></li>
                 @endif
             @elseif ($pages == 'surat')
-            <li class="breadcrumb-item"><button onclick="showAddSurat()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Surat</button></li>
+                @if (Auth::user()->role == 2)
+                <li class="breadcrumb-item"><button onclick="showAddSurat()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Surat</button></li>
+                @endif
            
             @elseif ($pages == 'pedagogik')
                 @if (Auth::user()->role == 1)

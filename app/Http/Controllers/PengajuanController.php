@@ -26,7 +26,7 @@ class PengajuanController extends Controller
                 $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->get();
             }
             if (Auth::user()->role == 2) {
-                $data = Pengajuan::with(['guru' , 'program'])->where('status' , 1)->get();
+                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [1,3])->get();
 
             }
             if (Auth::user()->role == 3) {
@@ -54,6 +54,9 @@ class PengajuanController extends Controller
                           return $status = 'Diteruskan' ; 
                         } 
                         if ($row->status == 3) {                
+                          return $status = 'Terkonfirmasi' ; 
+                        } 
+                        if ($row->status == 4) {                
                           return $status = 'Selesai' ; 
                         } 
                       })
@@ -95,11 +98,28 @@ class PengajuanController extends Controller
      
                              return $btn;
                          } elseif (Auth::user()->role == 2) {
+                           if ($row->status == 3) {
+
                             $btn = '
                             <div class="btn-group">
                             <a onclick=\'adminValidasi(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
                             <i class="bi bi-file-earmark-pdf-fill"></i>                            
                             </a>
+
+                            
+                            
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                           
+                           } else {
+                            $btn = '
+                            <div class="btn-group">
+                            
 
                             <a onclick=\'sendToKepsek(`'.json_encode($row->id).'`)\' class="edit btn btn-warning text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
                             <i class="bi bi-send-fill"></i>
@@ -116,6 +136,7 @@ class PengajuanController extends Controller
                             
      
                              return $btn;
+                           }
                          }
                            
                     })
@@ -139,6 +160,18 @@ class PengajuanController extends Controller
           ]);
 
     }
+    public function adminValidasi()
+    {
+        $user = User::find(request('user_id'));
+        User::where('id' , request('user_id'))->update([
+            'poin' => $user->poin + request('jumlah_poin'),
+        ]);
+        Pengajuan::where('id',request('id'))->update([
+            'status' => 4, 
+        ]);
+        
+
+    }
     public function getPengajuan()
     {
         $data = User::with('pengajuan');
@@ -157,7 +190,7 @@ class PengajuanController extends Controller
     public function approve(Request $request)
     {
         $add = Pengajuan::where('id', $request->id)->update([
-            'status' => 1, 
+            'status' => 3, 
           ]);
     }
 
