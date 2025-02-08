@@ -9,13 +9,31 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Http;
+use App\Services\WhatsAppService;
 
 class PengajuanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    protected $whatsappService;
+
+    public function __construct(WhatsAppService $whatsappService)
+    {
+        $this->whatsappService = $whatsappService;
+    }
+    
+    public function sendWhatsApp()
+    {
+        $phone   = '085232324069'; // Nomor tujuan
+        $message = 'Halo, ini pesan otomatis dari Laravel 10 menggunakan Fonnte!';
+
+        $response = $this->whatsappService->sendMessage($phone, $message);
+
+        return response()->json($response);
+    }
+  
+
+
     public function index(Request $request)
     {
         $pages = 'pengajuan' ; 
@@ -311,16 +329,14 @@ class PengajuanController extends Controller
     public function addPengajuan(Request $request)
     {
         $user = Auth::user();
-        $nameFile =  request()->file('rpp')->getClientOriginalName();
+        $nameFile = request()->file('rpp')->getClientOriginalName();
 
         if(!Storage::disk('public')->exists($user->nama_user)) {
-
-            Storage::disk('public')->makeDirectory($user->nama_user); //creates directory
-        
+            Storage::disk('public')->makeDirectory($user->nama_user);
         }            
-        // $rpp_name = uniqid().'.'.request()->file('rpp')->extension() ; 
+
         request()->file('rpp')->storeAs($user->nama_user.'/rpp' , $nameFile , ['disk' => 'public']);
-            
+        
         $add = Pengajuan::create([
             'nama_kegiatan' => request('nama_kegiatan'), 
             'user_id' =>  $user = Auth::user()->id, 
@@ -330,7 +346,20 @@ class PengajuanController extends Controller
             'rpp' =>  $nameFile, 
             'bukti' =>  '', 
             'status' => 2 , 
-          ]);
+        ]);
+
+        // Kirim notifikasi WhatsApp ke admin
+        $nama_kegiatan = Program::find(request('nama_kegiatan'))->nama_program;
+        $no_admin = User::where('role' , 2)->first();
+        $phone = $no_admin->no_hp; // Nomor admin
+        $message = "Ada pengajuan baru:\nNama Kegiatan: " . $nama_kegiatan . 
+                   "\nGuru: " .$user = Auth::user()->nama_user .
+                   "\nEstimasi: " . request('waktu') . " Semester" .
+                   "\nJumlah Poin: " . request('jumlah_poin').
+                   "\nMohon segera diperiksa".
+                   "\nTerima Kasih";
+
+        $response = $this->whatsappService->sendMessage($phone, $message);
     }
 
     public function editPengajuan()
