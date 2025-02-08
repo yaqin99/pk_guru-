@@ -16,7 +16,9 @@
                                 <th>No</th>
                                 <th>Nama Guru</th>
                                 <th>Program Kerja</th>
-                                <th>Catatan</th>
+                                <th>Catatan Kepsek</th>    
+                                <th>Catatan Admin</th>
+                               
                                 <th>Estimasi</th>
                                 <th>Poin</th>
                                 <th>Status</th>

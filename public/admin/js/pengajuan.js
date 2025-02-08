@@ -13,6 +13,7 @@ function getPengajuan(){
          {data: 'nama_user', name: 'nama_user'},
          {data: 'nama_kegiatan', name: 'nama_kegiatan'},
          {data: 'catatan', name: 'catatan'},
+         {data: 'catatan_admin', name: 'catatan_admin'},
          {data: 'estimasi', name: 'estimasi'},
          {data: 'jumlah_poin', name: 'jumlah_poin'},
          {data: 'status', name: 'status'},
@@ -776,7 +777,7 @@ function opsi (row){
     showDenyButton: true,
     showCancelButton: true,
     showConfirmButton: false,
-    denyButtonText: `Berikan Catatan`,
+    denyButtonText: `Berikan Catatan Perbaikan`,
     cancelButtonText: 'Batal'
   }).then((result) => {
     if (result.isDenied) {
@@ -835,4 +836,57 @@ function buktiKegiatan(data){
 
 function buktiKegiatanClick(){
   $('#fileBuktiKegiatan').click();
+}
+
+function perbaikiPengajuan(id) {
+    Swal.fire({
+        title: 'Masukkan Catatan Perbaikan',
+        input: 'textarea',
+        inputPlaceholder: 'Ketik catatan perbaikan di sini...',
+        showCancelButton: true,
+        confirmButtonText: 'Lanjutkan',
+        cancelButtonText: 'Batal',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Catatan perbaikan harus diisi!'
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const catatanPerbaikan = result.value;
+            
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "Pengajuan akan diminta perbaikan dengan catatan: " + catatanPerbaikan,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Minta Perbaikan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/pengajuan/perbaiki`,
+                        type: 'POST',
+                        headers:{
+                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+                        data: {
+                          id: id,
+                          catatan_admin: catatanPerbaikan
+                        },
+                        success: function(response) {
+                            Swal.fire(
+                                'Berhasil!',
+                                'Permintaan perbaikan berhasil dikirim',
+                                'success'
+                            ).then(() => {
+                                getPengajuan();
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
 }

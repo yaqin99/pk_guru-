@@ -23,14 +23,14 @@ class PengajuanController extends Controller
         if ($request->ajax()) {
             if (Auth::user()->role == 1) {
                 # code...
-                $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->get();
+                $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->orderBy('id' , 'desc')->get();
             }
             if (Auth::user()->role == 2) {
-                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [1,4])->get();
+                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [2,5])->orderBy('id' , 'desc')->get();
 
             }
             if (Auth::user()->role == 3) {
-                $data = Pengajuan::with(['guru' , 'program'])->where('status' , 2)->get();
+                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('id' , 'desc')->get();
 
             }
 
@@ -40,30 +40,40 @@ class PengajuanController extends Controller
                     return $row->guru->nama_user;})
                     ->addColumn('nama_kegiatan', function($row){
                     return $row->program->nama_program;})
+                    
                     ->addColumn('catatan', function($row){
                     return $row->catatan;})
+                    ->addColumn('catatan_admin', function($row){
+                    return $row->catatan_admin;})
+                    
                     ->addColumn('estimasi', function($row){
                     return $row->estimasi.' '.'Semester';})
                     ->addColumn('jumlah_poin', function($row){
                     return $row->jumlah_poin.' '.'Poin';})
                     ->addColumn('status', function($row){
                         if ($row->status == null || $row->status == 1) {                
-                          return $status = 'Menunggu' ; 
+                          return $status = 'Revisi Admin' ; 
                         } 
                         if ($row->status == 2) {                
-                          return $status = 'Diteruskan' ; 
+                          return $status = 'Menunggu' ; 
                         } 
                         if ($row->status == 3) {                
-                          return $status = 'Disetujui' ; 
+                          return $status = 'Diteruskan' ; 
                         } 
                         if ($row->status == 4) {                
-                          return $status = 'Terkonfirmasi' ; 
+                          return $status = 'Disetujui' ; 
                         } 
                         if ($row->status == 5) {                
-                          return $status = 'Selesai' ; 
+                          return $status = 'Terkonfirmasi' ; 
                         } 
                         if ($row->status == 6) {                
+                          return $status = 'Selesai' ; 
+                        } 
+                        if ($row->status == 7) {                
                           return $status = 'Ditolak' ; 
+                        } 
+                        if ($row->status == 8) {                
+                          return $status = 'Revisi Kepsek' ; 
                         } 
                       })
                    
@@ -94,25 +104,53 @@ class PengajuanController extends Controller
                              return $btn;
                          }
                          if (Auth::user()->role == 1) {
-                            $btn = '
-                            <div class="btn-group">
-                            <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
-                            <i class="bi bi-file-earmark-pdf-fill"></i>                            
-                            </a>
-                            <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" title="Edit Pengajuan" >
-                            <i class="bi bi-pencil-fill" ></i>
-                            </a>
+                            if ($row->status == 6) {
+                                $btn = '
+                                <div class="btn-group">
+                                <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
+                                <i class="bi bi-file-earmark-pdf-fill"></i>                            
+                                </a>
+                                
+                                </div>
+                                
+                                ';
+                                
+                            } 
+                            else if ($row->status == 7) {
+                                $btn = '
+                                <div class="btn-group">
+                                <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm ml-2" title="Hapus Pengajuan" ><i class="bi bi-trash3-fill"></i></a>
+
+                                
+                                </div>
+                                
+                                ';
+                                
+                            } 
                             
-                            <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm ml-2" title="Hapus Pengajuan" ><i class="bi bi-trash3-fill"></i></a>
                             
-                            </div>
-                            
-                            ';
+                            else {
+                                $btn = '
+                                <div class="btn-group">
+                                <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
+                                <i class="bi bi-file-earmark-pdf-fill"></i>                            
+                                </a>
+                                <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" title="Edit Pengajuan" >
+                                <i class="bi bi-pencil-fill" ></i>
+                                </a>
+                                
+                                <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm ml-2" title="Hapus Pengajuan" ><i class="bi bi-trash3-fill"></i></a>
+                                
+                                </div>
+                                
+                                ';
+                                
+                            }
                             
      
                              return $btn;
                          } elseif (Auth::user()->role == 2) {
-                           if ($row->status == 4) {
+                           if ($row->status == 5) {
 
                             $btn = '
                             <div class="btn-group">
@@ -139,11 +177,15 @@ class PengajuanController extends Controller
                             <div class="btn-group">
                             
 
-                            <a onclick=\'sendToKepsek(`'.json_encode($row->id).'`)\' class="edit btn btn-warning text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <a onclick=\'sendToKepsek(`'.json_encode($row->id).'`)\' class="edit btn btn-warning text-light btn-sm mr-2" title="Kirim ke Kepsek" >
                             <i class="bi bi-send-fill"></i>
                             </a>
+
+                            <a onclick=\'perbaikiPengajuan(`'.json_encode($row->id).'`)\' class="edit btn btn-danger text-light btn-sm mr-2" title="Perbaiki Pengajuan" >
+                            <i class="bi bi-arrow-bar-left"></i>               
+                            </a>
                             
-                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" title="Cetak RPP" >
                            <i class="bi bi-printer-fill" ></i>
                             </a>
                             
@@ -174,7 +216,7 @@ class PengajuanController extends Controller
     public function sendToKepsek()
     {
         $add = Pengajuan::where('id',request('id'))->update([
-                'status' => 2, 
+                'status' => 3, 
           ]);
 
     }
@@ -185,7 +227,7 @@ class PengajuanController extends Controller
             'poin' => $user->poin + request('jumlah_poin'),
         ]);
         Pengajuan::where('id',request('id'))->update([
-            'status' => 5, 
+            'status' => 6, 
         ]);
         
 
@@ -208,22 +250,30 @@ class PengajuanController extends Controller
     public function approve(Request $request)
     {
         $add = Pengajuan::where('id', $request->id)->update([
-            'status' => 3, 
+            'status' => 4, 
           ]);
     }
     public function tolak(Request $request)
     {
         $add = Pengajuan::where('id', $request->id)->update([
-            'status' => 6, 
+            'status' => 7, 
             'catatan' => $request->catatan,
           ]);
     }
 
-
+    public function perbaiki(Request $request)
+    {
+        $add = Pengajuan::where('id', $request->id)->update([
+            'status' => 1, 
+            'catatan_admin' => $request->catatan_admin,
+          ]);
+    }
     public function catatan(Request $request)
     {
         $add = Pengajuan::where('id', request('id'))->update([
             'catatan' => request('catatan'), 
+            'status' => 8, 
+
           ]);
     }
 
@@ -255,7 +305,7 @@ class PengajuanController extends Controller
 
         $add = Pengajuan::where('id' , $id)->update([
             'bukti' => $nameFile, 
-            'status' => 4, 
+            'status' => 5, 
         ]);
     }
     public function addPengajuan(Request $request)
@@ -279,7 +329,7 @@ class PengajuanController extends Controller
             'jumlah_poin' => request('jumlah_poin'), 
             'rpp' =>  $nameFile, 
             'bukti' =>  '', 
-            'status' => 1 , 
+            'status' => 2 , 
           ]);
     }
 
@@ -296,18 +346,20 @@ class PengajuanController extends Controller
             $nameFile =  request()->file('rpp')->getClientOriginalName();
             request()->file('rpp')->storeAs($user->nama_user.'/rpp' , $nameFile , ['disk' => 'public']);
             $add = Pengajuan::where('id',request('id'))->update([
-              'nama_kegiatan' => request('nama_kegiatan'), 
+                  'nama_kegiatan' => request('nama_kegiatan'), 
                   'user_id' =>  $user = Auth::user()->id,
                   'estimasi' => request('waktu'), 
                   'jumlah_poin' => request('jumlah_poin'), 
                   'rpp' =>  $nameFile, 
+                  'status' => 2,
             ]);
         } else {
             $add = Pengajuan::where('id',request('id'))->update([
-                'nama_kegiatan' => request('nama_kegiatan'), 
+                    'nama_kegiatan' => request('nama_kegiatan'), 
                     'user_id' =>  $user = Auth::user()->id, 
                     'estimasi' => request('waktu'), 
                     'jumlah_poin' => request('jumlah_poin'), 
+                    'status' => 2,
               ]);
         }
         

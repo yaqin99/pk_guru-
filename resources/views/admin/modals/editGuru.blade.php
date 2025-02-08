@@ -5,7 +5,7 @@
                 <h4 class="modal-title"><strong id="judulFormEdit">Edit Data Guru</strong></h4>
             </div>
             <div class="modal-body">
-                <form id="formTambahGuru" method="POST">
+                <form id="formEditGuru" method="POST">
                     <div class="row">
                         <input type="hidden" name="_token" id="tokenEdit" value="{{ csrf_token() }}">
                         <input type="hidden" name="id_guru" id="id_guru" >

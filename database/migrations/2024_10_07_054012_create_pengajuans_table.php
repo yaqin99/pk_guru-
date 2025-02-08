@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama_kegiatan');
             $table->foreignId('user_id');
-            $table->string('catatan');
+            $table->text('catatan')->nullable();
+            $table->text('catatan_admin')->nullable();
             $table->string('estimasi');
             $table->string('jumlah_poin');
             $table->string('rpp');
