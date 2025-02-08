@@ -26,7 +26,7 @@ class PengajuanController extends Controller
                 $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->get();
             }
             if (Auth::user()->role == 2) {
-                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [1,3])->get();
+                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [1,4])->get();
 
             }
             if (Auth::user()->role == 3) {
@@ -54,10 +54,16 @@ class PengajuanController extends Controller
                           return $status = 'Diteruskan' ; 
                         } 
                         if ($row->status == 3) {                
-                          return $status = 'Terkonfirmasi' ; 
+                          return $status = 'Disetujui' ; 
                         } 
                         if ($row->status == 4) {                
+                          return $status = 'Terkonfirmasi' ; 
+                        } 
+                        if ($row->status == 5) {                
                           return $status = 'Selesai' ; 
+                        } 
+                        if ($row->status == 6) {                
+                          return $status = 'Ditolak' ; 
                         } 
                       })
                    
@@ -65,10 +71,18 @@ class PengajuanController extends Controller
                         if (Auth::user()->role == 3) {
                             $btn = '
                             <div class="btn-group">
-                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" ti
+                                >
                            <i class="bi bi-printer-fill" ></i>
                             </a>
-                            <a onclick=\'opsi(`'.$row.'`)\' class="edit btn btn-success btn-sm text-light" >
+                            <a onclick=\'tolakPengajuan(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm text-light ml-2" title="Tolak Pengajuan" >
+                            <i class="bi bi-x-circle-fill"></i>
+                            </a>
+                            <a onclick=\'approvePengajuan(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light ml-2" title="Setujui Pengajuan" >
+                            <i class="bi bi-check-circle-fill"></i>
+                            </a>
+                            
+                            <a onclick=\'opsi(`'.$row.'`)\' class="edit btn btn-secondary btn-sm text-light ml-2" title="Berikan Catatan" >
                             <i class="bi bi-gear"></i>
                             </a>
                             
@@ -82,14 +96,14 @@ class PengajuanController extends Controller
                          if (Auth::user()->role == 1) {
                             $btn = '
                             <div class="btn-group">
-                            <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
                             <i class="bi bi-file-earmark-pdf-fill"></i>                            
                             </a>
-                            <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                            <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" title="Edit Pengajuan" >
                             <i class="bi bi-pencil-fill" ></i>
                             </a>
                             
-                            <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm ml-2"><i class="bi bi-trash3-fill"></i></a>
+                            <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm ml-2" title="Hapus Pengajuan" ><i class="bi bi-trash3-fill"></i></a>
                             
                             </div>
                             
@@ -98,12 +112,16 @@ class PengajuanController extends Controller
      
                              return $btn;
                          } elseif (Auth::user()->role == 2) {
-                           if ($row->status == 3) {
+                           if ($row->status == 4) {
 
                             $btn = '
                             <div class="btn-group">
-                            <a onclick=\'adminValidasi(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru">
-                            <i class="bi bi-file-earmark-pdf-fill"></i>                            
+                           <a href="/storage/'.$row->guru->nama_user.'/buktiKegiatan'.'/'.''.$row->bukti.'"class="btn btn-primary text-light btn-sm" title="Bukti Kegiatan" >
+                           <i class="bi bi-printer-fill" ></i>
+                            </a>
+                            
+                            <a onclick=\'adminValidasi(`'.json_encode($row).'`)\' class="ml-2 edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Selesaikan Pengajuan" >
+                            <i class="bi bi-check-circle-fill"></i>                            
                             </a>
 
                             
@@ -167,7 +185,7 @@ class PengajuanController extends Controller
             'poin' => $user->poin + request('jumlah_poin'),
         ]);
         Pengajuan::where('id',request('id'))->update([
-            'status' => 4, 
+            'status' => 5, 
         ]);
         
 
@@ -191,6 +209,13 @@ class PengajuanController extends Controller
     {
         $add = Pengajuan::where('id', $request->id)->update([
             'status' => 3, 
+          ]);
+    }
+    public function tolak(Request $request)
+    {
+        $add = Pengajuan::where('id', $request->id)->update([
+            'status' => 6, 
+            'catatan' => $request->catatan,
           ]);
     }
 
@@ -230,6 +255,7 @@ class PengajuanController extends Controller
 
         $add = Pengajuan::where('id' , $id)->update([
             'bukti' => $nameFile, 
+            'status' => 4, 
         ]);
     }
     public function addPengajuan(Request $request)

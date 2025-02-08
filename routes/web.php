@@ -43,6 +43,7 @@ Route::put('/editGuru', [GuruController::class,'editGuru']);
 
 Route::get('/pengajuan', [PengajuanController::class,'index'])->middleware('auth');
 Route::post('/pengajuan/approve', [PengajuanController::class,'approve'])->middleware('auth');
+Route::post('/pengajuan/tolak', [PengajuanController::class,'tolak'])->middleware('auth');
 Route::post('/pengajuan/catatan', [PengajuanController::class,'catatan'])->middleware('auth');
 Route::get('/getPengajuan', [PengajuanController::class,'getPengajuan'])->middleware('auth');
 Route::post('/addPengajuan', [PengajuanController::class,'addPengajuan']);

@@ -692,6 +692,60 @@ function approvePengajuan(id){
   });
 
 }
+function tolakPengajuan(id) {
+    Swal.fire({
+        title: 'Masukkan Alasan Penolakan',
+        input: 'textarea',
+        inputPlaceholder: 'Ketik alasan penolakan di sini...',
+        showCancelButton: true,
+        confirmButtonText: 'Lanjutkan',
+        cancelButtonText: 'Batal',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'Alasan penolakan harus diisi!'
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const alasanPenolakan = result.value;
+            
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "Pengajuan akan ditolak dengan alasan: " + alasanPenolakan,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Tolak!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/pengajuan/tolak`,
+                        type: 'POST',
+                        headers:{
+                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+                        data: {
+                          id:id,
+                          catatan: alasanPenolakan
+                        },
+                        success: function(response) {
+                           
+                                Swal.fire(
+                                    'Berhasil!',
+                                    'Pengajuan berhasil ditolak',
+                                    'success'
+                                ).then(() => {
+                                    getPengajuan();
+                                });
+                            
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
 
 function formatTanggal(dateString) {
   // Daftar nama hari dan bulan dalam bahasa Indonesia
@@ -721,23 +775,54 @@ function opsi (row){
     title: `Program Telah Diajukan Sejak ${formatTanggal(data.created_at)}`,
     showDenyButton: true,
     showCancelButton: true,
-    confirmButtonText: "Setujui",
-    denyButtonText: `Berikan Catatan`
+    showConfirmButton: false,
+    denyButtonText: `Berikan Catatan`,
+    cancelButtonText: 'Batal'
   }).then((result) => {
-    /* Read more about isConfirmed, isDenied below */
-    if (result.isConfirmed) {
-      approvePengajuan(data.id)
-    } else if (result.isDenied) {
-      editCatatan(data)
-      // Swal.fire("Changes are not saved", "", "info");
+    if (result.isDenied) {
+      editCatatan(data.id)
     }
   });
 }
 
-function editCatatan(row){
-  $('#idCatatan').val(row.id);
-  $('#editCatatan').modal('show');
-
+function editCatatan(id) {
+    Swal.fire({
+        title: 'Edit Catatan',
+        input: 'textarea',
+        inputLabel: 'Masukkan catatan baru',
+        inputPlaceholder: 'Ketik catatan disini...',
+        showCancelButton: true,
+        confirmButtonText: 'Simpan',
+        cancelButtonText: 'Batal',
+        showLoaderOnConfirm: true,
+        preConfirm: (catatan) => {
+            return $.ajax({
+                url: `/pengajuan/catatan`,
+                type: 'POST',
+                headers:{
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+                data: {
+                    catatan: catatan,
+                    id:id
+                }
+            }).then(response => {
+                return response;
+            }).catch(error => {
+                Swal.showValidationMessage(`Request failed: ${error.responseJSON.message}`);
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Berhasil!',
+                text: 'Catatan berhasil diperbarui',
+                icon: 'success'
+            }).then(() => {
+                getPengajuan();
+            });
+        }
+    });
 }
 
 function buktiKegiatan(data){

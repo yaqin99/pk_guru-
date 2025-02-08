@@ -30,8 +30,14 @@ class UserController extends Controller
         ]); 
         if (Auth::guard('web')->attempt(['username' => $req->username , 'password' => $req->password] , $req->remember)) {
             $req->session()->regenerate();
- 
-            return redirect()->intended('/guru')->with('success' , 'Selamat Datang Kembali');;
+            $user = Auth::user();
+            if ($user->role == 1) {
+                return redirect()->intended('/pengajuan')->with('success' , 'Selamat Datang Kembali');
+            } else if ($user->role == 2) {
+                return redirect()->intended('/pengajuan')->with('success' , 'Selamat Datang Kembali');
+            } else if ($user->role == 3) {
+                return redirect()->intended('/pengajuan')->with('success' , 'Selamat Datang Kembali');
+            }
         } else {
             return back()->with('gagal' , 'Login Gagal');
         }
