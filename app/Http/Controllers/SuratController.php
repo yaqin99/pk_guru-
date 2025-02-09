@@ -238,11 +238,11 @@ class SuratController extends Controller
       if ($row['tipe'] == '1') {
         $pdf = Pdf::loadView('admin.pages.cetak.suratKinerja' , ['row' => $row]);
         $pdf->setPaper('folio','potrait');
-        return $pdf->stream('suratKinerja.pdf'); 
+        return $pdf->download('suratKinerja.pdf'); 
       } else {
         $pdf = Pdf::loadView('admin.pages.cetak.suratTeguran' , ['row' => $row]);
         $pdf->setPaper('folio','potrait');
-        return $pdf->stream('suratTeguran.pdf');
+        return $pdf->download('suratTeguran.pdf');
       }
       
 
