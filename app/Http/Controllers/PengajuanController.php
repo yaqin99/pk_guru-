@@ -233,10 +233,27 @@ class PengajuanController extends Controller
      */
     public function sendToKepsek()
     {
+        $data = Pengajuan::find(request('id'));
+        $no_guru = User::find($data->user_id)->no_hp;
+        $no_kepsek = User::where('role' , 3)->first();
+
+        
         $add = Pengajuan::where('id',request('id'))->update([
                 'status' => 3, 
           ]);
+        
+        $message_kepsek = "Ada pengajuan kegiatan yang menunggu persetujuan dari Anda". 
+          "\nMohon untuk segera diperiksa".
+          "\nTerima Kasih";
+          
+        $response_kepsek = $this->whatsappService->sendMessage($no_kepsek->no_hp, $message_kepsek);
+        
+        $message_guru = "Pengajuan Anda Telah Diteruskan ke Kepala Sekolah". 
+                   "\nMohon tunggu konfirmasi dari Kepala Sekolah".
+                   "\nTerima Kasih";
 
+        
+        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
     }
     public function adminValidasi()
     {
@@ -247,6 +264,17 @@ class PengajuanController extends Controller
         Pengajuan::where('id',request('id'))->update([
             'status' => 6, 
         ]);
+
+        $data = Pengajuan::find(request('id'));
+        $no_guru = User::find($data->user_id)->no_hp;
+
+        $message_guru = "Pengajuan Anda Telah Diselesaikan oleh Admin". 
+          "\nSilahkan periksa poin perolehan anda".
+          "\nApabila poin sudah mencukupi maka admin akan mengeluarkan surat kinerja".
+          "\nTerima Kasih";
+
+
+        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
         
 
     }
@@ -270,6 +298,16 @@ class PengajuanController extends Controller
         $add = Pengajuan::where('id', $request->id)->update([
             'status' => 4, 
           ]);
+
+        $data = Pengajuan::find(request('id'));
+        $no_guru = User::find($data->user_id)->no_hp;
+
+        $message_guru = "Pengajuan Anda Telah Disetujui oleh Kepala Sekolah". 
+          "\nSilahkan melaksanakan kegiatan mengajar anda".
+          "\nTerima Kasih";
+
+
+        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
     }
     public function tolak(Request $request)
     {
@@ -277,6 +315,17 @@ class PengajuanController extends Controller
             'status' => 7, 
             'catatan' => $request->catatan,
           ]);
+
+          $data = Pengajuan::find(request('id'));
+          $no_guru = User::find($data->user_id)->no_hp;
+  
+          $message_guru = "Pengajuan Anda Telah Ditolak oleh Kepala Sekolah". 
+              "\ndengan alasan: ". $request->catatan.
+              "\nSilahkan ajukan pengajuan baru dengan format yang sesuai".
+              "\nTerima Kasih";
+  
+  
+          $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru); 
     }
 
     public function perbaiki(Request $request)
@@ -285,6 +334,17 @@ class PengajuanController extends Controller
             'status' => 1, 
             'catatan_admin' => $request->catatan_admin,
           ]);
+        
+        $data = Pengajuan::find(request('id'));
+        $no_guru = User::find($data->user_id)->no_hp;
+  
+        $message_guru = "Ada perbaikan dalam pengajuan anda oleh admin". 
+            "\ndengan catatan: ". $request->catatan_admin.
+            "\nMohon untuk segera melakukan perbaikan".
+            "\nTerima Kasih";
+  
+  
+        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
     }
     public function catatan(Request $request)
     {
@@ -292,7 +352,18 @@ class PengajuanController extends Controller
             'catatan' => request('catatan'), 
             'status' => 8, 
 
-          ]);
+            ]);
+
+        $data = Pengajuan::find(request('id'));
+        $no_guru = User::find($data->user_id)->no_hp;
+
+        $message_guru = "Ada perbaikan dalam pengajuan anda oleh Kepala Sekolah". 
+            "\ndengan catatan: ". request('catatan').
+            "\nMohon untuk segera melakukan perbaikan".
+            "\nTerima Kasih";
+
+
+        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);  
     }
 
     /**
@@ -325,6 +396,16 @@ class PengajuanController extends Controller
             'bukti' => $nameFile, 
             'status' => 5, 
         ]);
+
+        $no_admin = User::where('role' , 2)->first();
+        $phone = $no_admin->no_hp; // Nomor admin
+        $message = "Kegiatan telah selesai dilaksanakan".  
+                   "\noleh: " .$user = Auth::user()->nama_user .
+                   "\nMohon segera diperiksa".
+                   "\nTerima Kasih";
+
+        $response = $this->whatsappService->sendMessage($phone, $message);
+        
     }
     public function addPengajuan(Request $request)
     {
@@ -382,13 +463,23 @@ class PengajuanController extends Controller
                   'rpp' =>  $nameFile, 
                   'status' => 2,
             ]);
+
+            $no_admin = User::where('role' , 2)->first();
+            $phone = $no_admin->no_hp; // Nomor admin
+            $message = "Perbaikan pengajuan kegiatan sudah selesai". 
+                       "\nOleh: " .$user = Auth::user()->nama_user .
+                       "\nMohon segera diperiksa".
+                       "\nTerima Kasih";
+    
+            $response = $this->whatsappService->sendMessage($phone, $message);
+
         } else {
             $add = Pengajuan::where('id',request('id'))->update([
                     'nama_kegiatan' => request('nama_kegiatan'), 
                     'user_id' =>  $user = Auth::user()->id, 
                     'estimasi' => request('waktu'), 
                     'jumlah_poin' => request('jumlah_poin'), 
-                    'status' => 2,
+                    
               ]);
         }
         
