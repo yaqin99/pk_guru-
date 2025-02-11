@@ -8,9 +8,18 @@ use Illuminate\Http\Request;
 
 class AspekController extends Controller
 {
-    public function getAspek($id){
-        $data = Aspek::where('surat_kinerja_id' , $id)->get();
-        return $data ; 
+    public function getAspek(){
+        $id = request('id');
+        $aspek = Aspek::findOrFail($id);
+        $data = [
+            'id' => $aspek->id,
+            'pedagogik' => $aspek->pedagogik,
+            'kepribadian' => $aspek->kepribadian,
+            'profesional' => $aspek->profesional,
+            'sosial' => $aspek->sosial,
+            'surat_kinerja_id' => $aspek->surat_kinerja_id,
+        ];
+        return response()->json($data);
     }
     
 

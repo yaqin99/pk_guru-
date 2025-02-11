@@ -58,6 +58,7 @@ Route::post('/adminValidasi', [PengajuanController::class,'adminValidasi']);
 
 // Data Surat pengajuan dan teguran
 Route::get('/surat', [SuratController::class,'index'])->middleware('auth');
+Route::get('/surat/suratKinerja', [SuratController::class,'suratKinerja'])->middleware('auth');
 Route::post('/surat/cetakSurat', [SuratController::class,'cetak'])->middleware('auth');
 Route::get('/surat/cetakSurat/getVersion/{data}', [SuratController::class,'cetakGet'])->middleware('auth');
 Route::post('/surat/approve', [SuratController::class,'approve'])->middleware('auth');
@@ -93,7 +94,7 @@ Route::get('/aspek/sosial/deleteSosial/{id}', [SosialController::class,'deleteSo
 //aspek
 
 Route::get('/aspek', [AspekController::class,'index'])->middleware('auth');
-Route::get('/aspek/getAspek/{id}', [AspekController::class,'getAspek']);
+Route::post('/aspek/getAspek', [AspekController::class,'getAspek']);
 Route::post('/aspek/editAspek', [AspekController::class,'editAspek']);
 Route::get('/aspek/deleteAspek/{id}', [AspekController::class,'deleteAspek']);
 

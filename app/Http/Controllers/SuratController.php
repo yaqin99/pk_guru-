@@ -22,10 +22,16 @@ class SuratController extends Controller
         $guru = User::select('nama_user' , 'id')->where('role' , 1)->get();
         if ($request->ajax()) {
           if (Auth::user()->role == 1) {
-            $data = Surat::with(['user' , 'aspek'])->where('status' , 1)->get();
+            $data = Surat::with(['user' , 'aspek'])
+                        ->where('status' , 1)
+                        ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
+                        ->get();
           } 
           else {
-            $data = Surat::with(['user' , 'aspek'])->get();
+            $data = Surat::with(['user' , 'aspek'])
+                        ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
+                        ->get();
+           
           }
 
             return Datatables::of($data)
@@ -218,34 +224,46 @@ class SuratController extends Controller
       Aspek::where('surat_kinerja_id' , $id)->delete();
     }
 
+    public function suratKinerja(){
+      $pages = 'suratKinerja' ; 
+      return view('admin.pages.cetak.suratKinerja' , [
+        'pages' => $pages , 
+      ]);
+    }
+
 
     public function cetak(){
-      $row = [
-        'nama_user' => request()->user['nama_user'] , 
-        'nip' => request()->user['nip'] , 
-        'no_hp' => request()->user['no_hp'] , 
-        'alamat' => request()->user['alamat'] , 
-        'tanggal' => request()->tanggal , 
-        'keterangan' => request()->keterangan , 
-        'tipe' => request()->tipe , 
-        'pedagogik' => request()->aspek['pedagogik'] , 
-        'kepribadian' => request()->aspek['kepribadian'] , 
-        'profesional' => request()->aspek['profesional'] , 
-        'sosial' => request()->aspek['sosial'] , 
-      ];
-      
-      
-      if ($row['tipe'] == '1') {
-        $pdf = Pdf::loadView('admin.pages.cetak.suratKinerja' , ['row' => $row]);
-        $pdf->setPaper('folio','potrait');
-        return $pdf->download('suratKinerja.pdf'); 
-      } else {
-        $pdf = Pdf::loadView('admin.pages.cetak.suratTeguran' , ['row' => $row]);
-        $pdf->setPaper('folio','potrait');
-        return $pdf->download('suratTeguran.pdf');
-      }
-      
+        try {
+            $nama = User::where('id' , request()->user_id)->first();
+            $row = [
+                'nama_user' => $nama->nama_user,
+                'nip' => $nama->nip,
+                'no_hp' => $nama->no_hp,
+                'alamat' => $nama->alamat,
+                'tanggal' => request()->tanggal,
+                'keterangan' => request()->keterangan,
+                'tipe' => request()->tipe,
+                'pedagogik' => request('pedagogik'),
+                'kepribadian' => request('kepribadian'),
+                'profesional' => request('profesional'),
+                'sosial' => request('sosial'),
+            ];
 
+
+            $viewName = request()->tipe == '1' ? 'admin.pages.cetak.suratKinerja' : 'admin.pages.cetak.suratTeguran';
+            $fileName = request()->tipe == '1' ? 'surat-kinerja.pdf' : 'surat-teguran.pdf';
+
+            $pdf = PDF::loadView($viewName, compact('row'));
+            $pdf->setPaper('folio', 'portrait');
+            
+            return $pdf->stream($fileName);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat mencetak surat: ' . $e->getMessage()
+            ], 500);
+        }
     }
     public function cetakGet($data){
       $row = json_decode($data, true);

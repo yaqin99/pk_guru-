@@ -30,29 +30,37 @@ function sosial (){
 }
 
 function cetakSurat(data){
- let row = JSON.parse(data);
-  $.ajax({
+  let row = JSON.parse(data);
+  
+  // Buat form sementara
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/surat/cetakSurat';
+  form.target = '_blank'; // Buka di tab baru
+  
+  // Tambahkan CSRF token
+  const csrfToken = document.createElement('input');
+  csrfToken.type = 'hidden';
+  csrfToken.name = '_token';
+  csrfToken.value = $('meta[name="csrf-token"]').attr('content');
+  form.appendChild(csrfToken);
 
-    url: `/surat/cetakSurat`,
-    type: "POST",
-    headers:{
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
-    cache: false,
-    data: row,
-    success:function(response){
-      let csrfToken = $('meta[name="csrf-token"]').attr('content');
+  // Tambahkan data sebagai input hidden
+  for (let key in row) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = typeof row[key] === 'object' ? JSON.stringify(row[key]) : row[key];
+    form.appendChild(input);
+  }
 
-    },
-    error:function(error){
-      console.log(error)
-    }
-
-});
-
- 
-
-};
-
+  // Tambahkan form ke body dan submit
+  document.body.appendChild(form);
+  form.submit();
+  
+  // Hapus form setelah submit
+  document.body.removeChild(form);
+}
 
 function hitungAspek(){
   let totalSkor = $('#totalSkor').val()
@@ -89,8 +97,6 @@ function hitungAspek(){
   }
 }
 
-
-
 function setNamaSurat(){
   let tahun = new Date().getFullYear();
   let tipe = $('#tipe_surat_edit').val()
@@ -120,19 +126,21 @@ function editAspek(id){
 
   $.ajax({
 
-    url: `/aspek/getAspek/${id}`,
-    type: "GET",
+    url: `/aspek/getAspek`,
+    type: "POST", 
+    headers:{
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
     cache: false,
     data: {id:id},
     success:function(response){
-      console.log('get aspek called');
-      console.log(response[0].pedagogik);
-      $('#idAspek').val(response[0].id);
-      $('#pedagogik').html(response[0].pedagogik);
-      $('#kepribadian').html(response[0].kepribadian);
-      $('#profesional').html(response[0].profesional);
-      $('#sosial').html(response[0].sosial);
-      $('#surat_id').val(response[0].surat_kinerja_id);
+
+      console.log(response);
+      $('#idAspek').val(response.id);
+      $('#pedagogik').html(response.pedagogik);
+      $('#kepribadian').html(response.kepribadian);
+      $('#profesional').html(response.profesional);
+      $('#sosial').html(response.sosial);
+      $('#surat_id').val(response.surat_kinerja_id);
       $('#editAspek').modal('show');
 
     },
@@ -146,19 +154,20 @@ function editAspek(id){
 function getAspek(id){
   $.ajax({
 
-    url: `/aspek/getAspek/${id}`,
-    type: "GET",
+    url: `/aspek/getAspek`,
+    type: "POST",
+    headers:{
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
     cache: false,
     data: {id:id},
     success:function(response){
-      console.log('get aspek called');
-      console.log(response[0].pedagogik);
-      $('#idAspek').val(response[0].id);
-      $('#pedagogik').html(response[0].pedagogik);
-      $('#kepribadian').html(response[0].kepribadian);
-      $('#profesional').html(response[0].profesional);
-      $('#sosial').html(response[0].sosial);
-      $('#surat_id').val(response[0].surat_kinerja_id);
+      console.log(response);
+      $('#idAspek').val(response.id);
+      $('#pedagogik').html(response.pedagogik);
+      $('#kepribadian').html(response.kepribadian);
+      $('#profesional').html(response.profesional);
+      $('#sosial').html(response.sosial);
+      $('#surat_id').val(response.surat_kinerja_id);
     },
     error:function(error){
 
