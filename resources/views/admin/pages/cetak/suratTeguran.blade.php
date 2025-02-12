@@ -390,7 +390,7 @@ style='font-size:12.0pt'>&nbsp;</span></p>
     solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
     height:28.7pt'>
     <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-    style='font-size:12.0pt'>{{$row['pedagogik']}}</span></p>
+    style='font-size:12.0pt'>{{$row['pedagogik'] }}</span></p>
     </td>
     <td width=151 style='width:4.0cm;border-top:none;border-left:none;border-bottom:
     solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;

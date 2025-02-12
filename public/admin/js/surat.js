@@ -31,7 +31,15 @@ function sosial (){
 
 function cetakSurat(data){
   let row = JSON.parse(data);
-  
+  if (row.pedagogik == null || row.kepribadian == null || row.profesional == null || row.sosial == null) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Data Tidak Lengkap',
+      text: 'Mohon lengkapi semua aspek penilaian terlebih dahulu.',
+      confirmButtonClass: "btn btn-primary"
+    });
+    return ; 
+  }
   // Buat form sementara
   const form = document.createElement('form');
   form.method = 'POST';
@@ -265,7 +273,7 @@ function getSurat(){
                           text: "Data Aspek Telah Dirubah",
                           icon: "success"
                         });
-                      getAspek(surat_id);
+                      // getAspek(surat_id);
                       getSurat();
                   },
                   error:function(error){
