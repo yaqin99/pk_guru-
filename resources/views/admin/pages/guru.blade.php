@@ -1,5 +1,7 @@
 @extends('admin.layout')
 @section('main')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -32,4 +34,5 @@
     </div>
    
 </div>
+@include('admin.modals.guru.aspek')
 @endsection

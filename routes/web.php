@@ -29,6 +29,8 @@ Route::get('/login', [UserController::class,'login'])->name('login')->middleware
 Route::post('/loginMethod', [UserController::class,'loginMethod']);
 Route::get('/logout', [UserController::class,'logout']);
 
+//Profi
+Route::get('/admin/profile/{id}', [UserController::class,'profile']);
 
 //guru All Routes
 
@@ -38,7 +40,8 @@ Route::get('/getGuru', [GuruController::class,'getGuru'])->middleware('auth');
 Route::post('/addGuru', [GuruController::class,'addGuru']);
 Route::get('/deleteGuru/{id}', [GuruController::class,'deleteGuru']);
 Route::put('/editGuru', [GuruController::class,'editGuru']);
-
+Route::get('/guru/aspek/{id}', [GuruController::class,'getAspek']);
+Route::get('/guru/download/{id}/{dokumen}/{type}', [GuruController::class,'download']);
 //Pengajuan All Routes
 
 Route::get('/pengajuan', [PengajuanController::class,'index'])->middleware('auth');

@@ -93,7 +93,7 @@
 
         @include('admin.modals.addGuru')
         @include('admin.modals.editGuru')
-        
+        @include('admin.modals.profil.profil')
         <!--**********************************
             Footer start
         ***********************************-->
@@ -146,6 +146,7 @@
     <script src="/admin/js/pengajuan.js"></script>
     <script src="/admin/js/surat.js"></script>
     <script src="/admin/js/program.js"></script>
+    <script src="/admin/js/profil.js"></script>
 </body>
 
 </html>

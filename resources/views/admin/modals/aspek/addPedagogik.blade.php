@@ -5,7 +5,7 @@
                 <h4 class="modal-title"><strong >Tambah Data Pedagogik</strong></h4>
             </div>
             <div class="modal-body">
-                <form id="formEditPengajuan" method="POST" enctype="multipart/form-data">
+                <form id="formAddPedagogik" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <input type="hidden" name="_token" id="token_pedagogik" value="{{ csrf_token() }}">
 
