@@ -1,3 +1,4 @@
+let nama_awal = null;
 function getGuru(){
     $("#tabel_guru").dataTable().fnDestroy();
 
@@ -45,6 +46,7 @@ function download(id, dokumen, aspekType) {
 
 function loadAspekData(id, aspekType, nama_user) {
   console.log(id, aspekType, nama_user);
+  nama_awal = nama_user;
     $.ajax({
         url: "/guru/aspek/" + id,
         type: "GET",
@@ -63,26 +65,31 @@ function loadAspekData(id, aspekType, nama_user) {
                         namaField = item.nama_pedagogik;
                         typeNumber = 1;
                         folder = 'pedagogik';
+                        nama_user = nama_user;
                         break;
                     case '2':
                         namaField = item.nama_kepribadian;
                         typeNumber = 2;
                         folder = 'kepribadian';
+                        nama_user = nama_user;
                         break;
                     case '3':
                         namaField = item.nama_profesional;
                         typeNumber = 3;
                         folder = 'profesional';
+                        nama_user = nama_user;
                         break;
                     case '4':
                         namaField = item.nama_sosial;
                         typeNumber = 4;
                         folder = 'sosial';
+                        nama_user = nama_user;
                         break;
                     default:
                         namaField = item.nama_pedagogik;
                         typeNumber = 1;
                         folder = 'pedagogik';
+                        nama_user = nama_user;
                 }
 
               tbody += `<tr style="color: black;">
@@ -112,9 +119,9 @@ function loadAspekData(id, aspekType, nama_user) {
 // Event listener untuk perubahan filter tidak perlu diubah karena sudah menggunakan window.currentGuruId
 $(document).ready(function() {
     $('#filterAspek').on('change', function() {
-      
+        
         if (window.currentGuruId) {
-            loadAspekData(window.currentGuruId, $(this).val());
+            loadAspekData(window.currentGuruId, $(this).val() , nama_awal);
         }
     });
 });

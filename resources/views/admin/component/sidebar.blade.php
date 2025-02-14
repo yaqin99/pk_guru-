@@ -25,14 +25,14 @@
             </i><span class="nav-text">Data Kinerja</span></a>
             <ul aria-expanded="false">
                 <li><a href="/pengajuan">Data Pengajuan</a></li>
-                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Data Aspek Mengajar</a>
+                {{-- <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Data Aspek Mengajar</a>
                     <ul aria-expanded="false">
                         <li><a href="/aspek/pedagogik">Pedagogik</a></li>
                         <li><a href="/aspek/kepribadian">Kepribadian</a></li>
                         <li><a href="/aspek/profesional">Profesional</a></li>
                         <li><a href="/aspek/sosial">Sosial</a></li>
                     </ul>
-                </li>
+                </li> --}}
             </ul>
             </li>
             

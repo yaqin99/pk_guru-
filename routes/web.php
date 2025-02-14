@@ -69,7 +69,9 @@ Route::post('/addSurat', [SuratController::class,'addSurat']);
 Route::post('/editSurat', [SuratController::class,'editSurat']);
 Route::get('/deleteSurat/{id}', [SuratController::class,'deleteSurat']);
 
-
+Route::post('/guru/aspek/store', [GuruController::class,'storeAspek']);
+Route::post('/guru/aspek/edit', [GuruController::class,'editAspek']);
+Route::post('/guru/aspek/delete', [GuruController::class,'deleteAspek']);
 //pegagogik
 Route::get('/aspek/pedagogik', [PedagogikController::class,'index'])->middleware('auth');
 Route::post('/aspek/pedagogik/addPedagogik', [PedagogikController::class,'addPedagogik']);

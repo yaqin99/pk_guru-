@@ -9,7 +9,7 @@ use App\Models\Profesional;
 use App\Models\Sosial;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-
+use Illuminate\Support\Facades\Storage;
 class GuruController extends Controller
 {
     
@@ -131,6 +131,31 @@ class GuruController extends Controller
       $deltete = User::find($id)->delete();
     }
 
+    public function deleteAspek()
+    {
+      $data = request()->all();
+      $aspek = match(request('aspekType')) {
+        '1' => Pedagogik::find($data['id'])->delete(),
+        '2' => Kepribadian::find($data['id'])->delete(),
+        '3' => Profesional::find($data['id'])->delete(),
+        '4' => Sosial::find($data['id'])->delete(),
+      };
+
+      $user = User::find(request('user_id'));
+      $folder = match(request('aspekType')) {
+        '1' => 'pedagogik',
+        '2' => 'kepribadian',
+        '3' => 'profesional',
+        '4' => 'sosial',
+      };
+
+      if (Storage::disk('public')->exists($user->nama_user.'/'.$folder.'/'.request('dokumen'))) {
+          Storage::disk('public')->delete($user->nama_user.'/'.$folder.'/'.request('dokumen'));
+      }
+
+      return response()->json(['success' => true]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -139,8 +164,118 @@ class GuruController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-  
+    public function storeAspek(Request $request)
+    {
+        $data = $request->all();
+        $data['user_id'] = $request->user_id;
+        $user = User::find($data['user_id']);
+
+        // Membuat direktori jika belum ada
+        if(!Storage::disk('public')->exists($user->nama_user)) {
+            Storage::disk('public')->makeDirectory($user->nama_user);
+        }
+
+        // Pastikan jenis_aspek memiliki nilai default
+        $jenisAspek = $request->jenis_aspek ?? '1';
+
+        // Tentukan folder berdasarkan jenis aspek
+        $folder = match($jenisAspek) {
+            '1' => 'pedagogik',
+            '2' => 'kepribadian',
+            '3' => 'profesional',
+            '4' => 'sosial',
+            default => 'pedagogik'
+        };
+
+        // Jika ada file yang diupload
+        if ($request->hasFile('file_aspek')) {
+            $nameFile = $request->file('file_aspek')->getClientOriginalName();
+            
+            // Jika ini adalah update (aspek_id ada)
+            if ($request->filled('aspek_id')) {
+                // Tentukan model berdasarkan jenis aspek
+                $model = match($jenisAspek) {
+                    '1' => Pedagogik::find($request->aspek_id),
+                    '2' => Kepribadian::find($request->aspek_id),
+                    '3' => Profesional::find($request->aspek_id),
+                    '4' => Sosial::find($request->aspek_id),
+                    default => null
+                };
+
+                // Hapus file lama jika ada
+                if ($model && Storage::disk('public')->exists($user->nama_user.'/'.$folder.'/'.$model->dokumen)) {
+                    Storage::disk('public')->delete($user->nama_user.'/'.$folder.'/'.$model->dokumen);
+                }
+
+                // Update data
+                if ($model) {
+                    $data['dokumen'] = $nameFile;
+                    
+                    if($jenisAspek == '1'){
+                        $data['nama_pedagogik'] = $request->keterangan_aspek;
+                    }else if($jenisAspek == '2'){
+                        $data['nama_kepribadian'] = $request->keterangan_aspek;
+                    }else if($jenisAspek == '3'){
+                        $data['nama_profesional'] = $request->keterangan_aspek;
+                    }else if($jenisAspek == '4'){
+                        $data['nama_sosial'] = $request->keterangan_aspek;
+                    }
+
+                    $model->update($data);
+                }
+            } else {
+                // Ini adalah create baru
+                $data['dokumen'] = $nameFile;
+                
+                if($jenisAspek == '1'){
+                    $data['nama_pedagogik'] = $request->keterangan_aspek;
+                }else if($jenisAspek == '2'){
+                    $data['nama_kepribadian'] = $request->keterangan_aspek;
+                }else if($jenisAspek == '3'){
+                    $data['nama_profesional'] = $request->keterangan_aspek;
+                }else if($jenisAspek == '4'){
+                    $data['nama_sosial'] = $request->keterangan_aspek;
+                }
+
+                $aspek = match($jenisAspek) {
+                    '1' => Pedagogik::create($data),
+                    '2' => Kepribadian::create($data),
+                    '3' => Profesional::create($data),
+                    '4' => Sosial::create($data),
+                    default => null
+                };
+            }
+
+            // Upload file baru
+            $request->file('file_aspek')->storeAs($user->nama_user.'/'.$folder, $nameFile, ['disk' => 'public']);
+        } else if ($request->filled('aspek_id')) {
+            // Update tanpa file baru
+            $model = match($jenisAspek) {
+                '1' => Pedagogik::find($request->aspek_id),
+                '2' => Kepribadian::find($request->aspek_id),
+                '3' => Profesional::find($request->aspek_id),
+                '4' => Sosial::find($request->aspek_id),
+                default => null
+            };
+
+            if ($model) {
+                if($jenisAspek == '1'){
+                    $data['nama_pedagogik'] = $request->keterangan_aspek;
+                }else if($jenisAspek == '2'){
+                    $data['nama_kepribadian'] = $request->keterangan_aspek;
+                }else if($jenisAspek == '3'){
+                    $data['nama_profesional'] = $request->keterangan_aspek;
+                }else if($jenisAspek == '4'){
+                    $data['nama_sosial'] = $request->keterangan_aspek;
+                }
+
+                $model->update($data);
+            }
+        }
+
+        return response()->json([
+            'message' => $request->filled('aspek_id') ? 'Aspek berhasil diperbarui' : 'Aspek berhasil disimpan',
+            'success' => true
+        ]);
+    }
 }
