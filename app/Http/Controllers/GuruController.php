@@ -134,14 +134,8 @@ class GuruController extends Controller
     public function deleteAspek()
     {
       $data = request()->all();
-      $aspek = match(request('aspekType')) {
-        '1' => Pedagogik::find($data['id'])->delete(),
-        '2' => Kepribadian::find($data['id'])->delete(),
-        '3' => Profesional::find($data['id'])->delete(),
-        '4' => Sosial::find($data['id'])->delete(),
-      };
+      $user = User::find($data['row']['user_id']);
 
-      $user = User::find(request('user_id'));
       $folder = match(request('aspekType')) {
         '1' => 'pedagogik',
         '2' => 'kepribadian',
@@ -149,10 +143,15 @@ class GuruController extends Controller
         '4' => 'sosial',
       };
 
-      if (Storage::disk('public')->exists($user->nama_user.'/'.$folder.'/'.request('dokumen'))) {
-          Storage::disk('public')->delete($user->nama_user.'/'.$folder.'/'.request('dokumen'));
+      if (Storage::disk('public')->exists($user->nama_user.'/'.$folder.'/'.$data['row']['dokumen'])) {
+          Storage::disk('public')->delete($user->nama_user.'/'.$folder.'/'.$data['row']['dokumen']);
       }
-
+      $aspek = match(request('aspekType')) {
+        '1' => Pedagogik::find($data['row']['id'])->delete(),
+        '2' => Kepribadian::find($data['row']['id'])->delete(),
+        '3' => Profesional::find($data['row']['id'])->delete(),
+        '4' => Sosial::find($data['row']['id'])->delete(),
+      };
       return response()->json(['success' => true]);
     }
 

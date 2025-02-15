@@ -5,34 +5,52 @@
                 <h4 class="modal-title"><strong>Profil</strong></h4>
             </div>
             <div class="modal-body">
-                <form id="formProfil">
+                <form id="formProfil" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" id="user_id" name="user_id">
+                    <!-- Foto Profil -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <div class="position-relative d-inline-block">
+                                <label for="upload_foto" style="cursor: pointer; margin: 0;">
+                                    <img id="foto_profil" src="{{ asset('admin/images/kontak2.png') }}" 
+                                         class="rounded-circle" 
+                                         style="width: 200px; height: 200px; object-fit: cover; border: 3px solid #007bff; transition: opacity 0.3s;">
+                                    
+                                </label>
+                                <input type="file" id="upload_foto" name="foto" class="d-none" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Diri -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Nama</label>
-                                <input type="text" class="form-control" id="nama_profil" name="nama_profil" readonly>
+                                <input type="text" class="form-control" id="nama_profil" name="nama_user" >
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" class="form-control" id="email_profil" name="email_profil" readonly>
+                                <input type="email" class="form-control" id="email_profil" name="email" >
                             </div>
                             {{-- <div class="form-group">
                                 <label>Username</label>
-                                <input type="text" class="form-control" id="username_profil" name="username_profil" readonly>
+                                <input type="text" class="form-control" id="username_profil" name="username_profil" >
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
-                                <input type="text" class="form-control" id="password_profil" name="password_profil" readonly>
+                                <input type="text" class="form-control" id="password_profil" name="password_profil" >
                             </div> --}}
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>No. Telepon</label>
-                                <input type="text" class="form-control" id="no_telp_profil" name="no_telp_profil" readonly>
+                                <input type="text" class="form-control" id="no_telp_profil" name="no_hp" >
                             </div>
                             <div class="form-group">
                                 <label>Alamat</label>
-                                <textarea class="form-control" id="alamat_profil" name="alamat_profil" rows="3" readonly></textarea>
+                                <textarea class="form-control" id="alamat_profil" name="alamat" rows="3" ></textarea>
                             </div>
                         </div>
                     </div>
@@ -71,9 +89,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning waves-effect" onclick="editProfile()">Edit Profil</button>
-                <button type="button" class="btn btn-info waves-effect" onclick="changePassword()">Ganti Password</button>
-                <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-success" onclick="updateProfile()">Simpan</button>
             </div>
         </div>
     </div>
@@ -90,7 +107,6 @@
                 </button>
             </div>
             <form id="formTambahAspek" enctype="multipart/form-data">
-                <input type="hidden" id="user_id" name="user_id">
                 <input type="hidden" id="aspek_id" name="aspek_id">
                 <div class="modal-body">
                     <div class="form-group">

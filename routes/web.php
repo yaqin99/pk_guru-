@@ -31,7 +31,7 @@ Route::get('/logout', [UserController::class,'logout']);
 
 //Profi
 Route::get('/admin/profile/{id}', [UserController::class,'profile']);
-
+Route::post('/admin/profile/update', [UserController::class,'updateProfile']);
 //guru All Routes
 
 Route::get('/', [PengajuanController::class,'index'])->middleware('auth');

@@ -5,12 +5,67 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
 
     public function profile($id){
         $user = User::find($id);
         return response()->json($user);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        try {
+            $name =  request()->file('foto');
+            $user = User::find($request->user_id);
+            
+            // Update data user kecuali username dan password
+            $user->update([
+                'nama_user' => $request->nama_user,
+                'email' => $request->email,
+                'no_hp' => $request->no_hp,
+                'alamat' => $request->alamat,
+            ]);
+
+            // Jika ada file foto yang diupload
+            if ($name != null) {
+
+             
+                $file = $request->file('foto');
+                $fileName = $file->getClientOriginalName();
+                
+                // Cek dan hapus foto lama jika ada
+                if ($user->foto && Storage::disk('public')->exists($user->nama_user.'/fotoProfil/'.$user->foto)) {
+                    Storage::disk('public')->delete($user->nama_user.'/fotoProfil/'.$user->foto);
+                }
+                
+                // Buat direktori jika belum ada
+                if (!Storage::disk('public')->exists($user->nama_user.'/fotoProfil')) {
+                    Storage::disk('public')->makeDirectory($user->nama_user.'/fotoProfil');
+                }
+                
+                // Upload foto baru
+                $file->storeAs($user->nama_user.'/fotoProfil', $fileName, 'public');
+                
+                // Update nama file foto di database
+                $user->update([
+                    'foto' => $fileName
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profil berhasil diperbarui',
+                'data' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function login(){

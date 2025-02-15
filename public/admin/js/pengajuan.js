@@ -22,74 +22,60 @@ function getPengajuan(){
  });
    }
 
-   function adminValidasi(row){
+   function adminValidasi(row) {
     let data = JSON.parse(row);
-    console.log(data)
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success",
-        cancelButton: "btn btn-danger"
-      },
-      buttonsStyling: false
-    });
-    swalWithBootstrapButtons.fire({
-      title: "Konfirmasi Penyelesaian Program Kinerja?",
-      text: "Data Akan Langsung Dirubah Pada Tabel!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Simpan",
-      cancelButtonText: "Batal",
-      reverseButtons: true
+    Swal.fire({
+        title: 'Apakah anda yakin?',
+        text: "Pengajuan ini akan diselesaikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Selesaikan!',
+        cancelButtonText: 'Batal'
     }).then((result) => {
-      if (result.isConfirmed) {
-          $.ajax({
-
-              url: `/adminValidasi`,
-              type: "POST",
-              cache: false,
-              headers:{
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
-              data: {
-                id:data.id , 
-                jumlah_poin:data.jumlah_poin , 
-                user_id:data.user_id , 
-              },
-              enctype: 'multipart/form-data',
-
-              success:function(response){
-                  swalWithBootstrapButtons.fire({
-                      title: "Berhasil!",
-                      text: "Program Telah Tervalidasi",
-                      icon: "success"
+        if (result.isConfirmed) {
+            $.ajax({
+                url: 'adminValidasi',
+                type: 'POST',
+                data: {
+                    id: data.id,
+                    user_id: data.user_id,
+                    jumlah_poin: data.jumlah_poin,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if(response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message
+                        }).then(() => {
+                            // Jika guru sudah mencapai 20 poin
+                            if(response.needCertificate) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Perhatian!',
+                                    html: `Guru <b>${response.guru.nama}</b> telah mencapai <b>${response.guru.poin} poin</b>.<br>
+                                          Silahkan buatkan surat keterangan kinerja.`,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                            $('#tabel_pengajuan').DataTable().ajax.reload();
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat memvalidasi pengajuan'
                     });
-                   
-                    getPengajuan()
-
-              },
-              error:function(error){
-                  
-                
-  
-              }
-  
-          });
-
-
-        
-      } else if (
-        /* Read more about handling dismissals below */
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-       
-        swalWithBootstrapButtons.fire({
-          title: "Batal",
-          text: "Data Pengajuan Tidak Validasi",
-          icon: "error"
-        });
-      }
+                }
+            });
+        }
     });
-
-  }
+}
 
    function getSingleProgramEdit(){
      let id = $('#nama_kegiatan_id').val();

@@ -257,26 +257,55 @@ class PengajuanController extends Controller
     }
     public function adminValidasi()
     {
-        $user = User::find(request('user_id'));
-        User::where('id' , request('user_id'))->update([
-            'poin' => $user->poin + request('jumlah_poin'),
-        ]);
-        Pengajuan::where('id',request('id'))->update([
-            'status' => 6, 
-        ]);
+        try {
+            $user = User::find(request('user_id'));
+            $newPoin = $user->poin + request('jumlah_poin');
+            
+            // Update poin user
+            User::where('id', request('user_id'))->update([
+                'poin' => $newPoin,
+            ]);
 
-        $data = Pengajuan::find(request('id'));
-        $no_guru = User::find($data->user_id)->no_hp;
+            // Update status pengajuan
+            Pengajuan::where('id', request('id'))->update([
+                'status' => 6, 
+            ]);
 
-        $message_guru = "Pengajuan Anda Telah Diselesaikan oleh Admin". 
-          "\nSilahkan periksa poin perolehan anda".
-          "\nApabila poin sudah mencukupi maka admin akan mengeluarkan surat kinerja".
-          "\nTerima Kasih";
+            // Kirim notifikasi WhatsApp ke guru
+            $data = Pengajuan::find(request('id'));
+            $no_guru = User::find($data->user_id)->no_hp;
 
+            $message_guru = "Pengajuan Anda Telah Diselesaikan oleh Admin". 
+                "\nSilahkan periksa poin perolehan anda".
+                "\nApabila poin sudah mencukupi maka admin akan mengeluarkan surat kinerja".
+                "\nTerima Kasih";
 
-        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
-        
+            $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
 
+            // Cek apakah poin sudah mencapai 20
+            $response = [
+                'success' => true,
+                'message' => 'Pengajuan berhasil divalidasi',
+                'needCertificate' => false
+            ];
+
+            if ($newPoin >= 20) {
+                $response['needCertificate'] = true;
+                $response['message'] = 'Pengajuan berhasil divalidasi. Guru telah mencapai 20 poin dan berhak mendapatkan surat keterangan kinerja.';
+                $response['guru'] = [
+                    'nama' => $user->nama_user,
+                    'poin' => $newPoin
+                ];
+            }
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
     public function getPengajuan()
     {

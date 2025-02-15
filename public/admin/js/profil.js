@@ -5,13 +5,22 @@ function viewProfile(id){
         dataType: "json",
         success: function(response){
             console.log(response);
+            $('#modalProfil').modal('show');
+
             $('#nama_profil').val(response.nama_user).data('user-id', id);
             $('#email_profil').val(response.email);
             // $('#username_profil').val(response.username);
             $('#no_telp_profil').val(response.no_hp);
             $('#alamat_profil').val(response.alamat);
             // $('#password_profil').val(response.password);
-            $('#modalProfil').modal('show');
+            
+            // Update foto profil jika ada
+            if(response.foto != null || response.foto != '') {
+                $('#foto_profil').attr('src', `/storage/${response.nama_user}/fotoProfil/${response.foto}`);
+            } else {
+                $('#foto_profil').attr('src', `{{ asset('/admin/images/avatar/kontak.png') }}`);
+            }
+            
             // Load data aspek default (pedagogik)
             $('#user_id').val(id);
             loadAspekDataProfil(id, '1');
@@ -19,10 +28,58 @@ function viewProfile(id){
     });
 }
 
-function editProfile(){
-    let data = JSON.parse(row);
-    console.log(data);
+
+function updateProfile() {
+    let formData = new FormData($('#formProfil')[0]);
+    let userId = $('#nama_profil').data('user-id');
+    formData.append('user_id', userId);
+
+    $.ajax({
+        url: '/admin/profile/update',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if(response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: response.message
+                });
+                
+                viewProfile(userId);
+            }
+        },
+        error: function(xhr, status, error) {
+            let errorMessage = 'Terjadi kesalahan saat memperbarui profil';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            }
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: errorMessage
+            });
+        }
+    });
 }
+
+// Update preview foto saat file dipilih
+$('#upload_foto').on('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $('#foto_profil').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(file);
+    }
+});
 
 function changePassword(){
     let data = JSON.parse(row);
@@ -86,6 +143,21 @@ $(document).ready(function() {
         let fileName = $(this).val().split('\\').pop();
         $('#file_name').val(fileName);
     });
+
+    // Handler untuk upload foto
+
+
+    // Hover effect untuk foto profil
+    $('label[for="upload_foto"]').hover(
+        function() {
+            $(this).find('.position-absolute').css('opacity', '1');
+            $(this).find('img').css('opacity', '0.7');
+        },
+        function() {
+            $(this).find('.position-absolute').css('opacity', '0');
+            $(this).find('img').css('opacity', '1');
+        }
+    );
 });
 
 function loadAspekDataProfil(id, aspekType) {
@@ -132,7 +204,7 @@ function loadAspekDataProfil(id, aspekType) {
                           <button class="btn btn-warning btn-sm" onclick="editAspek(${JSON.stringify(item).replace(/"/g, '&quot;')}, '${aspekType}')">
                             <i class="bi bi-pencil"></i>
                           </button>
-                          <button class="btn btn-danger btn-sm ml-1" onclick="deleteAspek(${item.id}, '${aspekType}')">
+                          <button class="btn btn-danger btn-sm ml-1" onclick="deleteAspek(${JSON.stringify(item).replace(/"/g, '&quot;')}, '${aspekType}')">
                             <i class="bi bi-trash"></i>
                           </button>
                        </div>
@@ -174,7 +246,8 @@ function editAspek(item, aspekType) {
     $('#jenis_aspek').attr('disabled', true);
 }
 
-function deleteAspek(id, aspekType) {
+function deleteAspek(row, aspekType) {
+   console.log(row);
     Swal.fire({
         title: 'Apakah Anda yakin?',
         text: "Data yang dihapus tidak dapat dikembalikan!",
@@ -190,8 +263,9 @@ function deleteAspek(id, aspekType) {
                 url: '/guru/aspek/delete' ,
                 type: 'POST',
                 data: {
-                    id: id,
-                    aspekType: aspekType
+                    row: row,
+                    aspekType: aspekType,
+                   
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
