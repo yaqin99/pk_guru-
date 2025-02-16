@@ -32,8 +32,9 @@ Route::get('/logout', [UserController::class,'logout']);
 //Profi
 Route::get('/admin/profile/{id}', [UserController::class,'profile']);
 Route::post('/admin/profile/update', [UserController::class,'updateProfile']);
-//guru All Routes
+Route::post('/admin/guru/reset-poin', [GuruController::class,'resetPoin']);
 
+//guru All Routes
 Route::get('/', [PengajuanController::class,'index'])->middleware('auth');
 Route::get('/guru', [GuruController::class,'index'])->middleware('auth');
 Route::get('/getGuru', [GuruController::class,'getGuru'])->middleware('auth');

@@ -5,6 +5,7 @@
         <ol class="breadcrumb">
             @if ($pages == 'guru')
             <li class="breadcrumb-item"><button onclick="showAddGuru()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Guru</button></li>
+            <li class="breadcrumb-item"><button onclick="showResetPoinGuru()" data-bs-toggle="modal" class="btn btn-warning text-left text-dark"><i class="bi bi-arrow-counterclockwise"></i> Reset Poin Guru</button></li>
             @elseif ($pages == 'pengajuan')
                 @if (Auth::user()->role == 1)
                 <li class="breadcrumb-item"><button onclick="showAddPengajuan()" data-bs-toggle="modal" data-bs-target="#modalJenisTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pengajuan</button></li>

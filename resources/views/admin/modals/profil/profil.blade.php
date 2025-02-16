@@ -13,7 +13,7 @@
                         <div class="col-12 text-center">
                             <div class="position-relative d-inline-block">
                                 <label for="upload_foto" style="cursor: pointer; margin: 0;">
-                                    <img id="foto_profil" src="{{ asset('admin/images/kontak2.png') }}" 
+                                    <img id="foto_profil" src="/admin/images/kontak2.png" 
                                          class="rounded-circle" 
                                          style="width: 200px; height: 200px; object-fit: cover; border: 3px solid #007bff; transition: opacity 0.3s;">
                                     
@@ -56,7 +56,7 @@
                     </div>
                 </form>
 
-                <div class="row mt-4">
+                <div class="row mt-4" id="aspekSection">
                     <div class="col-md-12 mb-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="col-md-4 px-0">

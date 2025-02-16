@@ -14,13 +14,13 @@ function viewProfile(id){
             $('#alamat_profil').val(response.alamat);
             // $('#password_profil').val(response.password);
             
-            // Update foto profil jika ada
-            if(response.foto != null || response.foto != '') {
+           
+            if(response.foto != null) {
                 $('#foto_profil').attr('src', `/storage/${response.nama_user}/fotoProfil/${response.foto}`);
-            } else {
-                $('#foto_profil').attr('src', `{{ asset('/admin/images/avatar/kontak.png') }}`);
+            } 
+            if (response.role == 2 || response.role == 3) {
+                $('#aspekSection').hide();
             }
-            
             // Load data aspek default (pedagogik)
             $('#user_id').val(id);
             loadAspekDataProfil(id, '1');
@@ -299,11 +299,13 @@ function simpanAspek() {
     let formData = new FormData($('#formTambahAspek')[0]);
     let userId = $('#nama_profil').data('user-id');
     let aspekId = $('#aspek_id').val();
+    let aspekType = $('#jenis_aspek').val();
     let url =  '/guru/aspek/store';
     let method = aspekId ? 'POST' : 'POST';
 
     // Pastikan user_id ditambahkan ke formData
     formData.append('user_id', userId);
+    formData.append('jenis_aspek', aspekType);
 
     $.ajax({
         url: url,

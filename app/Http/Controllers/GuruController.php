@@ -107,10 +107,23 @@ class GuruController extends Controller
         'role' =>1, 
       ]);
 
+    
 
       
 
     }
+
+
+    public function resetPoin()
+    {
+      $data = User::where('role',1)->get();
+      foreach($data as $row){
+        $row->poin = 0;
+        $row->save();
+      }
+      return response()->json(['success' => true]);
+    }
+
     public function editGuru()
     {
       $add = User::where('id',request('id'))->update([
@@ -166,6 +179,7 @@ class GuruController extends Controller
     public function storeAspek(Request $request)
     {
         $data = $request->all();
+        
         $data['user_id'] = $request->user_id;
         $user = User::find($data['user_id']);
 
@@ -175,7 +189,7 @@ class GuruController extends Controller
         }
 
         // Pastikan jenis_aspek memiliki nilai default
-        $jenisAspek = $request->jenis_aspek ?? '1';
+        $jenisAspek = $request->jenis_aspek ;
 
         // Tentukan folder berdasarkan jenis aspek
         $folder = match($jenisAspek) {

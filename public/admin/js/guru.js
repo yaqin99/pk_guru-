@@ -22,6 +22,71 @@ function getGuru(){
  });
    }
 
+function showResetPoinGuru() {
+    // SweetAlert pertama - Informasi
+    Swal.fire({
+        title: 'Fitur Reset Poin Guru',
+        html: `<div class="text-left">
+                <p>Perhatian! Fitur ini akan:</p>
+                <ul>
+                    <li>Mengubah semua poin akun guru menjadi 0</li>
+                    <li>Hanya digunakan di awal tahun pembelajaran baru</li>
+                    <li>Tidak dapat dibatalkan setelah dijalankan</li>
+                </ul>
+               </div>`,
+        icon: 'info',
+        confirmButtonText: 'Lanjutkan',
+        confirmButtonColor: '#3085d6',
+        showCancelButton: true,
+        cancelButtonText: 'Tutup',
+        cancelButtonColor: '#d33'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // SweetAlert kedua - Konfirmasi
+            Swal.fire({
+                title: 'Apakah Anda Yakin?',
+                text: "Semua poin guru akan direset menjadi 0!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Reset Sekarang!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim request reset poin
+                    $.ajax({
+                        url: '/admin/guru/reset-poin',
+                        type: 'POST',
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if(response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Poin semua guru telah direset menjadi 0',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    $('#tabel_guru').DataTable().ajax.reload();
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat mereset poin guru'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
+
 $( document ).ready(function() {     
    getGuru()
 });
