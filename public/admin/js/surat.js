@@ -1,4 +1,85 @@
 let hitung = 0 ; 
+
+function tolakSurat(id){
+ $.ajax({
+  url: `/surat/tolak`,
+  type: "POST",
+  data: {id:id},
+  headers:{
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+  success:function(response){
+    if (response.message == 'success') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Surat Berhasil Ditolak'
+      });
+      getSurat();
+    }
+    else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Surat Gagal Ditolak'
+      });
+    }
+  },
+  error:function(error){
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal',
+      text: 'Surat Gagal Ditolak'
+    });
+  }
+ })
+}
+
+
+function teruskanSurat(data){
+  let row = JSON.parse(data);
+  if (row.pedagogik == null || row.kepribadian == null || row.profesional == null || row.sosial == null) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Data Tidak Lengkap',
+      text: 'Mohon lengkapi semua aspek penilaian terlebih dahulu.',
+      confirmButtonClass: "btn btn-primary"
+    });
+    return ; 
+  }
+ $.ajax({
+  url: `/surat/teruskanSurat`,
+  type: "POST",
+  data: {id:row.id},
+  headers:{
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
+  success:function(response){
+    if (response.message == 'success') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil',
+        text: 'Surat Berhasil Diteruskan'
+      });
+      getSurat();
+    }
+    else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Surat Gagal Diteruskan'
+      });
+    }
+  },
+  error:function(error){
+    Swal.fire({
+      icon: 'error',
+      title: 'Gagal',
+      text: 'Surat Gagal Diteruskan'
+    });
+  }
+ })
+}
+
+
 function pedagogik (){
   $('#btnPedagogik').attr('class' , 'btn btn-secondary')
   $('#btnKepribadian').attr('class' , 'btn btn-outline-secondary')
@@ -130,8 +211,8 @@ function editSurat(row){
  $('#editSurat').modal('show');
 }
 
-function editAspek(id){
-
+function suratAspek(id){
+ console.log('anjay');
   $.ajax({
 
     url: `/aspek/getAspek`,
@@ -149,7 +230,8 @@ function editAspek(id){
       $('#profesional').html(response.profesional);
       $('#sosial').html(response.sosial);
       $('#surat_id').val(response.surat_kinerja_id);
-      $('#editAspek').modal('show');
+
+      $('#editAspekSurat').modal('show');
 
     },
     error:function(error){
@@ -202,6 +284,7 @@ function getSurat(){
            {data: 'tipe', name: 'tipe'},
            {data: 'tanggal', name: 'tanggal'},
            {data: 'status', name: 'status'},
+           {data: 'penerusan', name: 'penerusan'},
            {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
  });

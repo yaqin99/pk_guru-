@@ -11,10 +11,31 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\WhatsAppService;
 
 
 class SuratController extends Controller
 {
+
+  
+  protected $whatsappService;
+
+  public function __construct(WhatsAppService $whatsappService)
+  {
+      $this->whatsappService = $whatsappService;
+  }
+  
+  public function sendWhatsApp()
+  {
+      $phone   = '085232324069'; // Nomor tujuan
+      $message = 'Halo, ini pesan otomatis dari Laravel 10 menggunakan Fonnte!';
+
+      $response = $this->whatsappService->sendMessage($phone, $message);
+
+      return response()->json($response);
+  }
+
+
     public function index(Request $request)
     {
         $pages = 'surat' ; 
@@ -23,15 +44,23 @@ class SuratController extends Controller
         if ($request->ajax()) {
           if (Auth::user()->role == 1) {
             $data = Surat::with(['user' , 'aspek'])
-                        ->where('status' , 1)
+                        ->where('status' , 4)
                         ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
+                        ->orderBy('surat_kinerjas.id', 'desc')
                         ->get();
           } 
-          else {
+          else if (Auth::user()->role == 3) {
             $data = Surat::with(['user' , 'aspek'])
+                        ->where('status' , 2)
                         ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
+                        ->orderBy('surat_kinerjas.id', 'desc')
                         ->get();
            
+          } else {
+            $data = Surat::with(['user' , 'aspek'])
+                        ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
+                        ->orderBy('surat_kinerjas.id', 'desc')
+                        ->get();
           }
 
             return Datatables::of($data)
@@ -45,28 +74,77 @@ class SuratController extends Controller
                     ->addColumn('tanggal', function($row){
                     return $row->tanggal;})
                     ->addColumn('status', function($row){
-                      if ($row->status == null || $row->status == 0) {
+                      if ($row->status == null || $row->status == 1) {
                        
                         return $status = 'Menunggu' ; 
                         
  
                         
+                      } else if ($row->status == 2) {
+                        return $status = 'Menunggu Persetujuan' ; 
+                      } else if ($row->status == 3) {
+                        return $status = 'Ditolak' ; 
                       } else {
                         return $status = 'Disetujui' ; 
 
                       };
                     })
                     
+                    ->addColumn('penerusan', function($row){
+                      if (Auth::user()->role == 3) {
+                        $btn = '
+                        <div class="btn-group">
+                        <a onclick=\'approve(`'.$row->id.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" >
+                        <i class="bi bi-check-lg" ></i>
+                        </a>
+                        <a onclick=\'tolakSurat(`'.$row->id.'`)\' class="ml-2 edit btn btn-danger  btn-sm text-light" >
+                        <i class="bi bi-arrow-left-short" ></i>
+                        </a>
+                        </div>
+                        
+                        ';
+                        return $btn;
+
+                      }
+                      if (Auth::user()->role == 2) {
+                         if ($row->status == 3) {
+                          $btn = '
+                          
+                          ';
+                          return $btn;
+                         } else {
+                          if ($row->status != 1) {
+                            $btn = '
+                            
+                            ';
+                            return $btn;
+                          } else {
+                            $btn = '
+                          <div class="btn-group">
+                          <a onclick=\'teruskanSurat(`'.$row.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" >
+                          <i class="bi bi-arrow-right-short" ></i>
+                          </a>
+                          
+                          </div>
+                          
+                          ';
+                          
+   
+                           return $btn;
+                          }
+                         
+                         }
+                      }
+                           
+                    })
                     ->addColumn('action', function($row){
                       if (Auth::user()->role == 3) {
                         $btn = '
                         <div class="btn-group">
-                        <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
+                        <a onclick=\'cetakSurat(`'.$row.'`)\' class="ml-2 edit btn btn-primary btn-sm text-light" >
                         <i class="bi bi-printer-fill" ></i>
                         </a>
-                        <a onclick=\'approve(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" >
-                        <i class="bi bi-check-lg" ></i>
-                        </a>
+                       
                         </div>
                         
                         ';
@@ -86,30 +164,44 @@ class SuratController extends Controller
  
                          return $btn;
                       } if (Auth::user()->role == 2) {
-                        $btn = '
-                           <div class="btn-group">
-                           <a onclick=\'cetakSurat(`'.$row.'`)\' class="edit btn btn-primary btn-sm text-light" >
-                           <i class="bi bi-printer-fill" ></i>
-                           </a>
-                           <a onclick=\'editAspek(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
-                           <i class="bi bi-file-earmark-bar-graph" ></i>
-                           </a>
-                           <a onclick=\'editSurat(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editSurat">
-                           <i class="bi bi-pencil-fill" ></i>
-                           </a>
-                           
-                           <a href="javascript:void(0)" onclick=\'deleteSurat(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
-                           
-                           </div>
-                           
-                           ';
-                           
-    
-                            return $btn;
+
+                        if ($row->status == 3) {
+                          $btn = '
+                          <div class="btn-group">
+                        
+                          
+                          </div>
+                          
+                          ';
+                          return $btn;
+                        } 
+                         else {
+                          $btn = '
+                        <div class="btn-group">
+                        <a onclick=\'cetakSurat(`'.$row.'`)\' class="ml-2 edit btn btn-primary btn-sm text-light" >
+                        <i class="bi bi-printer-fill" ></i>
+                        </a>
+                        <a onclick=\'suratAspek(`'.$row->id.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
+                        <i class="bi bi-file-earmark-bar-graph" ></i>
+                        </a>
+                        <a onclick=\'editSurat(`'.$row.'`)\' class="ml-2 edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editSurat">
+                        <i class="bi bi-pencil-fill" ></i>
+                        </a>
+                        
+                        <a href="javascript:void(0)" onclick=\'deleteSurat(`'.$row->id.'`)\' class="ml-2 edit btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                        
+                        </div>
+                        
+                        ';
+                        
+ 
+                         return $btn;
+                         }
+                      
                       }
                            
                     })
-                    ->rawColumns(['status','action'])
+                    ->rawColumns(['status','action','penerusan'])
                     ->make(true);
         }
 
@@ -130,14 +222,52 @@ class SuratController extends Controller
           ]);
         
     }
+    public function teruskanSurat(Request $request)
+    {
+      $no_kepsek = User::where('role' , 3)->first();
+
+      $data = Surat::where('id', $request->id)->update([
+        'status' => 2, 
+      ]);
+
+      $message_kepsek = "Ada surat yang menunggu persetujuan dari Anda". 
+          "\nMohon untuk segera diperiksa".
+          "\nTerima Kasih";
+
+      $response_kepsek = $this->whatsappService->sendMessage($no_kepsek->no_hp, $message_kepsek);
+      return response()->json(['message' => 'success']);
+    }
     public function approve(Request $request)
     {
-        
+        $surat = Surat::where('id' , $request->id)->first();
+        $no_guru = User::find($surat->user_id)->no_hp;
         $add = Surat::where('id', $request->id)->update([
-            'status' => 1, 
+            'status' => 4, 
             
           ]);
+
+        $message_guru = "Surat anda telah disetujui oleh Kepala Sekolah". 
+                   "\nSilahkan melakukan cetak surat di akun anda".
+                   "\nTerima Kasih";
+
         
+        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
+        
+    }
+    public function tolak(Request $request)
+    {
+      $no_admin = User::where('role' , 2)->first();
+
+      $data = Surat::where('id', $request->id)->update([
+        'status' => 3, 
+      ]);
+
+      $message_admin = "Surat anda telah ditolak oleh Admin". 
+      "\nSilahkan melakukan perbaikan surat di akun anda".
+      "\nTerima Kasih";
+
+     $response_kepsek = $this->whatsappService->sendMessage($no_admin->no_hp, $message_admin);
+      return response()->json(['message' => 'success']);
     }
     public function addSurat(Request $request)
     {
@@ -151,7 +281,7 @@ class SuratController extends Controller
               'tipe' => request('tipe_surat'),
               'tanggal' => request('tanggal'), 
               'keterangan' => $keterangan, 
-              
+              'status' => 1,
             ]);
           } else {
             $add = Surat::create([
@@ -160,7 +290,7 @@ class SuratController extends Controller
               'tipe' => request('tipe_surat'),
               'tanggal' => request('tanggal'), 
               'keterangan' => request('keterangan'), 
-              
+              'status' => 1,
             ]);
           }
             
@@ -184,7 +314,7 @@ class SuratController extends Controller
               'tipe' => request('tipe_surat'),
               'tanggal' => request('tanggal'), 
               'keterangan' => $keterangan, 
-              
+              'status' => 1,
             ]);
           } else {
             $add = Surat::create([
@@ -193,7 +323,7 @@ class SuratController extends Controller
               'tipe' => request('tipe_surat'),
               'tanggal' => request('tanggal'), 
               'keterangan' => request('keterangan'), 
-              
+              'status' => 1,
             ]);
           }
 

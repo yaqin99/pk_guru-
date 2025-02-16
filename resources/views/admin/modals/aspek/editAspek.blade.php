@@ -1,13 +1,12 @@
-<div class="modal fade none-border" id="editAspek">
+<div class="modal fade none-border" id="editAspekSurat">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><strong id="judulFormEdit">Form Nilai Aspek Guru</strong></h4>
             </div>
             <div class="modal-body">
-
                 <div class="d-flex justify-content-around">
-                    
+            
                         <button class="btn btn-outline-secondary" id="btnPedagogik" type="button" onclick="pedagogik()">Pedagogik</button>
                        
 

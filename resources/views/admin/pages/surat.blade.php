@@ -19,6 +19,7 @@
                                 <th>Tipe Surat</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
+                                <th>Penerusan</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>

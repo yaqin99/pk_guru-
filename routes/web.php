@@ -69,6 +69,10 @@ Route::post('/surat/approve', [SuratController::class,'approve'])->middleware('a
 Route::post('/addSurat', [SuratController::class,'addSurat']);
 Route::post('/editSurat', [SuratController::class,'editSurat']);
 Route::get('/deleteSurat/{id}', [SuratController::class,'deleteSurat']);
+Route::post('/surat/teruskanSurat', [SuratController::class,'teruskanSurat'])->middleware('auth');
+Route::post('/surat/tolak', [SuratController::class,'tolak'])->middleware('auth');
+
+
 
 Route::post('/guru/aspek/store', [GuruController::class,'storeAspek']);
 Route::post('/guru/aspek/edit', [GuruController::class,'editAspek']);
