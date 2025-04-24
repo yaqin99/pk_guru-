@@ -44,11 +44,13 @@ class PengajuanController extends Controller
                 $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->orderBy('id' , 'desc')->get();
             }
             if (Auth::user()->role == 2) {
-                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [2,5])->orderBy('id' , 'desc')->get();
+                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [2,5])->orderBy('id' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->orderBy('id' , 'desc')->get();
 
             }
             if (Auth::user()->role == 3) {
-                $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('id' , 'desc')->get();
+                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('id' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->orderBy('id' , 'desc')->get();
 
             }
 
@@ -97,29 +99,58 @@ class PengajuanController extends Controller
                    
                     ->addColumn('action', function($row){
                         if (Auth::user()->role == 3) {
-                            $btn = '
-                            <div class="btn-group">
-                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" ti
-                                >
-                           <i class="bi bi-printer-fill" ></i>
-                            </a>
-                            <a onclick=\'tolakPengajuan(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm text-light ml-2" title="Tolak Pengajuan" >
-                            <i class="bi bi-x-circle-fill"></i>
-                            </a>
-                            <a onclick=\'approvePengajuan(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light ml-2" title="Setujui Pengajuan" >
-                            <i class="bi bi-check-circle-fill"></i>
-                            </a>
+                            if ($row->status == 3) {
+                                $btn = '
+                                <div class="btn-group">
+                                <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" ti
+                                    >
+                               <i class="bi bi-printer-fill" ></i>
+                                </a>
+                                <a onclick=\'tolakPengajuan(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm text-light ml-2" title="Tolak Pengajuan" >
+                                <i class="bi bi-x-circle-fill"></i>
+                                </a>
+                                <a onclick=\'approvePengajuan(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light ml-2" title="Setujui Pengajuan" >
+                                <i class="bi bi-check-circle-fill"></i>
+                                </a>
+                                
+                                <a onclick=\'opsi(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light ml-2" title="Berikan Catatan" >
+                                <i class="bi bi-card-text"></i>
+                                </a>
+                                
+                                </div>
+                                
+                                ';
+                                
+         
+                                 return $btn;
+                            } 
+                            else if ($row->status == 8) {
+                                $btn = '
+                                <div class="btn-group">
+                                <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
+                               <i class="bi bi-printer-fill" ></i>
+                                </a>
+                                
+                                
+                                </div>
+                                
+                                ';
+                                
+         
+                                 return $btn;
+                            } 
                             
-                            <a onclick=\'opsi(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light ml-2" title="Berikan Catatan" >
-                            <i class="bi bi-card-text"></i>
-                            </a>
-                            
-                            </div>
-                            
-                            ';
-                            
-     
-                             return $btn;
+                            else {
+                                $btn = '
+                                <div class="btn-group">
+                                <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" ti
+                                    >
+                               <i class="bi bi-printer-fill" ></i>
+                                </a>
+                                </div>
+                                ';
+                                 return $btn;
+                            }
                          }
                          if (Auth::user()->role == 1) {
                             if ($row->status == 6) {
@@ -167,7 +198,8 @@ class PengajuanController extends Controller
                             
      
                              return $btn;
-                         } elseif (Auth::user()->role == 2) {
+                         } 
+                         if (Auth::user()->role == 2) {
                            if ($row->status == 5) {
 
                             $btn = '
@@ -190,7 +222,7 @@ class PengajuanController extends Controller
      
                              return $btn;
                            
-                           } else {
+                           } else if ($row->status == 2) {
                             $btn = '
                             <div class="btn-group">
                             
@@ -210,6 +242,17 @@ class PengajuanController extends Controller
                             
                             </div>
                             
+                            ';
+                            
+     
+                             return $btn;
+                           } else {
+                            $btn = '
+                            <div class="btn-group">
+                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" title="Cetak RPP" >
+                           <i class="bi bi-printer-fill" ></i>
+                            </a>
+                            </div>
                             ';
                             
      
