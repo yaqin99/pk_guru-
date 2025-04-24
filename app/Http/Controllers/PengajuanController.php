@@ -110,8 +110,8 @@ class PengajuanController extends Controller
                             <i class="bi bi-check-circle-fill"></i>
                             </a>
                             
-                            <a onclick=\'opsi(`'.$row.'`)\' class="edit btn btn-secondary btn-sm text-light ml-2" title="Berikan Catatan" >
-                            <i class="bi bi-gear"></i>
+                            <a onclick=\'opsi(`'.$row.'`)\' class="edit btn btn-warning btn-sm text-light ml-2" title="Berikan Catatan" >
+                            <i class="bi bi-card-text"></i>
                             </a>
                             
                             </div>
@@ -508,7 +508,7 @@ class PengajuanController extends Controller
                     'user_id' =>  $user = Auth::user()->id, 
                     'estimasi' => request('waktu'), 
                     'jumlah_poin' => request('jumlah_poin'), 
-                    
+                    'status' => 2,
               ]);
         }
         
