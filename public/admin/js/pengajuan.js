@@ -1,3 +1,12 @@
+function showNotification(title, text, icon = 'info') {
+  Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'OK'
+  });
+}
 function getPengajuan(){
     $("#tabel_pengajuan").dataTable().fnDestroy();
 
@@ -400,8 +409,26 @@ $( document ).ready(function() {
         rpp : rpp , 
            }
     //ajax
-    
-    
+
+    if (!nama_kegiatan) {
+      showNotification('Peringatan', 'Nama kegiatan tidak boleh kosong!', 'warning');
+      return;
+    }
+    if (!waktu) {
+        showNotification('Peringatan', 'Waktu harus diisi!', 'warning');
+        return;
+    }
+    if (!jumlah_poin) {
+        showNotification('Peringatan', 'Jumlah poin harus diisi!', 'warning');
+        return;
+    }
+    if (!rpp) {
+        showNotification('Peringatan', 'RPP harus diisi!', 'warning');
+        $('#addPengajuan').modal({"backdrop": "static"})
+
+        return;
+    }
+   
     
     var file_data = $('#rpp').prop('files')[0];
     var form_data = new FormData();
