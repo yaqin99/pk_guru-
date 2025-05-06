@@ -411,8 +411,9 @@ $( document ).ready(function() {
     //ajax
 
     if (!nama_kegiatan) {
-      showNotification('Peringatan', 'Nama kegiatan tidak boleh kosong!', 'warning');
-      return;
+        showNotification('Peringatan', 'Nama kegiatan tidak boleh kosong!', 'warning');
+        
+        return;
     }
     if (!waktu) {
         showNotification('Peringatan', 'Waktu harus diisi!', 'warning');
@@ -424,7 +425,6 @@ $( document ).ready(function() {
     }
     if (!rpp) {
         showNotification('Peringatan', 'RPP harus diisi!', 'warning');
-        $('#addPengajuan').modal({"backdrop": "static"})
 
         return;
     }
