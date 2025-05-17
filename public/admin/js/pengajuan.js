@@ -223,84 +223,77 @@ $( document ).ready(function() {
   
     });
 
-
-  $('#addBuktiKegiatanSave').click(function(e) {
-    e.preventDefault();
-    $('#addBuktiKegiatan').modal({"backdrop": "static"})
-
-    //define variable
-   
-           var form_data = new FormData($('#formBuktiKegiatan')[0]);
-   
-   
-
-       const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-          confirmButton: "btn btn-success",
-          cancelButton: "btn btn-danger"
-        },
-        buttonsStyling: false
+    $('#addBuktiKegiatanSave').click(function(e) {
+      e.preventDefault();
+      $('#addBuktiKegiatan').modal({ "backdrop": "static" });
+  
+      // Ambil nilai input dari form
+      let file = $('#fileBuktiKegiatan').val(); // asumsikan input file punya id "bukti_file"
+      console.log(file)
+     
+      if (file == null || file == '') {
+          showNotification('Gagal', 'File bukti harus diunggah!', 'warning');
+          return;
+      }
+  
+      // Jika validasi lolos, buat FormData
+      var form_data = new FormData($('#formBuktiKegiatan')[0]);
+  
+      const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+              confirmButton: "btn btn-success",
+              cancelButton: "btn btn-danger"
+          },
+          buttonsStyling: false
       });
+  
       swalWithBootstrapButtons.fire({
-        title: "Konfirmasi Bukti Kegiatan?",
-        text: "Data Akan Langsung Ditambahkan!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Simpan",
-        cancelButtonText: "Batal",
-        reverseButtons: true
+          title: "Konfirmasi Bukti Kegiatan?",
+          text: "Data Akan Langsung Ditambahkan!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Simpan",
+          cancelButtonText: "Batal",
+          reverseButtons: true
       }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-
-                url: `/pengajuan/addBuktiKegiatan`,
-                type: "POST",
-                cache: false,
-                headers:{
-                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
-                processData: false,
-                contentType: false,
-                data: form_data,
-                enctype: 'multipart/form-data',
-
-                success:function(response){
-                    swalWithBootstrapButtons.fire({
-                        title: "Berhasil!",
-                        text: "Bukti Telah Ditambahkan",
-                        icon: "success"
+          if (result.isConfirmed) {
+              $.ajax({
+                  url: `/pengajuan/addBuktiKegiatan`,
+                  type: "POST",
+                  cache: false,
+                  headers: {
+                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  },
+                  processData: false,
+                  contentType: false,
+                  data: form_data,
+                  enctype: 'multipart/form-data',
+  
+                  success: function(response) {
+                      swalWithBootstrapButtons.fire({
+                          title: "Berhasil!",
+                          text: "Bukti Telah Ditambahkan",
+                          icon: "success"
                       });
-                     
-                      getPengajuan()
- 
-                },
-                error:function(error){
-                    
-                  
-    
-                }
-    
-            });
-
-
-          
-        } else if (
-          /* Read more about handling dismissals below */
-          result.dismiss === Swal.DismissReason.cancel
-        ) {
-         
-          swalWithBootstrapButtons.fire({
-            title: "Batal",
-            text: "Catatan Tidak Ditambah",
-            icon: "error"
-          });
-        }
+                      getPengajuan();
+                  },
+                  error: function(error) {
+                      showNotification('Gagal', 'Terjadi kesalahan saat menyimpan data!', 'error');
+                  }
+              });
+  
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+              swalWithBootstrapButtons.fire({
+                  title: "Batal",
+                  text: "Bukti tidak ditambahkan",
+                  icon: "error"
+              });
+          }
       });
+  });
+  
 
 
-
-
-
-});
   $('#btnCatatan').click(function(e) {
     e.preventDefault();
     $('#editCatatan').modal({"backdrop": "static"})
@@ -537,8 +530,21 @@ $( document ).ready(function() {
         jumlah_poin : jumlah_poin , 
         rpp : rpp , 
            }
-    //ajax
-    
+   
+           if (!nama_kegiatan) {
+            showNotification('Peringatan', 'Nama kegiatan tidak boleh kosong!', 'warning');
+            
+            return;
+        }
+        if (!waktu) {
+            showNotification('Peringatan', 'Waktu harus diisi!', 'warning');
+            return;
+        }
+        if (!jumlah_poin) {
+            showNotification('Peringatan', 'Jumlah poin harus diisi!', 'warning');
+            return;
+        }
+      
     
     
     var file_data = $('#rpp_id').prop('files')[0];
@@ -722,7 +728,10 @@ function tolakPengajuan(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             const alasanPenolakan = result.value;
-            
+            if (!alasanPenolakan) {
+              showNotification('Gagal', 'Alasan penolakan harus diisi!', 'warning');
+              return;
+           }
             Swal.fire({
                 title: 'Apakah anda yakin?',
                 text: "Pengajuan akan ditolak dengan alasan: " + alasanPenolakan,
@@ -800,44 +809,52 @@ function opsi (row){
 }
 
 function editCatatan(id) {
-    Swal.fire({
-        title: 'Edit Catatan',
-        input: 'textarea',
-        inputLabel: 'Masukkan catatan baru',
-        inputPlaceholder: 'Ketik catatan disini...',
-        showCancelButton: true,
-        confirmButtonText: 'Simpan',
-        cancelButtonText: 'Batal',
-        showLoaderOnConfirm: true,
-        preConfirm: (catatan) => {
-            return $.ajax({
-                url: `/pengajuan/catatan`,
-                type: 'POST',
-                headers:{
-                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
-                data: {
-                    catatan: catatan,
-                    id:id
-                }
-            }).then(response => {
-                return response;
-            }).catch(error => {
-                Swal.showValidationMessage(`Request failed: ${error.responseJSON.message}`);
-            });
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Berhasil!',
-                text: 'Catatan berhasil diperbarui',
-                icon: 'success'
-            }).then(() => {
-                getPengajuan();
-            });
-        }
-    });
+  Swal.fire({
+      title: 'Edit Catatan',
+      input: 'textarea',
+      inputLabel: 'Masukkan catatan baru',
+      inputPlaceholder: 'Ketik catatan disini...',
+      showCancelButton: true,
+      confirmButtonText: 'Simpan',
+      cancelButtonText: 'Batal',
+      showLoaderOnConfirm: true,
+      preConfirm: (catatan) => {
+          // catatan = catatan?.trim();
+          if (!catatan) {
+              showNotification('Gagal', 'Catatan tidak boleh kosong!', 'warning');
+              return false; // batalkan eksekusi ajax
+          }
+
+          return $.ajax({
+              url: `/pengajuan/catatan`,
+              type: 'POST',
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              data: {
+                  catatan: catatan,
+                  id: id
+              }
+          }).then(response => {
+              return response;
+          }).catch(error => {
+              Swal.showValidationMessage(`Request failed: ${error.responseJSON.message}`);
+          });
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+  }).then((result) => {
+      if (result.isConfirmed) {
+          Swal.fire({
+              title: 'Berhasil!',
+              text: 'Catatan berhasil diperbarui',
+              icon: 'success'
+          }).then(() => {
+              getPengajuan();
+          });
+      }
+  });
 }
+
 
 function buktiKegiatan(data){
   let row = JSON.parse(data);
@@ -852,54 +869,58 @@ function buktiKegiatanClick(){
 }
 
 function perbaikiPengajuan(id) {
-    Swal.fire({
-        title: 'Masukkan Catatan Perbaikan',
-        input: 'textarea',
-        inputPlaceholder: 'Ketik catatan perbaikan di sini...',
-        showCancelButton: true,
-        confirmButtonText: 'Lanjutkan',
-        cancelButtonText: 'Batal',
-        inputValidator: (value) => {
-            if (!value) {
-                return 'Catatan perbaikan harus diisi!'
-            }
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const catatanPerbaikan = result.value;
-            
-            Swal.fire({
-                title: 'Apakah anda yakin?',
-                text: "Pengajuan akan diminta perbaikan dengan catatan: " + catatanPerbaikan,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Minta Perbaikan!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/pengajuan/perbaiki`,
-                        type: 'POST',
-                        headers:{
-                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} , 
-                        data: {
+  Swal.fire({
+      title: 'Masukkan Catatan Perbaikan',
+      input: 'textarea',
+      inputPlaceholder: 'Ketik catatan perbaikan di sini...',
+      showCancelButton: true,
+      confirmButtonText: 'Lanjutkan',
+      cancelButtonText: 'Batal',
+  }).then((result) => {
+      if (result.isConfirmed) {
+          const catatanPerbaikan = result.value?.trim();
+
+          if (!catatanPerbaikan) {
+              showNotification('Gagal', 'Catatan perbaikan harus diisi!', 'warning');
+              return; // Batalkan proses jika kosong
+          }
+
+          Swal.fire({
+              title: 'Apakah anda yakin?',
+              text: "Pengajuan akan diminta perbaikan dengan catatan: " + catatanPerbaikan,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Ya, Minta Perbaikan!',
+              cancelButtonText: 'Batal'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  $.ajax({
+                      url: `/pengajuan/perbaiki`,
+                      type: 'POST',
+                      headers: {
+                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                      },
+                      data: {
                           id: id,
                           catatan_admin: catatanPerbaikan
-                        },
-                        success: function(response) {
-                            Swal.fire(
-                                'Berhasil!',
-                                'Permintaan perbaikan berhasil dikirim',
-                                'success'
-                            ).then(() => {
-                                getPengajuan();
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
+                      },
+                      success: function(response) {
+                          Swal.fire(
+                              'Berhasil!',
+                              'Permintaan perbaikan berhasil dikirim',
+                              'success'
+                          ).then(() => {
+                              getPengajuan();
+                          });
+                      },
+                      error: function() {
+                          showNotification('Gagal', 'Terjadi kesalahan saat mengirim permintaan perbaikan.', 'error');
+                      }
+                  });
+              }
+          });
+      }
+  });
 }

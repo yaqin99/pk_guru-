@@ -1,5 +1,15 @@
 let hitung = 0 ; 
 
+function showNotification(title, text, icon = 'info') {
+  Swal.fire({
+      title: title,
+      text: text,
+      icon: icon,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'OK'
+  });
+}
+
 function tolakSurat(id){
  $.ajax({
   url: `/surat/tolak`,
@@ -302,86 +312,80 @@ function getSurat(){
    
    $(document).ready(function(){
     
+   
     $('#editAspekButton').click(function(e) {
       e.preventDefault();
-
-      //define variable
-      let token   = $('#tokenAspek').val();
-      let id   = $('#idAspek').val();
-      let pedagogik   = $('#pedagogik').html();
-      let kepribadian   = $('#kepribadian').html();
-      let profesional   = $('#profesional').html();
-      let sosial   = $('#sosial').html();
-      let surat_id   = $('#surat_id').val();
-      
-      
+  
+      // define variable
+      let token = $('#tokenAspek').val();
+      let id = $('#idAspek').val();
+      let pedagogik = $('#pedagogik').html().trim();
+      let kepribadian = $('#kepribadian').html().trim();
+      let profesional = $('#profesional').html().trim();
+      let sosial = $('#sosial').html().trim();
+      let surat_id = $('#surat_id').val();
+  
+      // Validasi
+      if (!pedagogik || !kepribadian || !profesional || !sosial) {
+          showNotification('Gagal', 'Semua aspek (pedagogik, kepribadian, profesional, sosial) harus diisi!', 'warning');
+          return;
+      }
+  
       let data = {
           _token: token,
-          id : id , 
-          pedagogik : pedagogik , 
-          kepribadian : kepribadian , 
-          profesional : profesional , 
-          sosial : sosial , 
-         
-
-      }
-      //ajax
+          id: id,
+          pedagogik: pedagogik,
+          kepribadian: kepribadian,
+          profesional: profesional,
+          sosial: sosial,
+      };
+  
       const swalWithBootstrapButtons = Swal.mixin({
           customClass: {
-            confirmButton: "btn btn-success",
-            cancelButton: "btn btn-danger"
+              confirmButton: "btn btn-success",
+              cancelButton: "btn btn-danger"
           },
           buttonsStyling: false
-        });
-        swalWithBootstrapButtons.fire({
+      });
+  
+      swalWithBootstrapButtons.fire({
           title: "Konfirmasi Perubahan Data Aspek?",
-          text: "Data Akan Langsung Ditambahkan Pada Tabel!",
+          text: "Data Akan Langsung Dirubah Pada Tabel!",
           icon: "warning",
           showCancelButton: true,
           confirmButtonText: "Simpan",
           cancelButtonText: "Batal",
           reverseButtons: true
-        }).then((result) => {
+      }).then((result) => {
           if (result.isConfirmed) {
-
               $.ajax({
-
                   url: `/aspek/editAspek`,
                   type: "POST",
                   cache: false,
                   data: data,
-                  success:function(response){
+                  success: function(response) {
                       swalWithBootstrapButtons.fire({
                           title: "Berhasil!",
                           text: "Data Aspek Telah Dirubah",
                           icon: "success"
-                        });
-                      // getAspek(surat_id);
-                      getSurat();
+                      });
+                      getSurat(); // atau getAspek(surat_id); tergantung kebutuhan
                   },
-                  error:function(error){
-
+                  error: function(error) {
+                      showNotification('Gagal', 'Terjadi kesalahan saat menyimpan perubahan!', 'error');
                   }
-      
               });
-  
-  
-            
-          } else if (
-            /* Read more about handling dismissals below */
-            result.dismiss === Swal.DismissReason.cancel
-          ) {
-            
-            swalWithBootstrapButtons.fire({
-              title: "Batal",
-              text: "Data Aspek Tidak Dirubah",
-              icon: "error"
-            });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+              swalWithBootstrapButtons.fire({
+                  title: "Batal",
+                  text: "Data Aspek Tidak Dirubah",
+                  icon: "error"
+              });
           }
-        });
-
-
+      });
   });
+  
+
     $('#buttonEdit').click(function(e) {
       e.preventDefault();
 
@@ -478,34 +482,49 @@ function getSurat(){
 
     $('#addSuratButton').click(function(e) {
       e.preventDefault();
-      $('#addSurat').modal({"backdrop": "static"})
-
-      //define variable
-      let token_surat   = $('#token_surat').val();
-      let nama_user   = $('#nama_guru').val();
-      let tipe_surat   = $('#tipe_surat').val();
-      let tanggal   = $('#tanggal').val();
-      let keterangan   = $('#keterangan').val();
-      
-      
+      $('#addSurat').modal({ "backdrop": "static" });
+  
+      // define variable
+      let token_surat = $('#token_surat').val();
+      let nama_user = $('#nama_guru').val();
+      let tipe_surat = $('#tipe_surat').val();
+      let tanggal = $('#tanggal').val();
+      let keterangan = $('#keterangan').val();
+  
+      // validasi form
+      if (!nama_user || nama_user === '0') {
+          showNotification('Gagal', 'Nama guru harus diisi!', 'warning');
+          return;
+      }
+  
+      if (!tipe_surat || tipe_surat === '0') {
+          showNotification('Gagal', 'Tipe surat harus dipilih!', 'warning');
+          return;
+      }
+  
+      if (!tanggal) {
+          showNotification('Gagal', 'Tanggal surat harus diisi!', 'warning');
+          return;
+      }
+  
+    
       let data = {
           _token: token_surat,
-          nama_user : nama_user , 
-          tipe_surat : tipe_surat , 
-          tanggal : tanggal , 
-          keterangan : keterangan , 
-         
-
-      }
-      //ajax
+          nama_user: nama_user,
+          tipe_surat: tipe_surat,
+          tanggal: tanggal,
+          keterangan: keterangan,
+      };
+  
       const swalWithBootstrapButtons = Swal.mixin({
           customClass: {
-            confirmButton: "btn btn-success",
-            cancelButton: "btn btn-danger"
+              confirmButton: "btn btn-success",
+              cancelButton: "btn btn-danger"
           },
           buttonsStyling: false
-        });
-        swalWithBootstrapButtons.fire({
+      });
+  
+      swalWithBootstrapButtons.fire({
           title: "Konfirmasi Penambahan Data Surat?",
           text: "Data Akan Langsung Ditambahkan Pada Tabel!",
           icon: "warning",
@@ -513,58 +532,47 @@ function getSurat(){
           confirmButtonText: "Simpan",
           cancelButtonText: "Batal",
           reverseButtons: true
-        }).then((result) => {
+      }).then((result) => {
           if (result.isConfirmed) {
-
               $.ajax({
-
                   url: `/addSurat`,
                   type: "POST",
                   cache: false,
                   data: data,
-                  success:function(response){
+                  success: function(response) {
                       swalWithBootstrapButtons.fire({
                           title: "Berhasil!",
                           text: "Data Surat Telah Ditambahkan",
                           icon: "success"
-                        });
-                        $('#nama_guru').val('0').trigger('change');
-                        $('#tipe_surat').val('0').trigger('change');
-
-                      
-                        $('#tanggal').val('');
-                        $('#keterangan').val('');
-                         getSurat()
+                      });
+  
+                      // Reset form
+                      $('#nama_guru').val('0').trigger('change');
+                      $('#tipe_surat').val('0').trigger('change');
+                      $('#tanggal').val('');
+                      $('#keterangan').val('');
+  
+                      getSurat();
                   },
-                  error:function(error){
-                      
-                    
-      
+                  error: function(error) {
+                      showNotification('Gagal', 'Terjadi kesalahan saat menyimpan data!', 'error');
                   }
-      
               });
-  
-  
-            
-          } else if (
-            /* Read more about handling dismissals below */
-            result.dismiss === Swal.DismissReason.cancel
-          ) {
-            $('#token_surat').val('');
-            $('#nama_guru').val('');
-            $('#tipe_surat').val('');
-            $('#tanggal').val('');
-            $('#keterangan').val('');
-            swalWithBootstrapButtons.fire({
-              title: "Batal",
-              text: "Data Surat Tidak Ditambah",
-              icon: "error"
-            });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+              $('#token_surat').val('');
+              $('#nama_guru').val('');
+              $('#tipe_surat').val('');
+              $('#tanggal').val('');
+              $('#keterangan').val('');
+              swalWithBootstrapButtons.fire({
+                  title: "Batal",
+                  text: "Data Surat Tidak Ditambah",
+                  icon: "error"
+              });
           }
-        });
-
-
+      });
   });
+  
 
     
 
