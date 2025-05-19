@@ -24,7 +24,7 @@ class PengajuanController extends Controller
     
     public function sendWhatsApp()
     {
-        $phone   = '085232324069'; // Nomor tujuan
+        $phone   = '08999920375'; // Nomor tujuan
         $message = 'Halo, ini pesan otomatis dari Laravel 10 menggunakan Fonnte!';
 
         $response = $this->whatsappService->sendMessage($phone, $message);
