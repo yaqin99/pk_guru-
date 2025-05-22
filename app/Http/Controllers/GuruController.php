@@ -10,6 +10,8 @@ use App\Models\Sosial;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+
 class GuruController extends Controller
 {
     
@@ -17,6 +19,7 @@ class GuruController extends Controller
     {
         $pages = 'guru' ; 
         if ($request->ajax()) {
+
             $data = User::where('role' , 1)->get();
             $string = 'Konfirmasi Penghapusan Data' ; 
             return Datatables::of($data)
@@ -24,6 +27,22 @@ class GuruController extends Controller
                     ->addColumn('poin', function($row){
                       return $row->poin;})
                     ->addColumn('action', function($row){
+                        if(Auth::user()->role == 3 ){
+                            $btn = '
+                            <div class="btn-group">
+                            <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm" title="Lihat Aspek" style="cursor: pointer;">
+                            <i class="bi bi-eye-fill" ></i>
+                            </a>
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                        } else {
+
+                        
                            $btn = '
                            <div class="btn-group">
                            <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm" title="Lihat Aspek" style="cursor: pointer;">
@@ -40,6 +59,9 @@ class GuruController extends Controller
                            
     
                             return $btn;
+                        }
+                      
+
                     })
                     ->rawColumns(['action'])
                     ->make(true);

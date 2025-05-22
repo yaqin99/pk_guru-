@@ -6,6 +6,7 @@ use App\Models\Program;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class ProgramController extends Controller
 {
@@ -29,7 +30,8 @@ class ProgramController extends Controller
                     
                     })
                     ->addColumn('action', function($row){
-                           $btn = '
+                          if(Auth::user()->role == 2){
+                            $btn = '
                            <div class="btn-group">
                            <a onclick=\'editProgram(`'.$row.'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editProgram">
                            <i class="bi bi-pencil-fill" ></i>
@@ -42,6 +44,19 @@ class ProgramController extends Controller
                            
     
                             return $btn;
+                          }
+                          if(Auth::user()->role == 3){
+                            $btn = '
+                           <div class="btn-group">
+                           
+                           
+                           </div>
+                           
+                           ';
+                           
+    
+                            return $btn;
+                          }
                     })
                     ->rawColumns(['action'])
                     ->make(true);
