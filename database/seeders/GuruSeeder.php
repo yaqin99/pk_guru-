@@ -17,7 +17,7 @@ class GuruSeeder extends Seeder
             [
                 'nama_guru' => 'Moh. Ainul Yaqin' ,
                 'nip' =>  '0072198476' ,
-                'no_hp' =>  '085232324069' ,
+                'no_hp' =>  '08999920375' ,
                 'alamat' => 'Jl. Sersam Mesrul Gg. 3B' , 
                 'email' => 'yaqin.9a23@gmail.com' , 
                 'username' => 'yaqin' , 

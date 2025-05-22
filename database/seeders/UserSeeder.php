@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
             [
                 'nama_user' => 'Admin Febri' ,
                 'nip' =>  '0072198476' ,
-                'no_hp' =>  '085232324069' ,
+                'no_hp' =>  '08999920375' ,
                 'alamat' => 'Jl. Amin Djakfar' , 
                 'email' => 'febri.9a23@gmail.com' , 
                 'poin' => 0 , 
@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
             [
                 'nama_user' => 'Kepala Sekolah' ,
                 'nip' =>  '0072198476' ,
-                'no_hp' =>  '085847517013' ,
+                'no_hp' =>  '08999920375' ,
                 'alamat' => 'Jl. Amin Djakfar' , 
                 'email' => 'febri.9a23@gmail.com' , 
                 'poin' => 0 , 
