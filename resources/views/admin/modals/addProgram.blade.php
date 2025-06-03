@@ -21,10 +21,28 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="pelaksanaan" class="form-label">Pelaksanaan</label>
+                            <label for="pelaksanaan" class="form-label">Waktu</label>
                             <select id="pelaksanaan" name="pelaksanaan" class="form-select form-control">
                                 <option selected value="1">1 Semester</option>
                                 <option value="2">2 Semester</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="tahun" class="form-label">Tahun Ajaran</label>
+                            <select id="tahun" name="tahun" class="form-select form-control">
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                            </select>
+                        </div>
+                        
+                        
+                        <div class="col-md-6" id="statusHide">
+                            <label for="status" class="form-label">Status</label>
+                            <select id="status" name="status" class="form-select form-control">
+                                <option value="1">Aktif</option>
+                                <option value="0">Tidak Aktif</option>
                             </select>
                         </div>
                         

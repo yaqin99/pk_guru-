@@ -13,6 +13,7 @@ function getProgram(){
          {data: 'nama_program', name: 'nama_program'},
          {data: 'poin', name: 'poin'},
          {data: 'pelaksanaan', name: 'pelaksanaan'},
+         {data: 'tahun', name: 'tahun'},
      
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
@@ -27,6 +28,9 @@ function getProgram(){
     $('#nama_program').val(data.nama_program);
     $('#poin').val(data.poin).trigger('change');
     $('#pelaksanaan').val(data.pelaksanaan).trigger('change');
+    $('#tahun').val(data.tahun).trigger('change');
+    $('#status').val(data.status).trigger('change');
+    $('#statusHide').attr('hidden', false);
     $('#addProgram').modal('show');
     
    }
@@ -34,7 +38,15 @@ function getProgram(){
    
 $( document ).ready(function() {     
    getProgram();
+   $('#statusHide').attr('hidden', true);
 
+   var tahunSekarang = new Date().getFullYear();
+   var rentang = 0; // Tampilkan 5 tahun ke belakang dan ke depan
+
+   for (var i = tahunSekarang - rentang; i <= tahunSekarang + rentang; i++) {
+       var selected = (i === tahunSekarang) ? 'selected' : '';
+       $('#tahun').append(`<option value="${i}" ${selected}>${i}</option>`);
+   }
    $('#simpanProgram').click(function(e) {
     e.preventDefault();
 

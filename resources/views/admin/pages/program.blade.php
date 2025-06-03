@@ -17,7 +17,7 @@
                                 <th>Nama Program Kegiatan</th>
                                 <th>Poin Kegiatan</th>
                                 <th>Waktu Pelaksanaan</th>
-                                
+                                <th>Tahun Ajaran</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>

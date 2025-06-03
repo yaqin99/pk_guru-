@@ -15,7 +15,7 @@ class ProgramController extends Controller
     {
         $pages = 'program' ; 
         if ($request->ajax()) {
-            $data = Program::all();
+            $data = Program::orderBy('id' , 'DESC')->get();
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('nama_program', function($row){
@@ -26,6 +26,13 @@ class ProgramController extends Controller
                         
                        
                         return $row->pelaksanaan.' '.'Semester';
+                    
+                    
+                    })
+                    ->addColumn('tahun', function($row){
+                        
+                       
+                        return $row->tahun;
                     
                     
                     })
@@ -76,12 +83,16 @@ class ProgramController extends Controller
                 'nama_program' => request('nama_program'), 
                 'poin' => request('poin'), 
                 'pelaksanaan' => request('pelaksanaan'), 
+                'status' => 1,
+                'tahun' => request('tahun'),
               ]);
         } else {
             $add = Program::where('id' , request('idProgram') )->update([
                 'nama_program' => request('nama_program'), 
                 'poin' => request('poin'), 
                 'pelaksanaan' => request('pelaksanaan'), 
+                'status' => request('status'),
+                'tahun' => request('tahun'),
               ]);
         }
     }

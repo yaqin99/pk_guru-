@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('nama_program');
             $table->integer('poin');
             $table->string('pelaksanaan');
+            $table->integer('tahun')->nullable();
+            $table->enum('status', [1,0])->default(1);
+           
             $table->timestamps();
         });
     }

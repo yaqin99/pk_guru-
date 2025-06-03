@@ -5,26 +5,11 @@
                 <h4 class="modal-title"><strong id="judulFormEdit">Form Nilai Aspek Guru</strong></h4>
             </div>
             <div class="modal-body">
-                <div class="d-flex justify-content-around">
-            
+                <div class="d-flex justify-content-around">         
                         <button class="btn btn-outline-secondary" id="btnPedagogik" type="button" onclick="pedagogik()">Pedagogik</button>
-                       
-
-                   
-                    
                         <button class="btn btn-outline-secondary" id="btnKepribadian" type="button" onclick="kepribadian()">Kepribadian</button>
-                                             
-
-               
-                    
                         <button class="btn btn-outline-secondary" id="btnProfesional" type="button" onclick="profesional()">Profesional</button>
-                                             
-                    
-                    
                         <button class="btn btn-outline-secondary" id="btnSosial" type="button" onclick="sosial()">Sosial</button> 
-                                             
-
-                    
                 </div>
                 <div style="max-height: 15%;" class="container">
 
