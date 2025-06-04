@@ -225,6 +225,7 @@ class GuruController extends Controller
         // Jika ada file yang diupload
         if ($request->hasFile('file_aspek')) {
             $nameFile = $request->file('file_aspek')->getClientOriginalName();
+            $tanggal = $request->tanggal;
             
             // Jika ini adalah update (aspek_id ada)
             if ($request->filled('aspek_id')) {
@@ -245,6 +246,7 @@ class GuruController extends Controller
                 // Update data
                 if ($model) {
                     $data['dokumen'] = $nameFile;
+                    $data['tanggal'] = $tanggal;
                     
                     if($jenisAspek == '1'){
                         $data['nama_pedagogik'] = $request->keterangan_aspek;
@@ -261,7 +263,8 @@ class GuruController extends Controller
             } else {
                 // Ini adalah create baru
                 $data['dokumen'] = $nameFile;
-                
+                $data['tanggal'] = $tanggal;
+
                 if($jenisAspek == '1'){
                     $data['nama_pedagogik'] = $request->keterangan_aspek;
                 }else if($jenisAspek == '2'){

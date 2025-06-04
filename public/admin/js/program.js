@@ -14,6 +14,7 @@ function getProgram(){
          {data: 'poin', name: 'poin'},
          {data: 'pelaksanaan', name: 'pelaksanaan'},
          {data: 'tahun', name: 'tahun'},
+         {data: 'status', name: 'status'},
      
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]

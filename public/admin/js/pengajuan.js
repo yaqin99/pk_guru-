@@ -25,6 +25,7 @@ function getPengajuan(){
          {data: 'catatan_admin', name: 'catatan_admin'},
          {data: 'estimasi', name: 'estimasi'},
          {data: 'jumlah_poin', name: 'jumlah_poin'},
+         {data: 'tanggal', name: 'tanggal'},
          {data: 'status', name: 'status'},
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
@@ -388,6 +389,7 @@ $( document ).ready(function() {
     //define variable
     let nama_kegiatan   = $('#nama_kegiatan').val();
     let waktu   = $('#waktu').val();
+    let tanggal   = $('#tanggal').val();
     let jumlah_poin   = $('#jumlah_poin').val();
     let rpp   = $('#rpp').val();   
     let nameData   = $('#cek').val();   
@@ -429,6 +431,7 @@ $( document ).ready(function() {
     form_data.append('_token', token);
     form_data.append('nama_kegiatan', nama_kegiatan);
     form_data.append('waktu', waktuFix);
+    form_data.append('tanggal', tanggal);
     form_data.append('jumlah_poin', poinFix);
    
     
@@ -471,6 +474,7 @@ $( document ).ready(function() {
                       });
                       let nama_kegiatan   = $('#nama_kegiatan').val('');
                       let waktu   = $('#waktu').val('');
+                      let tanggal   = $('#tanggal').val('');
                       let jumlah_poin   = $('#jumlah_poin').val('');
                       let rpp   = $('#rpp').val('');  
                       getPengajuan()

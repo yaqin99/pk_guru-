@@ -31,6 +31,10 @@
                             <label class="control-label">Rpp Modul</label>
                             <input class="form-control form-white" id="rpp" type="file" name="rpp">
                         </div>
+                        <div class="col-md-6">
+                            <label class="control-label">Tanggal</label>
+                            <input class="form-control form-white" id="tanggal" type="date" name="tanggal">
+                        </div>
                         
                     </div>
                 </form>

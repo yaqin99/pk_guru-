@@ -21,6 +21,7 @@
                                
                                 <th>Estimasi</th>
                                 <th>Poin</th>
+                                <th>Tanggal</th>
                                 <th>Status</th>
                                 <th>Opsi</th>
                             </tr>

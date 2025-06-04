@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Services\WhatsAppService;
+use Carbon\Carbon;
 
 class PengajuanController extends Controller
 {
@@ -37,20 +38,20 @@ class PengajuanController extends Controller
     public function index(Request $request)
     {
         $pages = 'pengajuan' ; 
-        $programs = Program::all();
+        $programs = Program::where('status' , 1)->get();
         if ($request->ajax()) {
             if (Auth::user()->role == 1) {
                 # code...
-                $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->orderBy('id' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->orderBy('tanggal' , 'desc')->get();
             }
             if (Auth::user()->role == 2) {
-                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [2,5])->orderBy('id' , 'desc')->get();
-                $data = Pengajuan::with(['guru' , 'program'])->orderBy('id' , 'desc')->get();
+                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [2,5])->orderBy('tanggal' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->get();
 
             }
             if (Auth::user()->role == 3) {
-                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('id' , 'desc')->get();
-                $data = Pengajuan::with(['guru' , 'program'])->orderBy('id' , 'desc')->get();
+                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('tanggal' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->get();
 
             }
 
@@ -70,6 +71,10 @@ class PengajuanController extends Controller
                     return $row->estimasi.' '.'Semester';})
                     ->addColumn('jumlah_poin', function($row){
                     return $row->jumlah_poin.' '.'Poin';})
+                    ->addColumn('tanggal', function($row){
+                    Carbon::setLocale('id');
+
+                    return Carbon::parse($row->tanggal)->translatedFormat('l, d F Y');})
                     ->addColumn('status', function($row){
                         if ($row->status == null || $row->status == 1) {                
                           return $status = 'Revisi Admin' ; 
@@ -155,14 +160,19 @@ class PengajuanController extends Controller
                          if (Auth::user()->role == 1) {
                             if ($row->status == 6) {
                                 $btn = '
-                                <div class="btn-group">
-                                <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
-                                <i class="bi bi-file-earmark-pdf-fill"></i>                            
-                                </a>
                                 
-                                </div>
                                 
                                 ';
+                                
+                                // $btn = '
+                                // <div class="btn-group">
+                                // <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
+                                // <i class="bi bi-file-earmark-pdf-fill"></i>                            
+                                // </a>
+                                
+                                // </div>
+                                
+                                // ';
                                 
                             } 
                             else if ($row->status == 7) {
@@ -178,12 +188,23 @@ class PengajuanController extends Controller
                             } 
                             
                             
-                            else {
+                            else if ($row->status == 4) {
                                 $btn = '
                                 <div class="btn-group">
                                 <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
                                 <i class="bi bi-file-earmark-pdf-fill"></i>                            
                                 </a>
+                                
+                                </div>
+                                
+                                ';
+                                
+                            }
+
+                            else {
+                                $btn = '
+                                <div class="btn-group">
+                                
                                 <a onclick=\'editPengajuan(`'.json_encode($row).'`)\' class="edit btn btn-warning text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" title="Edit Pengajuan" >
                                 <i class="bi bi-pencil-fill" ></i>
                                 </a>
@@ -497,6 +518,7 @@ class PengajuanController extends Controller
             'estimasi' => request('waktu'), 
             'jumlah_poin' => request('jumlah_poin'), 
             'rpp' =>  $nameFile, 
+            'tanggal' =>  request('tanggal'),
             'bukti' =>  '', 
             'status' => 2 , 
         ]);

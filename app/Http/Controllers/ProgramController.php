@@ -36,6 +36,13 @@ class ProgramController extends Controller
                     
                     
                     })
+                    ->addColumn('status', function($row){
+                        
+                       
+                        return $row->status == 1 ? 'Aktif' : 'Tidak Aktif';
+                    
+                    
+                    })
                     ->addColumn('action', function($row){
                           if(Auth::user()->role == 2){
                             $btn = '

@@ -77,8 +77,9 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="30%">File Aspek</th>
-                                    <th width="50%">Keterangan</th>
+                                    <th width="20%">File Aspek</th>
+                                    <th width="40%">Keterangan</th>
+                                    <th width="20%">Tanggal</th>
                                     <th width="15%">Aksi</th>
                                 </tr>
                             </thead>
@@ -134,6 +135,11 @@
                         <label>Keterangan</label>
                         <textarea class="form-control" id="keterangan_aspek" name="keterangan_aspek" rows="3" required></textarea>
                     </div>
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input class="form-control" id="tanggal" name="tanggal2" type="date" required>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>

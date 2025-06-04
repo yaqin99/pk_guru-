@@ -160,6 +160,22 @@ $(document).ready(function() {
     );
 });
 
+function formatTanggalIndo(tanggal) {
+  const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const bulan = [
+    'Januari','Februari','Maret','April','Mei','Juni',
+    'Juli','Agustus','September','Oktober','November','Desember'
+  ];
+
+  const date = new Date(tanggal);
+  const namaHari = hari[date.getDay()];
+  const namaBulan = bulan[date.getMonth()];
+  const tgl = date.getDate();
+  const tahun = date.getFullYear();
+
+  return `${namaHari}, ${tgl} ${namaBulan} ${tahun}`;
+}
+
 function loadAspekDataProfil(id, aspekType) {
     $.ajax({
         url: "/guru/aspek/" + id,
@@ -199,6 +215,7 @@ function loadAspekDataProfil(id, aspekType) {
                     <td>${index + 1}</td>
                     <td>${namaField}</td>
                     <td>${item.dokumen}</td>
+                    <td>${formatTanggalIndo(item.tanggal)}</td>
                     <td>
                        <div class="btn-group">
                           <button class="btn btn-warning btn-sm" onclick="editAspek(${JSON.stringify(item).replace(/"/g, '&quot;')}, '${aspekType}')">
@@ -224,6 +241,8 @@ function loadAspekDataProfil(id, aspekType) {
 }
 
 function editAspek(item, aspekType) {
+    console.log(item.tanggal)
+    $('#tanggal').val(item.tanggal);
     $('#modalTambahAspek').modal('show');
     $('#jenis_aspek').val(aspekType);
     $('#aspek_id').val(item.id);

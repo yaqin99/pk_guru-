@@ -18,6 +18,7 @@
                                 <th>Poin Kegiatan</th>
                                 <th>Waktu Pelaksanaan</th>
                                 <th>Tahun Ajaran</th>
+                                <th>Status Program</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>

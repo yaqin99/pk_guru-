@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Surat;
 use App\Models\User;
 use App\Models\Aspek;
+use App\Models\Pengajuan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -176,14 +177,30 @@ class SuratController extends Controller
                           return $btn;
                         } 
                          else {
+                        //   $btn = '
+                        // <div class="btn-group">
+                        // <a onclick=\'cetakSurat(`'.$row.'`)\' class="ml-2 edit btn btn-primary btn-sm text-light" >
+                        // <i class="bi bi-printer-fill" ></i>
+                        // </a>
+                        // <a onclick=\'suratAspek(`'.$row->id.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
+                        // <i class="bi bi-file-earmark-bar-graph" ></i>
+                        // </a>
+                        // <a onclick=\'editSurat(`'.$row.'`)\' class="ml-2 edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editSurat">
+                        // <i class="bi bi-pencil-fill" ></i>
+                        // </a>
+                        
+                        // <a href="javascript:void(0)" onclick=\'deleteSurat(`'.$row->id.'`)\' class="ml-2 edit btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                        
+                        // </div>
+                        
+                        // ';
+                        
                           $btn = '
                         <div class="btn-group">
                         <a onclick=\'cetakSurat(`'.$row.'`)\' class="ml-2 edit btn btn-primary btn-sm text-light" >
                         <i class="bi bi-printer-fill" ></i>
                         </a>
-                        <a onclick=\'suratAspek(`'.$row->id.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editAspek">
-                        <i class="bi bi-file-earmark-bar-graph" ></i>
-                        </a>
+                        
                         <a onclick=\'editSurat(`'.$row.'`)\' class="ml-2 edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editSurat">
                         <i class="bi bi-pencil-fill" ></i>
                         </a>
@@ -365,6 +382,8 @@ class SuratController extends Controller
     public function cetak(){
         try {
             $nama = User::where('id' , request()->user_id)->first();
+            $kinerja = Pengajuan::with('program')->where('user_id' , request()->user_id)->where('status' , 6)->get();
+            
             $row = [
                 'nama_user' => $nama->nama_user,
                 'nip' => $nama->nip,
@@ -373,6 +392,7 @@ class SuratController extends Controller
                 'tanggal' => request()->tanggal,
                 'keterangan' => request()->keterangan,
                 'tipe' => request()->tipe,
+                'program' => $kinerja,
                 'pedagogik' => request('pedagogik'),
                 'kepribadian' => request('kepribadian'),
                 'profesional' => request('profesional'),

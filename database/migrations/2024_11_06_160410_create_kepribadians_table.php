@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('nama_kepribadian');
             $table->string('dokumen');
+            $table->date('tanggal');
+
             $table->timestamps();
         });
     }

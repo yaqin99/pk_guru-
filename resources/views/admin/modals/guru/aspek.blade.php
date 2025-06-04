@@ -19,8 +19,9 @@
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="30%">File Aspek</th>
-                            <th width="50%">Keterangan</th>
+                            <th width="20%">File Aspek</th>
+                            <th width="40%">Keterangan</th>
+                            <th width="20%">Tanggal</th>
                             <th width="15%">Aksi</th>
                         </tr>
                     </thead>

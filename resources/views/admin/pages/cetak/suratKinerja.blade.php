@@ -226,7 +226,80 @@ style='font-size:12.0pt'>Dengan ini menerangkan bahwa : </span></p>
 style='font-size:12.0pt'>&nbsp;</span></p>
 
 <p class=MsoNormal style='text-align:justify;line-height:150%'><span
-lang=EN-US style='font-size:12.0pt;line-height:150%'>Nama diatas {{$row['keterangan']}}</span></p>
+lang=EN-US style='font-size:12.0pt;line-height:150%'>Nama diatas {{$row['keterangan']}}, Adapun rincian program kerja yang telah di laksanakan adalah sebagai berikut : </span></p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=643
+ style='margin-left:13.9pt;border-collapse:collapse'>
+ <tr style='height:14.7pt'>
+  <td width=47 rowspan=2 style='width:35.45pt;border:solid black 1.0pt;
+  padding:0cm 0cm 0cm 0cm;height:14.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>No</span></p>
+  </td>
+  <td width=151 rowspan=2 style='width:12cm;border:solid black 1.0pt;
+  border-left:none;padding:0cm 0cm 0cm 0cm;height:14.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>Nama Kegiatan</span></p>
+  </td>
+  <td width=151 rowspan=2 style='width:2.5cm;border:solid black 1.0pt;
+  border-left:none;padding:0cm 0cm 0cm 0cm;height:14.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>Pelaksanaan</span></p>
+  </td>
+  <td width=151 rowspan=2 style='width:1.6cm;border:solid black 1.0pt;
+  border-left:none;padding:0cm 0cm 0cm 0cm;height:14.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>Tanggal</span></p>
+  </td>
+  <td width=142 rowspan=2 style='width:30pt;border:solid black 1.0pt;
+  border-left:none;padding:0cm 0cm 0cm 0cm;height:14.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>Poin</span></p>
+  </td>
+  <td style='height:14.7pt;border:none' width=0 height=20></td>
+ </tr>
+ <tr style='height:14.0pt'>
+  <td style='height:14.0pt;border:none' width=0 height=19></td>
+ </tr>
+@foreach ($row["program"] as $index => $bi)
+
+ <tr style='height:28.7pt'>
+  <td width=47 style='width:35.45pt;border:solid black 1.0pt;border-top:none;
+  padding:0cm 0cm 0cm 0cm;height:28.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>{{ $index + 1 }}</span></p>
+  </td>
+   
+
+  <td width=151 style='width:12cm;border-top:none;border-left:none;border-bottom:
+  solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
+  height:28.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>{{$bi->program->nama_program}}</span></p>
+  </td>
+  <td width=151 style='width:2.5cm;border-top:none;border-left:none;border-bottom:
+  solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
+  height:28.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>{{$bi['estimasi'].' Semester'}}</span></p>
+  </td>
+  <td width=151 style='width:1.6cm;border-top:none;border-left:none;border-bottom:
+  solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
+  height:28.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>{{\Carbon\Carbon::parse($bi->tanggal)->translatedFormat('d F Y');}}</span></p>
+  </td>
+  <td width=142 style='width:30pt;border-top:none;border-left:none;
+  border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
+  height:28.7pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
+  style='font-size:12.0pt'>{{$bi['jumlah_poin']}}</span></p>
+  </td>
+
+  <td style='height:28.7pt;border:none' width=0 height=38></td>
+</tr>
+@endforeach
+</table>
 
 <p class=MsoNormal style='text-align:justify;line-height:150%'><span
 lang=EN-US style='font-size:12.0pt;line-height:150%'>Demikian surat keputusan
@@ -236,43 +309,42 @@ mana mestinya.</span></p>
 <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
 style='font-size:12.0pt'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-style='font-size:12.0pt'>Sumenep, {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y')}}</span></p>
-
-<p class=MsoNormal style='margin-left:326.05pt'>
-
-<table cellpadding=0 cellspacing=0 align=left>
- 
- <tr>
-  <td>
-   
-  <img style=" 
-     position: absolute;
-  left: 50%;
-  top: 54%;
-  z-index: -1;
-    " src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/stempel.png'))) }}"  height="150" width="auto" />
-
-</td>
- </tr>
-</table>
-
-<span lang=EN-US style='font-size:1pt'>&nbsp;</span>
+<p class="MsoNormal" style="text-align: right; margin-top: 20px; margin-right:50px;">
+  <span lang="EN-US" style="font-size:12.0pt">
+    Sumenep, {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y') }}
+  </span>
 </p>
 
+<!-- Pembungkus tanda tangan & stempel -->
+<div style="width: 100%; display: flex; justify-content: flex-end; position: relative; margin-left:475px;">
+  
+  <div style="text-align: center; width: 250px; position: relative; margin-top:-30px;">
+    
+    <!-- Stempel di belakang -->
+    <img
+      src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/stempel.png'))) }}"
+      height="150"
+      style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1; opacity: 0.5;"
+    />
 
-<p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-style='font-size:12.0pt'>Kepala MA Al-Ghazali,</span></p>
+    <!-- Tanda tangan -->
+    <img
+      src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/ttdfurqan.png'))) }}"
+      height="100"
+      style="margin-top: 40px; z-index: 2; position: relative; margin-right:20px;"
+    />
 
-<p class=MsoNormal ><span>
-<img style="  
-position: absolute;
-  left: 50%;
-  margin-top:-12pt;
-  z-index: -1;
-" src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/ttdfurqan.png'))) }}"  height="100" width="auto" />
+    <!-- Nama -->
+    <p class="MsoNormal" style="font-size:12pt; margin-top: 5px; z-index: 3; position: relative;">
+      Kepala MA Al-Ghazali,
+    </p>
+    <p class="MsoNormal" style="font-size:12pt; font-weight: bold; z-index: 3; position: relative;">
+      AHMAD AINUL FURQAN, S.Pd
+    </p>
 
-</span></p>
+  </div>
+
+</div>
 
 <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
 style='font-size:12.0pt'>&nbsp;</span></p>
@@ -284,8 +356,6 @@ style='font-size:12.0pt'>&nbsp;</span></p>
 <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
 style='font-size:12.0pt'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:326.05pt'><b><u><span lang=EN-US
-style='font-size:12.0pt'>AHMAD AINUL FURQAN, S.IP</span></u></b></p>
 
 <i><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'><br
 clear=all style='page-break-before:always'>
@@ -440,7 +510,7 @@ style='font-size:12.0pt'>&nbsp;</span></p>
 lang=EN-US style='font-size:14.0pt'>&nbsp;</span></p>
 
 <table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=643
- style='margin-left:13.9pt;border-collapse:collapse'>
+ style='margin-left:13.9pt;border-collapse:collapse ; margin-top:20px;'>
  <tr style='height:14.7pt'>
   <td width=47 rowspan=2 style='width:35.45pt;border:solid black 1.0pt;
   padding:0cm 0cm 0cm 0cm;height:14.7pt'>
@@ -513,60 +583,40 @@ lang=EN-US style='font-size:14.0pt'>&nbsp;</span></p>
 <p class=MsoNormal style='margin-left:288.0pt;text-indent:36.0pt'><span
 lang=EN-US style='font-size:12.0pt'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-style='font-size:12.0pt'>Sumenep,  {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y')}}</span></p>
+<p class="MsoNormal" style="text-align: right; margin-top: 20px; margin-right:50px;">
+  <span lang="EN-US" style="font-size:12.0pt">
+    Sumenep, {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y') }}
+  </span>
+</p>
 
-<p class=MsoNormal style='margin-left:326.05pt'>
+<!-- Pembungkus tanda tangan & stempel -->
+<div style="width: 100%; display: flex; justify-content: flex-end; position: relative; margin-left:475px;">
+  
+  <div style="text-align: center; width: 250px; position: relative; margin-top:-30px;">
+    
+    <!-- Stempel di belakang -->
+    <img
+      src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/stempel.png'))) }}"
+      height="150"
+      style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1; opacity: 0.5;"
+    />
 
-  <table cellpadding=0 cellspacing=0 align=left>
- 
-    <tr>
-     <td>
-      
-     <img style=" 
-        position: absolute;
-     left: 50%;
-     top: 54%;
-     z-index: -1;
-       " src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/stempel.png'))) }}"  height="150" width="auto" />
-   
-   </td>
-    </tr>
-   </table>
-   
-   <span lang=EN-US style='font-size:1pt'>&nbsp;</span>
-   </p>
-   
-   
-   <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-   style='font-size:12.0pt'>Kepala MA Al-Ghazali,</span></p>
-   
-   <p class=MsoNormal ><span>
-   <img style="  
-   position: absolute;
-     left: 50%;
-     margin-top:-12pt;
-     z-index: -1;
-   " src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/ttdfurqan.png'))) }}"  height="100" width="auto" />
-   
-   </span></p>
-   
-   <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-   style='font-size:12.0pt'>&nbsp;</span></p>
-   <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-   style='font-size:12.0pt'>&nbsp;</span></p>
-   
-   <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-   style='font-size:12.0pt'>&nbsp;</span></p>
-   <p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-   style='font-size:12.0pt'>&nbsp;</span></p>
-   
-   <p class=MsoNormal style='margin-left:326.05pt'><b><u><span lang=EN-US
-   style='font-size:12.0pt'>AHMAD AINUL FURQAN, S.IP</span></u></b></p>
-   
-   <i><span lang=EN-US style='font-size:12.0pt;font-family:"Times New Roman",serif'><br
-   clear=all style='page-break-before:always'>
-   </span></i>
+    <!-- Tanda tangan -->
+    <img
+      src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/ttdfurqan.png'))) }}"
+      height="100"
+      style="margin-top: 40px; z-index: 2; position: relative; margin-right:20px;"
+    />
+
+    <!-- Nama -->
+    <p class="MsoNormal" style="font-size:12pt; margin-top: 5px; z-index: 3; position: relative;">
+      Kepala MA Al-Ghazali,
+    </p>
+    <p class="MsoNormal" style="font-size:12pt; font-weight: bold; z-index: 3; position: relative;">
+      AHMAD AINUL FURQAN, S.Pd
+    </p>
+
+  </div>
 
 </div>
 
