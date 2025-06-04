@@ -25,68 +25,91 @@ function getGuru(){
    }
 
 function showResetPoinGuru() {
-    // SweetAlert pertama - Informasi
-    Swal.fire({
-        title: 'Fitur Reset Poin Guru',
-        html: `<div class="text-left">
-                <p>Perhatian! Fitur ini akan:</p>
-                <ul>
-                    <li>Mengubah semua poin akun guru menjadi 0</li>
-                    <li>Hanya digunakan di awal tahun pembelajaran baru</li>
-                    <li>Tidak dapat dibatalkan setelah dijalankan</li>
-                </ul>
-               </div>`,
-        icon: 'info',
-        confirmButtonText: 'Lanjutkan',
-        confirmButtonColor: '#3085d6',
-        showCancelButton: true,
-        cancelButtonText: 'Tutup',
-        cancelButtonColor: '#d33'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // SweetAlert kedua - Konfirmasi
-            Swal.fire({
-                title: 'Apakah Anda Yakin?',
-                text: "Semua poin guru akan direset menjadi 0!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Reset Sekarang!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Kirim request reset poin
-                    $.ajax({
-                        url: '/admin/guru/reset-poin',
-                        type: 'POST',
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(response) {
-                            if(response.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: 'Poin semua guru telah direset menjadi 0',
-                                    confirmButtonText: 'OK'
-                                }).then(() => {
-                                    $('#tabel_guru').DataTable().ajax.reload();
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
+  Swal.fire({
+    title: 'Fitur Reset Poin Guru',
+    html: `
+        <div style="text-align: left;">
+            <p><strong>Perhatian!</strong> Fitur ini akan:</p>
+            <ul style="padding-left: 1.2em;">
+                <li>Mengubah semua poin akun guru menjadi <strong>0</strong></li>
+                <li>Hanya digunakan di awal tahun pembelajaran baru</li>
+                <li><span style="color: red;">Tidak dapat dibatalkan</span> setelah dijalankan</li>
+            </ul>
+            <hr>
+            <p><strong>Apakah Anda yakin ingin melanjutkan?</strong></p>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px;">
+                <label style="display: flex; align-items: center;">
+                    <input type="radio" name="konfirmasi" value="ya" style="margin-right: 5px;">
+                    Ya, saya yakin
+                </label>
+                <label style="display: flex; align-items: center;">
+                    <input type="radio" name="konfirmasi" value="tidak" style="margin-right: 5px;">
+                    Tidak, batalkan
+                </label>
+            </div>
+        </div>
+    `,
+    icon: 'info',
+    confirmButtonText: 'Lanjutkan',
+    confirmButtonColor: '#3085d6',
+    showCancelButton: true,
+    cancelButtonText: 'Tutup',
+    cancelButtonColor: '#d33',
+    focusConfirm: false,
+    preConfirm: () => {
+        const selected = document.querySelector('input[name="konfirmasi"]:checked');
+        if (!selected || selected.value !== 'ya') {
+            Swal.showValidationMessage('Silakan pilih "Ya, saya yakin" untuk melanjutkan.');
+            return false;
+        }
+        return true;
+    }
+}).then((result) => {
+    if (result.isConfirmed) {
+        // SweetAlert kedua - Konfirmasi akhir
+        Swal.fire({
+            title: 'Apakah Anda Yakin?',
+            text: "Semua poin guru akan direset menjadi 0!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#95a5a6',
+            confirmButtonText: 'Ya, Reset Sekarang!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim AJAX request reset poin
+                $.ajax({
+                    url: '/admin/guru/reset-poin',
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
                             Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: 'Terjadi kesalahan saat mereset poin guru'
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Poin semua guru telah direset menjadi 0',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                $('#tabel_guru').DataTable().ajax.reload();
                             });
                         }
-                    });
-                }
-            });
-        }
-    });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat mereset poin guru'
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
 }
 
 $( document ).ready(function() {     
@@ -112,7 +135,7 @@ function download(id, dokumen, aspekType) {
 }
 
 
-function beriNilaiAspek(row) {
+function beriNilaiAspek(item) {
     console.log('called')
   Swal.fire({
     title: 'Tentukan Kelengkapan Dokumen Aspek Guru',
@@ -238,8 +261,9 @@ function loadAspekData(id, aspekType, nama_user) {
                     <td>
                        <div class="btn-group">
                           <a class="btn btn-primary btn-sm text-light mr-2" target="_blank" href="/storage/${nama_user}/${folder}/${item.dokumen}"><i class="bi bi-download"></i></a>
-                          <a class="btn btn-warning btn-sm text-light" onclick="beriNilaiAspek(${item})" href="javascript:void(0)"><i class="bi bi-pencil-square"></i></a>
-                       </div>
+<a class="btn btn-warning btn-sm text-light" onclick='beriNilaiAspek(${JSON.stringify(item)})' href="javascript:void(0)">
+    <i class="bi bi-pencil-square"></i>
+</a>                       </div>
                     </td>
                 </tr>`;
             });

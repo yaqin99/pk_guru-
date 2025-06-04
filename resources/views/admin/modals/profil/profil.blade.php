@@ -137,7 +137,7 @@
                     </div>
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <input class="form-control" id="tanggal" name="tanggal2" type="date" required>
+                        <input class="form-control" id="tanggal" name="tanggal" type="date" required>
                     </div>
 
                 </div>
