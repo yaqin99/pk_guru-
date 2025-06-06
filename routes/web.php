@@ -74,6 +74,8 @@ Route::post('/surat/tolak', [SuratController::class,'tolak'])->middleware('auth'
 
 
 
+Route::post('/guru/aspek/cekAspek', [GuruController::class,'cekAspek']);
+Route::post('/guru/aspek/nilai', [GuruController::class,'nilai']);
 Route::post('/guru/aspek/store', [GuruController::class,'storeAspek']);
 Route::post('/guru/aspek/edit', [GuruController::class,'editAspek']);
 Route::post('/guru/aspek/delete', [GuruController::class,'deleteAspek']);

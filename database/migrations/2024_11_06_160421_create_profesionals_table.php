@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('nama_profesional');
             $table->string('dokumen');
             $table->date('tanggal');
+            $table->text('catatan')->nullable();
+            $table->integer('nilai')->nullable();
+
 
             $table->timestamps();
         });

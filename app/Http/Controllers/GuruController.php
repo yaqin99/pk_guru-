@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-
+use Carbon\Carbon;
 class GuruController extends Controller
 {
     
@@ -72,6 +72,59 @@ class GuruController extends Controller
         ]);
     }
     
+    public function cekAspek()
+    {
+        dd(request()->all());
+        $type = request('jenis'); // Default ke pedagogik jika tidak ada type
+        
+        $data = match($type) {
+            '1' => Pedagogik::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            '2' => Kepribadian::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            '3' => Profesional::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            '4' => Sosial::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            default => Pedagogik::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+        };
+        
+        
+        return response()->json($data);
+    }
+
+
+    public function nilai()
+    {
+        $type = request('jenis'); // Default ke pedagogik jika tidak ada type
+        
+        $data = match($type) {
+            '1' => Pedagogik::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            '2' => Kepribadian::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            '3' => Profesional::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            '4' => Sosial::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+            default => Pedagogik::where('id', request('row')['id'])->update([
+                'nilai' => request('nilai')
+            ]),
+        };
+        
+        
+        return response()->json($data);
+    }
     public function getAspek($id)
     {
         $type = request('type'); // Default ke pedagogik jika tidak ada type
@@ -201,6 +254,23 @@ class GuruController extends Controller
     public function storeAspek(Request $request)
     {
         $data = $request->all();
+        $jenisAspek = $request->jenis_aspek;
+        $userId = $request->user_id; // pastikan user_id dikirim dari form
+        $tahun = Carbon::parse($request->tanggal)->format('Y');
+        $cek = match ($jenisAspek) {
+            '1' => Pedagogik::where('user_id', $userId)->whereYear('tanggal', $tahun)->first(),
+            '2' => Kepribadian::where('user_id', $userId)->whereYear('tanggal', $tahun)->first(),
+            '3' => Profesional::where('user_id', $userId)->whereYear('tanggal', $tahun)->first(),
+            '4' => Sosial::where('user_id', $userId)->whereYear('tanggal', $tahun)->first(),
+            default => null
+        };
+    
+        if ($cek) {
+            return response()->json([
+                'status' => 'duplikat',
+                'message' => 'Data aspek untuk tahun ini sudah ada.'
+            ], 409); // 409 Conflict
+        }
         
         $data['user_id'] = $request->user_id;
         $user = User::find($data['user_id']);
@@ -211,7 +281,6 @@ class GuruController extends Controller
         }
 
         // Pastikan jenis_aspek memiliki nilai default
-        $jenisAspek = $request->jenis_aspek ;
 
         // Tentukan folder berdasarkan jenis aspek
         $folder = match($jenisAspek) {

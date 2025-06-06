@@ -67,7 +67,7 @@
                                     <option value="4">Sosial</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="showModalTambahAspek()">
+                            <button type="button" class="btn btn-primary" onclick="showModalTambahAspek({{Auth::user()->id}})">
                                 <i class="bi bi-plus"></i> Tambah Aspek
                             </button>
                         </div>
@@ -79,7 +79,8 @@
                                     <th width="5%">No</th>
                                     <th width="20%">File Aspek</th>
                                     <th width="40%">Keterangan</th>
-                                    <th width="20%">Tanggal</th>
+                                    <th width="5%">Poin</th>
+                                    <th width="15%">Tanggal</th>
                                     <th width="15%">Aksi</th>
                                 </tr>
                             </thead>
@@ -109,6 +110,7 @@
             </div>
             <form id="formTambahAspek" enctype="multipart/form-data">
                 <input type="hidden" id="aspek_id" name="aspek_id">
+                <input type="hidden" id="user_id_cek" name="user_id_cek">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Jenis Aspek</label>

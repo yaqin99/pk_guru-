@@ -28,6 +28,29 @@ function viewProfile(id){
     });
 }
 
+function cekAspek() {
+    const jenisAspek = document.getElementById("jenis_aspek").value;
+    const tahun = new Date().getFullYear(); // Atau ambil dari input lain
+    const userId = $('#user_id_cek'); // Ganti dengan user ID aktif, bisa didapat via blade / session
+    
+    $.ajax({
+        url: "guru/aspek/cekAspek",
+        type: "POST",
+        data: {
+            jenis : jenisAspek , 
+            tahun : tahun , 
+            user_id : userId ,
+        } , 
+        dataType: "json",
+        success: function(response){
+            console.log(response);
+           
+        }
+    });
+
+   
+  }
+  
 
 function updateProfile() {
     let formData = new FormData($('#formProfil')[0]);
@@ -215,6 +238,7 @@ function loadAspekDataProfil(id, aspekType) {
                     <td>${index + 1}</td>
                     <td>${namaField}</td>
                     <td>${item.dokumen}</td>
+                    <td>${item.nilai === null || item.nilai === '' ? '' : item.nilai}</td>
                     <td>${formatTanggalIndo(item.tanggal)}</td>
                     <td>
                        <div class="btn-group">
@@ -336,7 +360,7 @@ function simpanAspek() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
-            if(response.success) {
+            if (response.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
@@ -351,13 +375,24 @@ function simpanAspek() {
             }
         },
         error: function(xhr, status, error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal',
-                text: 'Terjadi kesalahan saat menyimpan data'
-            });
+            if (xhr.status === 409 && xhr.responseJSON && xhr.responseJSON.status === 'duplikat') {
+                let jenisAspek = $('#jenis_aspek option:selected').text(); // ambil label aspek
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Duplikat',
+                    html: `Data aspek <b>${jenisAspek}</b> sudah pernah ditambahkan untuk tahun pelajaran ini.<br>Setiap aspek hanya dapat ditambahkan <b>1 kali per tahun</b>.`
+                });
+            } else {
+                console.log(status, error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan saat menyimpan data.'
+                });
+            }
         }
     });
+    
 }
 
 // Modifikasi reset form
@@ -369,10 +404,11 @@ $('#modalTambahAspek').on('hidden.bs.modal', function () {
     $('#jenis_aspek').attr('disabled', false);
 });
 
-function showModalTambahAspek() {
+function showModalTambahAspek(user_id) {
     // Reset form dan tampilkan modal
     $('#formTambahAspek')[0].reset();
     $('#file_name').val('');
+    $('#user_id_cek').val(user_id);
     $('#aspek_id').val('');
     $('#file_aspek').prop('required', true);
     $('#jenis_aspek').attr('disabled', false);

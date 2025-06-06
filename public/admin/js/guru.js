@@ -135,75 +135,108 @@ function download(id, dokumen, aspekType) {
 }
 
 
-function beriNilaiAspek(item) {
-    console.log('called')
+function beriNilaiAspek(item , jenis) {
+  console.log(item);
+  if (item.nilai !== null && item.nilai !== '') {
+    Swal.fire({
+      icon: 'info',
+      title: 'Poin Sudah Diberikan',
+      text: 'Poin telah diberikan sebelumnya dan tidak dapat diubah.',
+      confirmButtonText: 'OK'
+    });
+    return; // Hentikan proses selanjutnya jika nilai sudah ada
+  }
   Swal.fire({
     title: 'Tentukan Kelengkapan Dokumen Aspek Guru',
     html: `
-      <div class="text-start">
-        <div>
-          <input type="radio" name="kelengkapan" id="option1" value="file_tidak_lengkap">
-          <label for="option1">File tidak lengkap</label>
-        </div>
-        <div>
-          <input type="radio" name="kelengkapan" id="option2" value="file_kurang_lengkap">
-          <label for="option2">File kurang lengkap</label>
-        </div>
-        <div>
-          <input type="radio" name="kelengkapan" id="option3" value="file_lengkap">
-          <label for="option3">File lengkap</label>
-        </div>
-        <div id="textarea-container" style="margin-top: 10px; display: none;">
-          <label for="catatan" class="form-label mt-2">Catatan Perbaikan:</label>
-          <textarea id="catatan" class="swal2-textarea" placeholder="Tulis catatan..."></textarea>
-        </div>
-      </div>
-    `,
+    <div class="text-start" style="display: flex; flex-direction: column; gap: 8px;">
+      <label style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <input type="radio" name="kelengkapan" value="2">
+          File tidak lengkap
+        </span>
+        <small style="color: gray;">(file kosong)</small>
+      </label>
+      <label style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <input type="radio" name="kelengkapan" value="5">
+          File kurang lengkap
+        </span>
+        <small style="color: gray;">(file tanpa ttd / stempel kepsek)</small>
+      </label>
+      <label style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <input type="radio" name="kelengkapan" value="10">
+          File lengkap
+        </span>
+        <small style="color: gray;">(file lengkap)</small>
+      </label>
+    </div>
+  `,  
     showCancelButton: true,
     confirmButtonText: 'Kirim',
     cancelButtonText: 'Batal',
-    preConfirm: () => {
-      const selected = document.querySelector('input[name="kelengkapan"]:checked');
-      const catatan = document.getElementById('catatan')?.value;
-
-      if (!selected) {
-        Swal.showValidationMessage('Silakan pilih salah satu opsi.');
-        return false;
-      }
-
-      if ((selected.value === 'file_tidak_lengkap' || selected.value === 'file_kurang_lengkap') && catatan.trim() === '') {
-        Swal.showValidationMessage('Silakan tulis catatan perbaikan.');
-        return false;
-      }
-
-      return {
-        status: selected.value,
-        catatan: selected.value === 'file_lengkap' ? null : catatan.trim()
-      };
-    },
-    didOpen: () => {
-      const radios = document.querySelectorAll('input[name="kelengkapan"]');
-      radios.forEach(radio => {
-        radio.addEventListener('change', () => {
-          const textarea = document.getElementById('textarea-container');
-          if (radio.value === 'file_lengkap') {
-            textarea.style.display = 'none';
-          } else {
-            textarea.style.display = 'block';
-          }
-        });
-      });
+    customClass: {
+      actions: 'justify-content-start', // Tombol rata kiri
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      console.log('Data yang dikirim:', result.value);
+      const selected = document.querySelector('input[name="kelengkapan"]:checked');
+      if (!selected) {
+        Swal.fire('Peringatan', 'Silakan pilih salah satu opsi terlebih dahulu.', 'warning');
+        return;
+      }
+      const nilai = selected.value;
+      console.log('Nilai dikirim:', nilai);
 
-      // Kirim nilai via AJAX, fetch, atau simpan ke server di sini jika perlu
-      // Contoh:
-      // kirimNilaiKeServer(data.id, result.value.status, result.value.catatan);
+      // Konfirmasi kedua
+      Swal.fire({
+        title: 'Konfirmasi',
+        text: `Apakah Anda yakin ingin memberikan nilai ${nilai} pada aspek ini?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, kirim',
+        cancelButtonText: 'Batal',
+      }).then((confirmResult) => {
+        if (confirmResult.isConfirmed) {
+          
+          $.ajax({
+            url: '/guru/aspek/nilai' ,
+            type: 'POST',
+            data: {
+                row: item,
+                nilai: nilai,
+                jenis: jenis,
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if(response.success) {
+                    Swal.fire(
+                        'Berhasil!',
+                        'Data berhasil dirubah.',
+                        'success'
+                    );
+                    // Reload tabel
+                   
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire(
+                    'Gagal!',
+                    'Terjadi kesalahan saat menghapus data.',
+                    'error'
+                );
+            }
+        });
+          Swal.fire('Terkirim!', 'Nilai berhasil dikirim.', 'success');
+        }
+      });
     }
   });
 }
+
 
 function loadAspekData(id, aspekType, nama_user) {
   console.log(id, aspekType, nama_user);
@@ -257,11 +290,12 @@ function loadAspekData(id, aspekType, nama_user) {
                     <td>${index + 1}</td>
                     <td>${namaField}</td>
                     <td>${item.dokumen}</td>
+                    <td>${item.nilai}</td>
                     <td>${formatTanggalIndo(item.tanggal)}</td>
                     <td>
                        <div class="btn-group">
                           <a class="btn btn-primary btn-sm text-light mr-2" target="_blank" href="/storage/${nama_user}/${folder}/${item.dokumen}"><i class="bi bi-download"></i></a>
-<a class="btn btn-warning btn-sm text-light" onclick='beriNilaiAspek(${JSON.stringify(item)})' href="javascript:void(0)">
+<a class="btn btn-warning btn-sm text-light" onclick='beriNilaiAspek(${JSON.stringify(item)} , ${aspekType} )' href="javascript:void(0)">
     <i class="bi bi-pencil-square"></i>
 </a>                       </div>
                     </td>
