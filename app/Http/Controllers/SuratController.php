@@ -6,6 +6,12 @@ use App\Models\Surat;
 use App\Models\User;
 use App\Models\Aspek;
 use App\Models\Pengajuan;
+use App\Models\Pedagogik;
+use App\Models\Kepribadian;
+use App\Models\Profesional;
+use App\Models\Sosial;
+
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -286,6 +292,83 @@ class SuratController extends Controller
      $response_kepsek = $this->whatsappService->sendMessage($no_admin->no_hp, $message_admin);
       return response()->json(['message' => 'success']);
     }
+    public function cekGuru(Request $request)
+    {
+        $guruId = $request->input('id');
+        $tahun = $request->input('tahun');
+    
+        $aspekStatus = [
+            'pedagogik' => [
+                'ada' => false,
+                'nilai_kosong' => false,
+            ],
+            'kepribadian' => [
+                'ada' => false,
+                'nilai_kosong' => false,
+            ],
+            'profesional' => [
+                'ada' => false,
+                'nilai_kosong' => false,
+            ],
+            'sosial' => [
+                'ada' => false,
+                'nilai_kosong' => false,
+            ],
+        ];
+    
+        // PEDAGOGIK
+        $pedagogik = Pedagogik::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
+        if ($pedagogik->count() > 0) {
+            $aspekStatus['pedagogik']['ada'] = true;
+            $aspekStatus['pedagogik']['nilai_kosong'] = $pedagogik->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+        }
+    
+        // KEPRIBADIAN
+        $kepribadian = Kepribadian::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
+        if ($kepribadian->count() > 0) {
+            $aspekStatus['kepribadian']['ada'] = true;
+            $aspekStatus['kepribadian']['nilai_kosong'] = $kepribadian->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+        }
+    
+        // PROFESIONAL
+        $profesional = Profesional::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
+        if ($profesional->count() > 0) {
+            $aspekStatus['profesional']['ada'] = true;
+            $aspekStatus['profesional']['nilai_kosong'] = $profesional->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+        }
+    
+        // SOSIAL
+        $sosial = Sosial::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
+        if ($sosial->count() > 0) {
+            $aspekStatus['sosial']['ada'] = true;
+            $aspekStatus['sosial']['nilai_kosong'] = $sosial->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+        }
+    
+        // Cek aspek yang belum ada dan nilai yang kosong
+        $aspekKosong = [];
+        $nilaiKosong = [];
+    
+        foreach ($aspekStatus as $aspek => $status) {
+            if (!$status['ada']) {
+                $aspekKosong[] = ucfirst($aspek);
+            } elseif ($status['nilai_kosong']) {
+                $nilaiKosong[] = ucfirst($aspek);
+            }
+        }
+    
+        $isLengkap = count($aspekKosong) === 0 && count($nilaiKosong) === 0;
+    
+        return response()->json([
+            'message' => 'success',
+            'lengkap' => $isLengkap,
+            'aspek_kosong' => $aspekKosong,
+            'nilai_kosong' => $nilaiKosong,
+        ]);
+    }
+    
+
+
+
     public function addSurat(Request $request)
     {
         

@@ -10,7 +10,7 @@
 
                         <div class="col-md-12">
                             <label for="nama_guru" class="form-label">Nama Guru</label>
-                            <select id="nama_guru" name="nama_guru" class="form-select form-control">
+                            <select id="nama_guru" name="nama_guru" class="form-select form-control" onchange="cekGuru(this)">
                                 <option selected value="0">-Pilih-</option>
                                 @foreach ($gurus as $guru)
                                 
@@ -29,7 +29,7 @@
                     
                         <div class="col-md-12">
                             <label class="control-label">Tanggal Surat</label>
-                            <input class="form-control" id="tanggal" type="date" name="tanggal">
+                            <input class="form-control" id="tanggal_add" type="date" name="tanggal_add">
                         </div>
                         
                         <div class="col-md-12" id="keteranganSurat">

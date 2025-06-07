@@ -61,6 +61,7 @@ Route::post('/adminValidasi', [PengajuanController::class,'adminValidasi']);
 
 
 // Data Surat pengajuan dan teguran
+Route::post('/surat/cekGuru', [SuratController::class,'cekGuru'])->middleware('auth');
 Route::get('/surat', [SuratController::class,'index'])->middleware('auth');
 Route::get('/surat/suratKinerja', [SuratController::class,'suratKinerja'])->middleware('auth');
 Route::post('/surat/cetakSurat', [SuratController::class,'cetak'])->middleware('auth');

@@ -34,6 +34,10 @@
                                 <label>Email</label>
                                 <input type="email" class="form-control" id="email_profil" name="email" >
                             </div>
+                            <div class="form-group">
+                                <label>Perolehan Poin</label>
+                                <input type="number" readonly class="form-control" id="perolehan_poin" name="perolehan_poin" >
+                            </div>
                             {{-- <div class="form-group">
                                 <label>Username</label>
                                 <input type="text" class="form-control" id="username_profil" name="username_profil" >
@@ -139,7 +143,7 @@
                     </div>
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <input class="form-control" id="tanggal" name="tanggal" type="date" required>
+                        <input class="form-control" id="tanggal_guru_add" name="tanggal_guru_add" type="date" required>
                     </div>
 
                 </div>

@@ -10,6 +10,62 @@ function showNotification(title, text, icon = 'info') {
   });
 }
 
+function cekGuru(idGuru) {
+  const selectedValue = $(idGuru).val(); // id guru
+  const selectedText = $(idGuru).find('option:selected').text();
+
+  // Ambil tahun sekarang (bisa juga dari input khusus jika ada)
+  const tahun = new Date().getFullYear(); // Misalnya: 2025
+
+  $.ajax({
+    url: `/surat/cekGuru`,
+    type: "POST",
+    data: {
+      id: selectedValue,
+      tahun: tahun
+    },
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    success: function(response) {
+      console.log("Response:", response);
+
+      if (!response.lengkap) {
+        let pesan = '';
+
+        if (response.aspek_kosong && response.aspek_kosong.length > 0) {
+          pesan += `Aspek belum diisi: ${response.aspek_kosong.join(', ')}.\n`;
+        }
+
+        if (response.nilai_kosong && response.nilai_kosong.length > 0) {
+          pesan += `Nilai kosong pada: ${response.nilai_kosong.join(', ')}.`;
+        }
+
+        Swal.fire({
+          icon: 'warning',
+          title: 'Data Belum Lengkap',
+          text: pesan.trim()
+        });
+      } else {
+        Swal.fire({
+          icon: 'success',
+          title: 'Lengkap',
+          text: 'Semua data aspek dan nilai sudah lengkap.'
+        });
+      }
+    },
+    error: function(error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Terjadi kesalahan saat memeriksa data guru.'
+      });
+    }
+  });
+}
+
+
+
 function tolakSurat(id){
  $.ajax({
   url: `/surat/tolak`,
@@ -473,7 +529,58 @@ function getSurat(){
   });
    })
 
-
+   function cekGuruSurat(idGuru) {
+   
+    const tahun = new Date().getFullYear(); // Misalnya: 2025
+  
+    $.ajax({
+      url: `/surat/cekGuru`,
+      type: "POST",
+      data: {
+        id: idGuru,
+        tahun: tahun
+      },
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function(response) {
+        console.log("Response:", response);
+  
+        if (!response.lengkap) {
+          let pesan = '';
+  
+          if (response.aspek_kosong && response.aspek_kosong.length > 0) {
+            pesan += `Aspek belum diisi: ${response.aspek_kosong.join(', ')}.\n`;
+          }
+  
+          if (response.nilai_kosong && response.nilai_kosong.length > 0) {
+            pesan += `Nilai kosong pada: ${response.nilai_kosong.join(', ')}.`;
+          }
+  
+          Swal.fire({
+            icon: 'warning',
+            title: 'Data Belum Lengkap',
+            text: pesan.trim()
+          });
+          return 
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: 'Lengkap',
+            text: 'Semua data aspek dan nilai sudah lengkap.'
+          });
+        }
+      },
+      error: function(error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: 'Terjadi kesalahan saat memeriksa data guru.'
+        });
+      }
+    });
+  }
+  
 
    $(document).ready(function(){
     getSurat();
@@ -488,9 +595,10 @@ function getSurat(){
       let token_surat = $('#token_surat').val();
       let nama_user = $('#nama_guru').val();
       let tipe_surat = $('#tipe_surat').val();
-      let tanggal = $('#tanggal').val();
+      let tanggal = $('#tanggal_add').val();
       let keterangan = $('#keterangan').val();
-  
+      cekGuruSurat(nama_user)
+
       // validasi form
       if (!nama_user || nama_user === '0') {
           showNotification('Gagal', 'Nama guru harus diisi!', 'warning');
@@ -549,7 +657,7 @@ function getSurat(){
                       // Reset form
                       $('#nama_guru').val('0').trigger('change');
                       $('#tipe_surat').val('0').trigger('change');
-                      $('#tanggal').val('');
+                      $('#tanggal_add').val('');
                       $('#keterangan').val('');
   
                       getSurat();

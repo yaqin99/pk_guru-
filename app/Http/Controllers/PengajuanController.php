@@ -337,8 +337,10 @@ class PengajuanController extends Controller
 
             // Kirim notifikasi WhatsApp ke guru
             $data = Pengajuan::find(request('id'));
-            $no_guru = User::find($data->user_id)->no_hp;
-
+            $admin = User::where('role', 2)->first();
+            $no_guru = $user->no_hp;
+            $no_admin = $admin->no_hp;
+            
             $message_guru = "Pengajuan Anda Telah Diselesaikan oleh Admin". 
                 "\nSilahkan periksa poin perolehan anda".
                 "\nApabila poin sudah mencukupi maka admin akan mengeluarkan surat kinerja".
@@ -353,13 +355,30 @@ class PengajuanController extends Controller
                 'needCertificate' => false
             ];
 
-            if ($newPoin >= 20) {
+            if ($newPoin >= 50) {
+
+                $pesan_guru = "🎉 Selamat! Poin kinerja Anda telah mencapai 50 poin 🎉" . 
+                "\nSurat Kinerja Anda sedang dalam proses oleh Admin." . 
+                "\nSilahkan diperiksa dalam aplikasi" . 
+                "\nTerima kasih 🙏";
+
+                $response_guru = $this->whatsappService->sendMessage($no_guru, $pesan_guru);
+
+                $pesan_admin = "Guru Atas Nama" . $user->nama_user ." Telah mencapai 50 Poin". 
+                "\nTolong segera dibuatkan Surat Keterangan Kinerja." . 
+                "\nTerima kasih 🙏";
+
+                $response_guru = $this->whatsappService->sendMessage($no_admin, $pesan_admin);
+
                 $response['needCertificate'] = true;
-                $response['message'] = 'Pengajuan berhasil divalidasi. Guru telah mencapai 20 poin dan berhak mendapatkan surat keterangan kinerja.';
+                $response['message'] = 'Pengajuan berhasil divalidasi. '. $user->nama_user.' telah mencapai 50 poin dan berhak mendapatkan surat keterangan kinerja.';
                 $response['guru'] = [
                     'nama' => $user->nama_user,
                     'poin' => $newPoin
                 ];
+
+                
+
             }
 
             return response()->json($response);

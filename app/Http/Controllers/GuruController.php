@@ -12,8 +12,17 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Services\WhatsAppService;
+
 class GuruController extends Controller
 {
+    protected $whatsappService;
+
+    public function __construct(WhatsAppService $whatsappService)
+    {
+        $this->whatsappService = $whatsappService;
+    }
+    
     
     public function index(Request $request)
     {
@@ -102,29 +111,57 @@ class GuruController extends Controller
 
     public function nilai()
     {
-        $type = request('jenis'); // Default ke pedagogik jika tidak ada type
-        
-        $data = match($type) {
-            '1' => Pedagogik::where('id', request('row')['id'])->update([
-                'nilai' => request('nilai')
-            ]),
-            '2' => Kepribadian::where('id', request('row')['id'])->update([
-                'nilai' => request('nilai')
-            ]),
-            '3' => Profesional::where('id', request('row')['id'])->update([
-                'nilai' => request('nilai')
-            ]),
-            '4' => Sosial::where('id', request('row')['id'])->update([
-                'nilai' => request('nilai')
-            ]),
-            default => Pedagogik::where('id', request('row')['id'])->update([
-                'nilai' => request('nilai')
-            ]),
+        $type = request('jenis'); // tipe aspek: 1=Pedagogik, 2=Kepribadian, dll
+        $row = request('row');
+        $userId = request('row')['user_id'];
+        $nilaiBaru = request('nilai');
+    
+        // Update nilai aspek
+        $updateResult = match($type) {
+            '1' => Pedagogik::where('id', $row['id'])->update(['nilai' => $nilaiBaru]),
+            '2' => Kepribadian::where('id', $row['id'])->update(['nilai' => $nilaiBaru]),
+            '3' => Profesional::where('id', $row['id'])->update(['nilai' => $nilaiBaru]),
+            '4' => Sosial::where('id', $row['id'])->update(['nilai' => $nilaiBaru]),
+            default => Pedagogik::where('id', $row['id'])->update(['nilai' => $nilaiBaru]),
         };
-        
-        
-        return response()->json($data);
+    
+        // Update poin user
+        $user = User::find($userId);
+        $admin = User::where('role', 2)->first();
+
+        $no_admin = $admin->no_hp ;
+
+        if ($user) {
+            $user->poin += $nilaiBaru;
+            $user->save();
+
+
+        }
+
+        if ( $user->poin >= 50) {
+            $pesan_guru = "🎉 Selamat! Poin kinerja Anda telah mencapai 50 poin 🎉" . 
+            "\nSurat Kinerja Anda sedang dalam proses oleh Admin." . 
+            "\nSilahkan diperiksa dalam aplikasi" . 
+            "\nTerima kasih 🙏";
+
+            $response_guru = $this->whatsappService->sendMessage($user->no_hp, $pesan_guru);
+
+            $pesan_admin = "Guru Atas Nama" . $user->nama_user ." Telah mencapai 50 Poin". 
+            "\nTolong segera dibuatkan Surat Keterangan Kinerja." . 
+            "\nTerima kasih 🙏";
+
+            $response_guru = $this->whatsappService->sendMessage($no_admin, $pesan_admin);
+
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Nilai berhasil disimpan dan poin berhasil ditambahkan.',
+            'updated' => $updateResult,
+            'new_poin' => $user->poin ?? null,
+        ]);
     }
+    
     public function getAspek($id)
     {
         $type = request('type'); // Default ke pedagogik jika tidak ada type
@@ -256,7 +293,7 @@ class GuruController extends Controller
         $data = $request->all();
         $jenisAspek = $request->jenis_aspek;
         $userId = $request->user_id; // pastikan user_id dikirim dari form
-        $tahun = Carbon::parse($request->tanggal)->format('Y');
+        $tahun = Carbon::parse($request->tanggal_guru_add)->format('Y');
         $cek = match ($jenisAspek) {
             '1' => Pedagogik::where('user_id', $userId)->whereYear('tanggal', $tahun)->first(),
             '2' => Kepribadian::where('user_id', $userId)->whereYear('tanggal', $tahun)->first(),
@@ -294,7 +331,7 @@ class GuruController extends Controller
         // Jika ada file yang diupload
         if ($request->hasFile('file_aspek')) {
             $nameFile = $request->file('file_aspek')->getClientOriginalName();
-            $tanggal = $request->tanggal;
+            $tanggal = $request->tanggal_guru_add;
             
             // Jika ini adalah update (aspek_id ada)
             if ($request->filled('aspek_id')) {

@@ -135,9 +135,13 @@ function download(id, dokumen, aspekType) {
 }
 
 
-function beriNilaiAspek(item , jenis) {
-  console.log(item);
-  if (item.nilai !== null && item.nilai !== '') {
+function beriNilaiAspek(item , jenis , nama_user) {
+  console.log({
+    item : item , 
+    jenis : jenis , 
+    nama_user : nama_user
+  });
+  if (item.nilai !== null && item.nilai !== '' && item.nilai !== 0) {
     Swal.fire({
       icon: 'info',
       title: 'Poin Sudah Diberikan',
@@ -213,12 +217,14 @@ function beriNilaiAspek(item , jenis) {
             },
             success: function(response) {
                 if(response.success) {
+                  loadAspekData(item.user_id, jenis, nama_user); // sesuaikan nama variabel jika perlu
+                  getGuru();
                     Swal.fire(
                         'Berhasil!',
                         'Data berhasil dirubah.',
                         'success'
                     );
-                    // Reload tabel
+
                    
                 }
             },
@@ -239,7 +245,7 @@ function beriNilaiAspek(item , jenis) {
 
 
 function loadAspekData(id, aspekType, nama_user) {
-  console.log(id, aspekType, nama_user);
+  console.log(nama_user);
   nama_awal = nama_user;
     $.ajax({
         url: "/guru/aspek/" + id,
@@ -290,12 +296,12 @@ function loadAspekData(id, aspekType, nama_user) {
                     <td>${index + 1}</td>
                     <td>${namaField}</td>
                     <td>${item.dokumen}</td>
-                    <td>${item.nilai}</td>
+                    <td>${item.nilai == null || item.nilai == '' ? '' : item.nilai}</td>
                     <td>${formatTanggalIndo(item.tanggal)}</td>
                     <td>
                        <div class="btn-group">
                           <a class="btn btn-primary btn-sm text-light mr-2" target="_blank" href="/storage/${nama_user}/${folder}/${item.dokumen}"><i class="bi bi-download"></i></a>
-<a class="btn btn-warning btn-sm text-light" onclick='beriNilaiAspek(${JSON.stringify(item)} , ${aspekType} )' href="javascript:void(0)">
+<a class="btn btn-warning btn-sm text-light" onclick='beriNilaiAspek(${JSON.stringify(item)} , ${aspekType} , ${JSON.stringify(nama_user)} )' href="javascript:void(0)">
     <i class="bi bi-pencil-square"></i>
 </a>                       </div>
                     </td>

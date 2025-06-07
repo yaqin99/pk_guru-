@@ -9,6 +9,7 @@ function viewProfile(id){
 
             $('#nama_profil').val(response.nama_user).data('user-id', id);
             $('#email_profil').val(response.email);
+            $('#perolehan_poin').val(response.poin);
             // $('#username_profil').val(response.username);
             $('#no_telp_profil').val(response.no_hp);
             $('#alamat_profil').val(response.alamat);
@@ -291,6 +292,16 @@ function editAspek(item, aspekType) {
 
 function deleteAspek(row, aspekType) {
    console.log(row);
+   if (row.nilai !== null && row.nilai !== '') {
+    Swal.fire({
+        icon: 'info',
+        title: 'Sudah Dinilai',
+        text: 'Data survey aspek telah melalui proses penilaian sehingga tidak dapat dihapus.',
+        confirmButtonText: 'OK'
+    });
+    return;
+}
+
     Swal.fire({
         title: 'Apakah Anda yakin?',
         text: "Data yang dihapus tidak dapat dikembalikan!",
@@ -308,7 +319,6 @@ function deleteAspek(row, aspekType) {
                 data: {
                     row: row,
                     aspekType: aspekType,
-                   
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -339,6 +349,7 @@ function deleteAspek(row, aspekType) {
 
 // Modifikasi fungsi simpanAspek untuk menangani edit dan tambah
 function simpanAspek() {
+    
     let formData = new FormData($('#formTambahAspek')[0]);
     let userId = $('#nama_profil').data('user-id');
     let aspekId = $('#aspek_id').val();
