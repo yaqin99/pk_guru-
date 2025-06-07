@@ -46,12 +46,13 @@ function cekGuru(idGuru) {
           title: 'Data Belum Lengkap',
           text: pesan.trim()
         });
+        $('#addSurat').modal('hide');
       } else {
-        Swal.fire({
-          icon: 'success',
-          title: 'Lengkap',
-          text: 'Semua data aspek dan nilai sudah lengkap.'
-        });
+        // Swal.fire({
+        //   icon: 'success',
+        //   title: 'Lengkap',
+        //   text: 'Semua data aspek dan nilai sudah lengkap.'
+        // });
       }
     },
     error: function(error) {
@@ -564,11 +565,7 @@ function getSurat(){
           });
           return 
         } else {
-          Swal.fire({
-            icon: 'success',
-            title: 'Lengkap',
-            text: 'Semua data aspek dan nilai sudah lengkap.'
-          });
+         
         }
       },
       error: function(error) {
@@ -587,6 +584,13 @@ function getSurat(){
     $('#nama_guru').select2();
     $('#nama_guru_edit').select2();
 
+    $('#nama_guru').on('change', function(event) {
+      if (event.originalEvent) {
+          // Hanya jalankan cekGuru jika event berasal dari user
+          cekGuru(this);
+      }
+    });
+
     $('#addSuratButton').click(function(e) {
       e.preventDefault();
       $('#addSurat').modal({ "backdrop": "static" });
@@ -597,7 +601,6 @@ function getSurat(){
       let tipe_surat = $('#tipe_surat').val();
       let tanggal = $('#tanggal_add').val();
       let keterangan = $('#keterangan').val();
-      cekGuruSurat(nama_user)
 
       // validasi form
       if (!nama_user || nama_user === '0') {

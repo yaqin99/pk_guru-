@@ -83,7 +83,6 @@ class GuruController extends Controller
     
     public function cekAspek()
     {
-        dd(request()->all());
         $type = request('jenis'); // Default ke pedagogik jika tidak ada type
         
         $data = match($type) {
@@ -146,7 +145,7 @@ class GuruController extends Controller
 
             $response_guru = $this->whatsappService->sendMessage($user->no_hp, $pesan_guru);
 
-            $pesan_admin = "Guru Atas Nama" . $user->nama_user ." Telah mencapai 50 Poin". 
+            $pesan_admin = "Guru Atas Nama " . $user->nama_user ." Telah mencapai 50 Poin". 
             "\nTolong segera dibuatkan Surat Keterangan Kinerja." . 
             "\nTerima kasih 🙏";
 

@@ -10,6 +10,7 @@ use App\Models\Pedagogik;
 use App\Models\Kepribadian;
 use App\Models\Profesional;
 use App\Models\Sosial;
+use Carbon\Carbon;
 
 
 use Illuminate\Support\Facades\Auth;
@@ -51,22 +52,23 @@ class SuratController extends Controller
         if ($request->ajax()) {
           if (Auth::user()->role == 1) {
             $data = Surat::with(['user' , 'aspek'])
-                        ->where('status' , 4)
                         ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
-                        ->orderBy('surat_kinerjas.id', 'desc')
+                        ->orderBy('surat_kinerjas.tanggal', 'desc')
+                        ->orderBy('surat_kinerjas.created_at', direction: 'desc')
                         ->get();
           } 
           else if (Auth::user()->role == 3) {
             $data = Surat::with(['user' , 'aspek'])
-                        ->where('status' , 2)
                         ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
-                        ->orderBy('surat_kinerjas.id', 'desc')
+                        ->orderBy('surat_kinerjas.tanggal', 'desc')
+                        ->orderBy('surat_kinerjas.created_at', direction: 'desc')
                         ->get();
            
           } else {
             $data = Surat::with(['user' , 'aspek'])
                         ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
-                        ->orderBy('surat_kinerjas.id', 'desc')
+                        ->orderBy('surat_kinerjas.tanggal', 'desc')
+                        ->orderBy('surat_kinerjas.created_at', direction: 'desc')
                         ->get();
           }
 
@@ -99,18 +101,30 @@ class SuratController extends Controller
                     
                     ->addColumn('penerusan', function($row){
                       if (Auth::user()->role == 3) {
-                        $btn = '
-                        <div class="btn-group">
-                        <a onclick=\'approve(`'.$row->id.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" >
-                        <i class="bi bi-check-lg" ></i>
-                        </a>
-                        <a onclick=\'tolakSurat(`'.$row->id.'`)\' class="ml-2 edit btn btn-danger  btn-sm text-light" >
-                        <i class="bi bi-arrow-left-short" ></i>
-                        </a>
-                        </div>
                         
-                        ';
-                        return $btn;
+
+                        if ($row->status == 2 ) {
+                          $btn = '
+                          <div class="btn-group">
+                          <a onclick=\'approve(`'.$row->id.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" >
+                          <i class="bi bi-check-lg" ></i>
+                          </a>
+                          <a onclick=\'tolakSurat(`'.$row->id.'`)\' class="ml-2 edit btn btn-danger  btn-sm text-light" >
+                          <i class="bi bi-arrow-left-short" ></i>
+                          </a>
+                          </div>
+                          
+                          ';
+                          return $btn ; 
+                         } else {
+                          $btn = '
+                          
+                          
+                          ';
+                          return $btn ; 
+                         
+                         }
+
 
                       }
                       if (Auth::user()->role == 2) {
@@ -172,11 +186,12 @@ class SuratController extends Controller
                          return $btn;
                       } if (Auth::user()->role == 2) {
 
-                        if ($row->status == 3) {
+                        if ($row->status == 2 || $row->status == 4) {
                           $btn = '
                           <div class="btn-group">
-                        
-                          
+                            <a onclick=\'cetakSurat(`'.$row.'`)\' class="ml-2 edit btn btn-primary btn-sm text-light" >
+                            <i class="bi bi-printer-fill" ></i>
+                            </a>
                           </div>
                           
                           ';
@@ -320,28 +335,28 @@ class SuratController extends Controller
         $pedagogik = Pedagogik::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
         if ($pedagogik->count() > 0) {
             $aspekStatus['pedagogik']['ada'] = true;
-            $aspekStatus['pedagogik']['nilai_kosong'] = $pedagogik->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+            $aspekStatus['pedagogik']['nilai_kosong'] = $pedagogik->contains(fn($item) => $item->nilai === null || $item->nilai === '' || $item->nilai === 0);
         }
     
         // KEPRIBADIAN
         $kepribadian = Kepribadian::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
         if ($kepribadian->count() > 0) {
             $aspekStatus['kepribadian']['ada'] = true;
-            $aspekStatus['kepribadian']['nilai_kosong'] = $kepribadian->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+            $aspekStatus['kepribadian']['nilai_kosong'] = $kepribadian->contains(fn($item) => $item->nilai === null || $item->nilai === '' || $item->nilai === 0);
         }
     
         // PROFESIONAL
         $profesional = Profesional::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
         if ($profesional->count() > 0) {
             $aspekStatus['profesional']['ada'] = true;
-            $aspekStatus['profesional']['nilai_kosong'] = $profesional->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+            $aspekStatus['profesional']['nilai_kosong'] = $profesional->contains(fn($item) => $item->nilai === null || $item->nilai === '' || $item->nilai === 0);
         }
     
         // SOSIAL
         $sosial = Sosial::where('user_id', $guruId)->whereYear('tanggal', $tahun)->get();
         if ($sosial->count() > 0) {
             $aspekStatus['sosial']['ada'] = true;
-            $aspekStatus['sosial']['nilai_kosong'] = $sosial->contains(fn($item) => $item->nilai === null || $item->nilai === '');
+            $aspekStatus['sosial']['nilai_kosong'] = $sosial->contains(fn($item) => $item->nilai === null || $item->nilai === '' || $item->nilai === 0);
         }
     
         // Cek aspek yang belum ada dan nilai yang kosong
@@ -466,8 +481,30 @@ class SuratController extends Controller
         try {
             $nama = User::where('id' , request()->user_id)->first();
             $kinerja = Pengajuan::with('program')->where('user_id' , request()->user_id)->where('status' , 6)->get();
+            $tahun = Carbon::now()->year;
+
+            $pedagogik = Pedagogik::where('user_id', 
+            request()->user_id)
+            ->whereYear('tanggal', $tahun)
+            ->first();
+        
+            $kepribadian = Kepribadian::where('user_id', 
+            request()->user_id)
+                ->whereYear('tanggal', $tahun)
+                ->first();
             
-            $row = [
+            $sosial = Sosial::where('user_id', 
+            request()->user_id)
+                ->whereYear('tanggal', $tahun)
+                ->first();
+            
+            $profesional = Profesional::where('user_id', 
+            request()->user_id)
+                ->whereYear('tanggal', $tahun)
+                ->first();      
+                
+            
+             $row = [
                 'nama_user' => $nama->nama_user,
                 'nip' => $nama->nip,
                 'no_hp' => $nama->no_hp,
@@ -476,15 +513,15 @@ class SuratController extends Controller
                 'keterangan' => request()->keterangan,
                 'tipe' => request()->tipe,
                 'program' => $kinerja,
-                'pedagogik' => request('pedagogik'),
-                'kepribadian' => request('kepribadian'),
-                'profesional' => request('profesional'),
-                'sosial' => request('sosial'),
+                'pedagogik' => $pedagogik->nilai,
+                'kepribadian' => $kepribadian->nilai,
+                'profesional' => $profesional->nilai,
+                'sosial' => $sosial->nilai,
             ];
 
 
             $viewName = request()->tipe == '1' ? 'admin.pages.cetak.suratKinerja' : 'admin.pages.cetak.suratTeguran';
-            $fileName = request()->tipe == '1' ? 'surat-kinerja.pdf' : 'surat-teguran.pdf';
+            $fileName = request()->tipe == '1' ? 'surat-kinerja_'.$nama->nama_user.'.pdf' : 'surat-teguran_'.$nama->nama_user.'.pdf';
 
             $pdf = PDF::loadView($viewName, compact('row'));
             $pdf->setPaper('folio', 'portrait');

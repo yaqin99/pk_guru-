@@ -22,7 +22,7 @@ function showAddPengajuan (){
     $('#addPengajuan').modal({"backdrop": "static"})
 }
 function showAddSurat (){
-   
+
     $('#addSurat').modal('show');
     $('#addSurat').modal({"backdrop": "static"})
 }

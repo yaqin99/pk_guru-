@@ -42,16 +42,16 @@ class PengajuanController extends Controller
         if ($request->ajax()) {
             if (Auth::user()->role == 1) {
                 # code...
-                $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->orderBy('tanggal' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->orderBy('created_at', 'desc')->get();
             }
             if (Auth::user()->role == 2) {
                 // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [2,5])->orderBy('tanggal' , 'desc')->get();
-                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->get();
 
             }
             if (Auth::user()->role == 3) {
                 // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('tanggal' , 'desc')->get();
-                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->get();
 
             }
 
@@ -158,7 +158,7 @@ class PengajuanController extends Controller
                             }
                          }
                          if (Auth::user()->role == 1) {
-                            if ($row->status == 6) {
+                            if ($row->status == 6 || $row->status == 5) {
                                 $btn = '
                                 
                                 
@@ -364,7 +364,7 @@ class PengajuanController extends Controller
 
                 $response_guru = $this->whatsappService->sendMessage($no_guru, $pesan_guru);
 
-                $pesan_admin = "Guru Atas Nama" . $user->nama_user ." Telah mencapai 50 Poin". 
+                $pesan_admin = "Guru Atas Nama " . $user->nama_user ." Telah mencapai 50 Poin". 
                 "\nTolong segera dibuatkan Surat Keterangan Kinerja." . 
                 "\nTerima kasih 🙏";
 

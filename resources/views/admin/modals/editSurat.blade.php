@@ -11,7 +11,7 @@
 
                         <div class="col-md-12">
                             <label for="nama_guru_edit" class="form-label">Nama Guru</label>
-                            <select id="nama_guru_edit" name="nama_guru_edit" class="form-select form-control">
+                            <select id="nama_guru_edit" name="nama_guru_edit" readonly class="form-select form-control">
                                 <option selected>-Pilih-</option>
                                 @foreach ($gurus as $guru)
                                     
