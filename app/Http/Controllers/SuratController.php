@@ -53,6 +53,7 @@ class SuratController extends Controller
           if (Auth::user()->role == 1) {
             $data = Surat::with(['user' , 'aspek'])
                         ->join('aspeks', 'surat_kinerjas.id', '=', 'aspeks.surat_kinerja_id')
+                        ->where('user_id' , Auth::user()->id)
                         ->orderBy('surat_kinerjas.tanggal', 'desc')
                         ->orderBy('surat_kinerjas.created_at', direction: 'desc')
                         ->get();
