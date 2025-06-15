@@ -18,8 +18,9 @@ class DatabaseSeeder extends Seeder
             // KepribadianSeeder::class , 
             // SosialSeeder::class , 
             // ProfesionalSeeder::class , 
-            // PedagogikSeeder::class , 
+            KomponenSeeder::class , 
             ProgramSeeder::class , 
+            SiswaSeeder::class , 
         ]);
     }
 }

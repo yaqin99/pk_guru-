@@ -10,6 +10,7 @@ use App\Http\Controllers\SosialController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,11 +24,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//penilaian guru
+Route::get('/penilaian', [SiswaController::class,'penilaian'])->middleware('guest');
+Route::post('/penilaianMethod', [SiswaController::class,'penilaianMethod']);
+Route::post('/getKomponen', [SiswaController::class,'getKomponen']);
+Route::post('/openPenilaian', [SiswaController::class,'openPenilaian']);
 
 //Authentication
 Route::get('/login', [UserController::class,'login'])->name('login')->middleware('guest');
 Route::post('/loginMethod', [UserController::class,'loginMethod']);
 Route::get('/logout', [UserController::class,'logout']);
+
+
+
 
 //Profi
 Route::get('/admin/profile/{id}', [UserController::class,'profile']);

@@ -5,7 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 class UserSeeder extends Seeder
 {
     /**
@@ -13,6 +14,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create('id_ID');
+        $users = [];
         DB::table('users')->insert(
             [
                 'nama_user' => 'Guru Febri' ,
@@ -57,5 +60,25 @@ class UserSeeder extends Seeder
                 
             ]
             );
+
+            for ($i = 1; $i <= 15; $i++) {
+                $fullName = $faker->name;
+                $username = strtolower(Str::slug(explode(' ', $fullName)[0], ''));
+            
+                $users[] = [
+                    'nama_user' => $fullName,
+                    'nip' => '00721984' . str_pad($i, 2, '0', STR_PAD_LEFT),
+                    'no_hp' => '08999920375',
+                    'alamat' => $faker->address,
+                    'email' => $username . '@gmail.com',
+                    'poin' => 0,
+                    'username' => $username,
+                    'password' => bcrypt($username),
+                    'role' => 1,
+                ];
+            }; 
+
+            DB::table('users')->insert($users);
+
     }
 }
