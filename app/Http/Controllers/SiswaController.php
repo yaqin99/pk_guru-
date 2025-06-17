@@ -6,7 +6,9 @@ use App\Models\Siswa;
 use App\Models\mapel;
 use App\Models\User;
 use App\Models\Komponen;
+use App\Models\RincianNilaiAspek;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -54,23 +56,26 @@ class SiswaController extends Controller
     }
 
     public function penilaianMethod(Request $request)
-{
-    dd( $request->penilaian);
-    $siswa_id = $request->siswa_id;
-    $guru_id = $request->guru_id;
-    $penilaians = $request->penilaian;
-
-    // foreach ($penilaians as $penilaian) {
-    //     RincianNilaiAspek::create([
-    //         'siswa_id' => $siswa_id,
-    //         'guru_id' => $guru_id,
-    //         'nama_komponen' => $penilaian['nama_komponen'],
-    //         'nilai' => $penilaian['nilai'],
-    //     ]);
-    // }
-
-    return response()->json(['success' => true]);
-}
+    {
+        $siswa_id = $request->siswa_id;
+        $guru_id = $request->guru_id;
+        $penilaians = $request->penilaian;
+        $tipe = $request->tipe_aspek;
+    
+        foreach ($penilaians as $penilaian) {
+            RincianNilaiAspek::create([
+                'siswa_id' => $siswa_id,
+                'guru_id' => $guru_id,
+                'tipe_aspek' => $penilaian['tipe_aspek'],
+                'komponen_id' => $penilaian['id_komponen'], // ✅ simpan ID komponen
+                'tanggal' => Carbon::now(),
+                'nilai' => $penilaian['nilai'],
+            ]);
+        }
+    
+        return response()->json(['success' => true]);
+    }
+    
 
 
 public function getGuruByMapelKelas(Request $request)
@@ -84,6 +89,17 @@ public function getGuruByMapelKelas(Request $request)
 
     return response()->json($gurus);
 }
+
+public function cekPenilaianAspek(Request $request)
+{
+    $sudahDinilai = RincianNilaiAspek::where('siswa_id', $request->siswa_id)
+        ->where('guru_id', $request->guru_id)
+        ->where('tipe_aspek', $request->tipe_aspek)
+        ->exists();
+
+    return response()->json(['sudahDinilai' => $sudahDinilai]);
+}
+
 
 
 }

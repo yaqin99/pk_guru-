@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/penilaian', [SiswaController::class,'penilaian'])->middleware('guest');
 Route::post('/penilaianMethod', [SiswaController::class, 'penilaianMethod']);
 Route::get('/get-guru-by-mapel-kelas', [SiswaController::class, 'getGuruByMapelKelas']);
+Route::post('/cekPenilaianAspek', [SiswaController::class, 'cekPenilaianAspek']);
 
 Route::post('/getKomponen', [SiswaController::class,'getKomponen']);
 Route::post('/openPenilaian', [SiswaController::class,'openPenilaian']);

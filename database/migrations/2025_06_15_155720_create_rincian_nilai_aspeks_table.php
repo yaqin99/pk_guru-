@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('rincian_nilai_aspeks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('komponen_id');
+            $table->tinyInteger('tipe_aspek')->nullable();
             $table->foreignId('siswa_id');
+            $table->foreignId('guru_id');
             $table->tinyInteger(column: 'nilai');
             $table->dateTime('tanggal');
             $table->timestamps();

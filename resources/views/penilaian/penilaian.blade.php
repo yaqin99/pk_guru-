@@ -217,24 +217,28 @@
 function addPenilaian() {
     const siswa_id = $('#user_id').val();
     const guru_id = $('#guru_id').val();
+    const tipe_aspek = $('#filterAspekPenilaian').val();
     const _token = $('meta[name="csrf-token"]').attr('content');
 
     let dataPenilaian = [];
 
     // Ambil semua radio yang terpilih berdasarkan name
     $('#tabel_komponen_aspek tr').each(function(index, row) {
-        const selected = $(row).find('input[type="radio"]:checked');
+    const selected = $(row).find('input[type="radio"]:checked');
 
-        if (selected.length > 0) {
-            const nilai = selected.val();
-            const komponenText = $(row).find('td:nth-child(2)').text().trim();
+    if (selected.length > 0) {
+        const nilai = selected.val();
+        const komponenText = $(row).find('td:nth-child(2)').text().trim();
+        const id_komponen = $(row).find('input[type="hidden"][name="id_komponen"]').val();
 
-            dataPenilaian.push({
-                nama_komponen: komponenText,
-                nilai: nilai
-            });
-        }
-    });
+        dataPenilaian.push({
+            id_komponen: id_komponen,
+            nama_komponen: komponenText,
+            nilai: nilai,
+            tipe_aspek: tipe_aspek
+        });
+    }
+});
 
     // Validasi jika ada komponen yang belum diisi
     const jumlahKomponen = $('#tabel_komponen_aspek tr').length;
@@ -269,23 +273,25 @@ function addPenilaian() {
 }
 
 
-    function getKomponen(tipe) {
+function getKomponen(tipe) {
     $.ajax({
         url: `/getKomponen`,
         type: "POST",
         cache: false,
         data: {
             tipe: tipe,
-            _token: $('meta[name="csrf-token"]').attr('content') // pastikan ada meta csrf di head
+            _token: $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
-            console.log(response)
             let html = '';
-            response.forEach((response, index) => {
+            response.forEach((item, index) => {
                 html += `
-                   <tr>
+                    <tr>
                         <td class="text-center">${index + 1}</td>
-                        <td>${response.nama_komponen}</td>
+                        <td>
+                            ${item.nama_komponen}
+                            <input type="hidden" name="id_komponen" value="${item.id}" />
+                        </td>
                         <td class="text-center">
                             <label>
                                 <input type="radio" name="penilaian[${index}]" value="0"> 
@@ -308,16 +314,16 @@ function addPenilaian() {
                             </label>
                         </td>
                     </tr>
-
                 `;
             });
             $('#tabel_komponen_aspek').html(html);
         },
-        error: function(error) {
-            showNotification('Gagal', 'Terjadi kesalahan saat mengambil data!', 'error');
+        error: function(xhr) {
+            Swal.fire('Gagal', 'Terjadi kesalahan saat mengambil data!', 'error');
         }
     });
 }
+
 
 // Ketika dropdown filter tipe aspek berubah
 $('#filterAspekPenilaian').on('change', function () {
