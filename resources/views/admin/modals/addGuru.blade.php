@@ -37,17 +37,24 @@
                             <label class="control-label" id="labelPassword">Password</label>
                             <input class="form-control form-white" id="password" type="text" name="password">
                         </div>
-                        {{-- <div class="col-md-6">
-                            <label class="control-label">Choose Category Color</label>
-                            <select class="form-control form-white" data-placeholder="Choose a color..." name="category-color">
-                                <option value="success">Success</option>
-                                <option value="danger">Danger</option>
-                                <option value="info">Info</option>
-                                <option value="pink">Pink</option>
-                                <option value="primary">Primary</option>
-                                <option value="warning">Warning</option>
+                        <div class="col-md-6">
+                            <label class="control-label">Mata Pelajaran</label>
+                            <select class="form-control form-white" id="mapel_add" name="mapel_add">
+                                @foreach ($mapels as $mapel )
+                                <option value="{{$mapel->id}}">{{$mapel->nama_mapel}}</option>
+                                @endforeach
+                                
                             </select>
-                        </div> --}}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label">Kelas</label>
+                            <select class="form-control form-white" id="kelas_add" name="kelas_add">
+                                <option value="1">10</option>
+                                <option value="2">11</option>
+                                <option value="3">12</option>
+                                
+                            </select>
+                        </div>
                     </div>
                 </form>
             </div>

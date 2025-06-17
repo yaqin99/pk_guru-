@@ -24,6 +24,8 @@ class UserSeeder extends Seeder
                 'alamat' => 'Jl. Amin Djakfar' , 
                 'email' => 'febri.9a23@gmail.com' , 
                 'poin' => 0 , 
+                'kelas' => 1 , 
+                'mapel_id' => 10 , 
                 'username' => 'guru' , 
                 'password' => bcrypt('guru') ,
                 'role' => 1 ,
@@ -61,10 +63,12 @@ class UserSeeder extends Seeder
             ]
             );
 
-            for ($i = 1; $i <= 15; $i++) {
+            $totalMapel = 22;
+
+            for ($i = 1; $i <= 50; $i++) {
                 $fullName = $faker->name;
                 $username = strtolower(Str::slug(explode(' ', $fullName)[0], ''));
-            
+
                 $users[] = [
                     'nama_user' => $fullName,
                     'nip' => '00721984' . str_pad($i, 2, '0', STR_PAD_LEFT),
@@ -75,8 +79,10 @@ class UserSeeder extends Seeder
                     'username' => $username,
                     'password' => bcrypt($username),
                     'role' => 1,
+                    'mapel_id' => rand(1, $totalMapel), // acak antara 1 - 22
+                    'kelas' => rand(1, 3), // 1: kelas 10, 2: kelas 11, 3: kelas 12
                 ];
-            }; 
+            }
 
             DB::table('users')->insert($users);
 

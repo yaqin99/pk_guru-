@@ -16,8 +16,10 @@ function getGuru(){
          {data: 'nama_user', name: 'nama_user'},
          {data: 'nip', name: 'nip'},
          {data: 'no_hp', name: 'no_hp'},
-         {data: 'alamat', name: 'alamat'},
          {data: 'email', name: 'email'},
+         {data: 'alamat', name: 'alamat'},
+         {data: 'kelas', name: 'kelas'},
+         {data: 'mapel', name: 'mapel'},
          {data: 'poin', name: 'poin'},
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]

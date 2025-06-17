@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('poin')->nullable();
             $table->string('foto')->nullable();
+            $table->foreignId('mapel_id')->nullable();
+            $table->tinyInteger('kelas')->nullable();
             $table->string('username');
             $table->string('password');
             $table->integer('role');

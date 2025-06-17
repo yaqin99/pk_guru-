@@ -19,6 +19,8 @@
                                 <th>Nomer Handphone</th>
                                 <th>Email</th>
                                 <th>Alamat</th>
+                                <th>Kelas</th>
+                                <th>Mapel</th>
                                 <th>Poin</th>
                                 <th>Opsi</th>
                             </tr>
@@ -36,4 +38,6 @@
 </div>
 @include('admin.modals.guru.aspek')
 @include('admin.modals.guru.penilaian')
+@include('admin.modals.addGuru')
+@include('admin.modals.editGuru')
 @endsection

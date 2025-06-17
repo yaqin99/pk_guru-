@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             // KepribadianSeeder::class , 
             // SosialSeeder::class , 
             // ProfesionalSeeder::class , 
+            MapelSeeder::class , 
             KomponenSeeder::class , 
             ProgramSeeder::class , 
             SiswaSeeder::class , 

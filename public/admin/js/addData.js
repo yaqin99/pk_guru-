@@ -10,6 +10,8 @@ $(document).ready(function (){
         let no_hp   = $('#no_hp').val();
         let alamat   = $('#alamat').val();
         let email   = $('#email').val();
+        let mapel_add   = $('#mapel_add').val();
+        let kelas_add   = $('#kelas_add').val();
         let username   = $('#username').val();
         let password   = $('#password').val();
         
@@ -20,6 +22,8 @@ $(document).ready(function (){
             no_hp : no_hp , 
             alamat : alamat , 
             email : email , 
+            mapel : mapel_add , 
+            kelas : kelas_add , 
             username : username , 
             password : password , 
 
@@ -66,6 +70,8 @@ $(document).ready(function (){
                           $('#email').val('');
                           $('#username').val('');
                           $('#password').val('');
+                          $('#mapel_add').val('');
+                          $('#kelas_add').val('');
                            getGuru()
                     },
                     error:function(error){
@@ -87,6 +93,8 @@ $(document).ready(function (){
               $('#no_hp').val('');
               $('#alamat').val('');
               $('#email').val('');
+              $('#mapel_add').val('');
+              $('#kelas_add').val('');
               $('#username').val('');
               $('#password').val('');
               swalWithBootstrapButtons.fire({

@@ -7,6 +7,7 @@ use App\Models\Pedagogik;
 use App\Models\Kepribadian;
 use App\Models\Profesional;
 use App\Models\Sosial;
+use App\Models\Mapel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
@@ -26,13 +27,36 @@ class GuruController extends Controller
     
     public function index(Request $request)
     {
+       
         $pages = 'guru' ; 
+        $mapel = Mapel::all() ; 
         if ($request->ajax()) {
 
-            $data = User::where('role' , 1)->get();
+            $data = User::with('mapel')
+            ->where('role', 1)
+            ->orderBy('kelas', 'asc')
+            ->orderBy('nama_user', 'asc')
+            ->get();
+        
             $string = 'Konfirmasi Penghapusan Data' ; 
             return Datatables::of($data)
                     ->addIndexColumn()
+                    ->addColumn('kelas', function($row){
+                    
+                    if($row->kelas == 1){
+                       return $kelas = 'Kelas 10';
+                    } 
+                    if($row->kelas == 2){
+                        return $kelas = 'Kelas 11';
+                    } 
+                    else {
+                        return $kelas = 'Kelas 12';
+                    }
+                     })
+                    ->addColumn('mapel', function($row){
+                    
+                     return $row->mapel->nama_mapel ;
+                     })
                     ->addColumn('poin', function($row){
                       return $row->poin;})
                     ->addColumn('action', function($row){
@@ -78,6 +102,7 @@ class GuruController extends Controller
 
         return view('admin.pages.guru' , [
             'pages' => $pages , 
+            'mapels' => $mapel , 
         ]);
     }
     
@@ -213,6 +238,9 @@ class GuruController extends Controller
         'no_hp' => request('no_hp'), 
         'email' => request('email'), 
         'alamat' => request('alamat'), 
+        'kelas' => request('kelas'), 
+        'mapel_id' => request('mapel'), 
+        'poin' => 0, 
         'username' => request('username'), 
         'password' => bcrypt(request('password')), 
         'role' =>1, 
@@ -243,7 +271,8 @@ class GuruController extends Controller
         'no_hp' => request('no_hp'), 
         'email' => request('email'), 
         'alamat' => request('alamat'), 
-        
+        'kelas' => request('kelas'), 
+        'mapel_id' => request('mapel'),
       ]);
 
 

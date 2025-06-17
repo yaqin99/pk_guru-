@@ -6,6 +6,8 @@ function editGuru (data){
     $('#nip_edit').val(fixedData.nip);
     $('#no_hp_edit').val(fixedData.no_hp);
     $('#alamat_edit').val(fixedData.alamat);
+    $('#kelas_edit').val(fixedData.kelas).trigger('change');
+    $('#mapel_edit').val(fixedData.mapel_id).trigger('change');
     $('#email_edit').val(fixedData.email);
     $('#id_guru').val(fixedData.id);
    
@@ -23,6 +25,8 @@ $(document).ready(function (){
        let no_hp = $('#no_hp_edit').val();
        let alamat =  $('#alamat_edit').val();
        let email = $('#email_edit').val();
+       let kelas =   $('#kelas_edit').val();
+       let mapel =  $('#mapel_edit').val();
        let id =  $('#id_guru').val();
         
         let data = {
@@ -32,10 +36,14 @@ $(document).ready(function (){
             no_hp : no_hp , 
             alamat : alamat , 
             email : email , 
+            kelas : kelas , 
+            mapel : mapel , 
             id:id , 
             
 
         }
+
+        console.log(data)
         //ajax
 
         const swalWithBootstrapButtons = Swal.mixin({

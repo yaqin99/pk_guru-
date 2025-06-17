@@ -16,6 +16,10 @@ class User extends Authenticatable
     public function pengajuan(){
         return $this->hasMany(Pengajuan::class);
      }
+     public function mapel()
+     {
+         return $this->belongsTo(Mapel::class, 'mapel_id');
+     }
     public function surat(){
         return $this->hasMany(Surat::class);
      }

@@ -43,15 +43,35 @@
                                         </select>
                                     </div>
                                 
+                                   
                                     <div class="form-group">
-                                        <label><strong>Guru yang Dinilai</strong></label>
-                                        <select name="guru_id" id="guru" class="form-control" required>
-                                            <option value="">-- Pilih Guru --</option>
-                                            @foreach($gurus as $guru)
-                                                <option value="{{ $guru->id }}">{{ $guru->nama_user }}</option>
+                                        <label><strong>Mata Pelajaran</strong></label>
+                                        <select name="mapel_id" id="mapel_id" class="form-control" required>
+                                            <option value="">-- Pilih Mata Pelajaran --</option>
+                                            @foreach($mapels as $mapel)
+                                                <option value="{{ $mapel->id }}">{{ $mapel->nama_mapel }}</option>
                                             @endforeach
                                         </select>
                                     </div>
+                                    
+                                    <div class="form-group">
+                                        <label><strong>Kelas</strong></label>
+                                        <select name="kelas" id="kelas" class="form-control" required>
+                                            <option value="">-- Pilih Kelas --</option>
+                                            <option value="1">10</option>
+                                            <option value="2">11</option>
+                                            <option value="3">12</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label><strong>Guru yang Dinilai</strong></label>
+                                        <select name="guru_id_penilaian" id="guru_id_penilaian" class="form-control" required>
+                                            <option value="">-- Pilih Guru --</option>
+                                            {{-- akan terisi otomatis via JS --}}
+                                        </select>
+                                    </div>
+                                    
                                 
                                     <div class="form-group">
                                         <label><strong>Password</strong></label>
@@ -87,16 +107,54 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <script>
      $(document).ready(function() {
         $('#guru').select2();
         $('#siswa').select2();
+        $('#mapel').select2();
 
         $('#formPenilaian').on('submit', function(e) {
         e.preventDefault(); // ✅ Mencegah form submit default (POST ke /penilaian)
 
-        showPenilaianModal(); // Panggil fungsi Ajax kamu
+        showPenilaianModal(); 
+        
+        });
+
+        $('#mapel_id, #kelas').on('change', function () {
+        let mapelId = $('#mapel_id').val();
+        let kelas = $('#kelas').val();
+
+        if (mapelId && kelas) {
+            $.ajax({
+                url: '/get-guru-by-mapel-kelas',
+                type: 'GET',
+                data: {
+                    mapel_id: mapelId,
+                    kelas: kelas
+                },
+                success: function (response) {
+                    $('#guru_id_penilaian').empty().append('<option value="">-- Pilih Guru --</option>');
+
+                    if (response.length > 0) {
+                        $.each(response, function (index, guru) {
+                            $('#guru_id_penilaian').append(
+                                `<option value="${guru.id}">${guru.nama_user}</option>`
+                            );
+                        });
+                    } else {
+                        $('#guru_id_penilaian').append('<option value="">Tidak ada guru ditemukan</option>');
+                    }
+                },
+                error: function () {
+                    alert('Gagal mengambil data guru');
+                }
+            });
+        } else {
+            $('#guru_id_penilaian').empty().append('<option value="">-- Pilih Guru --</option>');
+        }
     });
         
     });
@@ -108,33 +166,104 @@
 
     function showPenilaianModal() {
     let siswa = $('#siswa').val();
-    let guru = $('#guru').val();
+    let guru = $('#guru_id_penilaian').val();
+    let mapel = $('#mapel_id').val(); // Pastikan id ini benar di form HTML
+    let kelas = $('#kelas').val();
     let password = $('#passwordSiswa').val();
+
+    // Debug: cek apakah semua variabel benar
+    console.log({ siswa, guru, mapel, kelas, password });
+
+    // Validasi input kosong
+    if (!siswa || !guru || !mapel || !kelas || !password) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Lengkapi Data',
+            text: 'Sebelum menilai, tolong lengkapi semua data terlebih dahulu.',
+            confirmButtonText: 'Oke, saya mengerti'
+        });
+        return; // hentikan proses AJAX
+    }
+
+    // Kirim AJAX jika semua data lengkap
     $.ajax({
-        url: `/openPenilaian`, // ✅ Harus sesuai route POST
+        url: `/openPenilaian`,
         type: "POST",
         cache: false,
         data: {
             siswa: siswa,
             guru: guru,
+            mapel: mapel,
+            kelas: kelas,
             password: password,
             _token: $('meta[name="csrf-token"]').attr('content')
         },
         success: function(response) {
-            console.log(response)
             if (response.success) {
-                // Simpan ID siswa & guru jika ingin digunakan nanti
                 $('#user_id').val(response.siswa_id);
                 $('#guru_id').val(response.guru_id);
-
-                // Tampilkan modal penilaian
                 $('#modalPenilaian').modal('show');
             } else {
-                console.log('gagal');
+                Swal.fire('Gagal', response.message || 'Password salah atau siswa tidak ditemukan.', 'warning');
             }
         },
         error: function() {
             Swal.fire('Gagal', 'Terjadi kesalahan saat mengirim data.', 'error');
+        }
+    });
+}
+
+
+function addPenilaian() {
+    const siswa_id = $('#user_id').val();
+    const guru_id = $('#guru_id').val();
+    const _token = $('meta[name="csrf-token"]').attr('content');
+
+    let dataPenilaian = [];
+
+    // Ambil semua radio yang terpilih berdasarkan name
+    $('#tabel_komponen_aspek tr').each(function(index, row) {
+        const selected = $(row).find('input[type="radio"]:checked');
+
+        if (selected.length > 0) {
+            const nilai = selected.val();
+            const komponenText = $(row).find('td:nth-child(2)').text().trim();
+
+            dataPenilaian.push({
+                nama_komponen: komponenText,
+                nilai: nilai
+            });
+        }
+    });
+
+    // Validasi jika ada komponen yang belum diisi
+    const jumlahKomponen = $('#tabel_komponen_aspek tr').length;
+    if (dataPenilaian.length < jumlahKomponen) {
+        Swal.fire('Peringatan', 'Masih ada komponen yang belum dinilai!', 'warning');
+        return;
+    }
+
+    // Kirim data ke server
+    $.ajax({
+        url: `/penilaianMethod`,
+        type: "POST",
+        data: {
+            siswa_id: siswa_id,
+            guru_id: guru_id,
+            penilaian: dataPenilaian,
+            _token: _token
+        },
+        success: function(response) {
+            if (response.success) {
+                Swal.fire('Berhasil', 'Penilaian berhasil disimpan!', 'success');
+                $('#modalPenilaian').modal('hide');
+                $('#formPenilaianSiswa')[0].reset(); // Reset form
+            } else {
+                Swal.fire('Gagal', response.message || 'Terjadi kesalahan.', 'error');
+            }
+        },
+        error: function(xhr) {
+            Swal.fire('Gagal', 'Terjadi kesalahan saat menyimpan penilaian.', 'error');
         }
     });
 }
