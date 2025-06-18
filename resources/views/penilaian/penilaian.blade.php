@@ -249,27 +249,31 @@ function addPenilaian() {
 
     // Kirim data ke server
     $.ajax({
-        url: `/penilaianMethod`,
-        type: "POST",
-        data: {
-            siswa_id: siswa_id,
-            guru_id: guru_id,
-            penilaian: dataPenilaian,
-            _token: _token
-        },
-        success: function(response) {
-            if (response.success) {
-                Swal.fire('Berhasil', 'Penilaian berhasil disimpan!', 'success');
-                $('#modalPenilaian').modal('hide');
-                $('#formPenilaianSiswa')[0].reset(); // Reset form
-            } else {
-                Swal.fire('Gagal', response.message || 'Terjadi kesalahan.', 'error');
-            }
-        },
-        error: function(xhr) {
-            Swal.fire('Gagal', 'Terjadi kesalahan saat menyimpan penilaian.', 'error');
+    url: `/penilaianMethod`,
+    type: "POST",
+    data: {
+        siswa_id: siswa_id,
+        guru_id: guru_id,
+        tipe_aspek: $('#filterAspekPenilaian').val(), // pastikan ini dikirim juga
+        penilaian: dataPenilaian,
+        _token: _token
+    },
+    success: function(response) {
+        if (response.success) {
+            Swal.fire('Berhasil', 'Penilaian berhasil disimpan!', 'success');
+            $('#modalPenilaian').modal('hide');
+            $('#formPenilaianSiswa')[0].reset();
+        } else if (response.status === 'already_rated') {
+            Swal.fire('Sudah Dinilai', 'Anda sudah menilai guru ini untuk tipe aspek tersebut.', 'warning');
+        } else {
+            Swal.fire('Gagal', response.message || 'Terjadi kesalahan.', 'error');
         }
-    });
+    },
+    error: function(xhr) {
+        Swal.fire('Gagal', 'Terjadi kesalahan saat menyimpan penilaian.', 'error');
+    }
+});
+
 }
 
 
