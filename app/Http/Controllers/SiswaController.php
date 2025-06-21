@@ -13,8 +13,83 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\WhatsAppService;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
+
 class SiswaController extends Controller
 {
+
+    protected $whatsappService;
+
+    public function __construct(WhatsAppService $whatsappService)
+    {
+        $this->whatsappService = $whatsappService;
+    }
+    
+    
+    public function index(Request $request)
+    {
+       
+        $pages = 'siswa' ; 
+        if ($request->ajax()) {
+
+            $data = Siswa::orderBy('kelas', 'asc')
+            ->orderBy('no_absen', 'asc') // Urutkan berdasarkan poin tertinggi
+            ->orderBy('nama_siswa', 'asc')
+            ->get();
+        
+            $string = 'Konfirmasi Penghapusan Data' ; 
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                   
+                    ->addColumn('action', function($row){
+                        if(Auth::user()->role == 3 ){
+                            $btn = '
+                            <div class="btn-group">
+                            <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm" title="Lihat Aspek" style="cursor: pointer;">
+                            <i class="bi bi-eye-fill" ></i>
+                            </a>
+                            
+                            </div>
+                            
+                            ';
+                            
+     
+                             return $btn;
+                        } else {
+
+                        
+                           $btn = '
+                           <div class="btn-group">
+                           <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm" title="Lihat Aspek" style="cursor: pointer;">
+                           <i class="bi bi-eye-fill" ></i>
+                           </a>
+                           <a onclick=\'editGuru(`'.$row.'`)\' class="edit btn btn-warning text-light btn-sm ml-2" title="Edit Data" style="cursor: pointer;">
+                           <i class="bi bi-pencil-fill" ></i>
+                           </a>
+                           <a href="javascript:void(0)" onclick=\'deleteGuru(`'.$row['id'].'`)\' class="ml-2 edit btn btn-danger text-light btn-sm" title="Hapus Data" style="cursor: pointer;"><i class="bi bi-trash3-fill"></i></a>
+                           
+                           </div>
+                           
+                           ';
+                           
+    
+                            return $btn;
+                        }
+                      
+
+                    })
+                    ->rawColumns(['action'])
+                    ->make(true);
+        }
+
+        return view('admin.pages.siswa' , [
+            'pages' => $pages , 
+        ]);
+    }
+
+
     public function penilaian(){
         $siswa = Siswa::all();
         $komponen = Komponen::all();

@@ -58,6 +58,13 @@ Route::get('/guru/nilaiAspek/{id}', [GuruController::class,'getNilaiAspek']);
 Route::get('/guru/download/{id}/{dokumen}/{type}', [GuruController::class,'download']);
 //Pengajuan All Routes
 
+
+//siswa 
+Route::get('/siswa', [SiswaController::class,'index'])->middleware('auth');
+
+
+
+
 Route::get('/pengajuan', [PengajuanController::class,'index'])->middleware('auth');
 Route::post('/pengajuan/approve', [PengajuanController::class,'approve'])->middleware('auth');
 Route::post('/pengajuan/tolak', [PengajuanController::class,'tolak'])->middleware('auth');

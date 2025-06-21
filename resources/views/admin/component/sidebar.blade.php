@@ -12,6 +12,7 @@
             </i><span class="nav-text">Data Master</span></a>
             <ul aria-expanded="false">
                 <li><a href="/guru">Data Pegawai</a></li>
+                <li><a href="/siswa">Data Siswa</a></li>
                 <li><a href="/program">Data Program</a></li>
             </ul>
             </li>
