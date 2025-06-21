@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Pedagogik;
 use App\Models\Kepribadian;
 use App\Models\Profesional;
+use App\Models\NilaiAspek;
 use App\Models\Sosial;
 use App\Models\Mapel;
 use Illuminate\Http\Request;
@@ -162,7 +163,7 @@ class GuruController extends Controller
 
         }
 
-        if ( $user->poin >= 50) {
+        if ( $user->poin >= 20) {
             $pesan_guru = "🎉 Selamat! Poin kinerja Anda telah mencapai 50 poin 🎉" . 
             "\nSurat Kinerja Anda sedang dalam proses oleh Admin." . 
             "\nSilahkan diperiksa dalam aplikasi" . 
@@ -184,6 +185,21 @@ class GuruController extends Controller
             'updated' => $updateResult,
             'new_poin' => $user->poin ?? null,
         ]);
+    }
+    
+    public function getNilaiAspek($id)
+    {
+        $tipe = request('type'); // Ambil dari query string ?type=1 (opsional)
+    
+        $query = NilaiAspek::with('guru')->where('user_id', $id);
+    
+        if (!empty($tipe)) {
+            $query->where('tipe', $tipe);
+        }
+    
+        $data = $query->orderBy('tanggal', 'desc')->get();
+    
+        return response()->json($data);
     }
     
     public function getAspek($id)

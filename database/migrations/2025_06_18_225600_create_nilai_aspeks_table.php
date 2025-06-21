@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->tinyInteger('tipe');
             $table->tinyInteger('skor');
+            $table->tinyInteger('jumlah_siswa')->nullable();
             $table->string('keterangan');
             $table->timestamps();
         });

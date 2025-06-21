@@ -127,8 +127,13 @@ window.currentGuruId = null;
 
 function viewAspek(row) {
   let data = JSON.parse(row); 
-    // Simpan ID guru ke variabel global
-    window.currentGuruId = data.id;
+  window.currentGuruId = data.id;
+  console.log({
+    data_id : data.id , 
+    aspek : $('#filterAspek').val() , 
+    nama_user : data.nama_user ,
+  });
+  
     loadAspekData(data.id, $('#filterAspek').val() , data.nama_user);
 }
 
@@ -247,80 +252,135 @@ function beriNilaiAspek(item , jenis , nama_user) {
 
 
 function loadAspekData(id, aspekType, nama_user) {
-  console.log(nama_user);
-  nama_awal = nama_user;
-    $.ajax({
-        url: "/guru/aspek/" + id,
-        type: "GET",
-        data: { type: aspekType },
-        dataType: "json",
-        success: function(response) {
-            let tbody = "";
-            
-            response.forEach(function(item, index) {
-                // Tentukan nama field yang akan ditampilkan berdasarkan tipe aspek
-                let namaField;
-                let typeNumber;
-                let folder;
-                switch(aspekType) {
-                    case '1':
-                        namaField = item.nama_pedagogik;
-                        typeNumber = 1;
-                        folder = 'pedagogik';
-                        nama_user = nama_user;
-                        break;
-                    case '2':
-                        namaField = item.nama_kepribadian;
-                        typeNumber = 2;
-                        folder = 'kepribadian';
-                        nama_user = nama_user;
-                        break;
-                    case '3':
-                        namaField = item.nama_profesional;
-                        typeNumber = 3;
-                        folder = 'profesional';
-                        nama_user = nama_user;
-                        break;
-                    case '4':
-                        namaField = item.nama_sosial;
-                        typeNumber = 4;
-                        folder = 'sosial';
-                        nama_user = nama_user;
-                        break;
-                    default:
-                        namaField = item.nama_pedagogik;
-                        typeNumber = 1;
-                        folder = 'pedagogik';
-                        nama_user = nama_user;
-                }
+  $.ajax({
+      url: "/guru/nilaiAspek/" + id,
+      type: "GET",
+      data: { type: aspekType },
+      dataType: "json",
+      success: function(response) {
+        console.log(response)
+          let tbody = "";
+
+          response.forEach(function(item, index) {
+              let folder, namaField;
+
+              switch(aspekType) {
+                  case '1':
+                      folder = 'pedagogik';
+                      break;
+                  case '2':
+                      folder = 'kepribadian';
+                      break;
+                  case '3':
+                      folder = 'profesional';
+                      break;
+                  case '4':
+                      folder = 'sosial';
+                      break;
+                  default:
+                      folder = 'pedagogik';
+              }
+
+              let tahun = new Date(item.tanggal).getFullYear();
 
               tbody += `<tr style="color: black;">
-                    <td>${index + 1}</td>
-                    <td>${namaField}</td>
-                    <td>${item.dokumen}</td>
-                    <td>${item.nilai == null || item.nilai == '' ? '' : item.nilai}</td>
-                    <td>${formatTanggalIndo(item.tanggal)}</td>
-                    <td>
-                       <div class="btn-group">
-                          <a class="btn btn-primary btn-sm text-light mr-2" target="_blank" href="/storage/${nama_user}/${folder}/${item.dokumen}"><i class="bi bi-download"></i></a>
-<a class="btn btn-warning btn-sm text-light" onclick='beriNilaiAspek(${JSON.stringify(item)} , ${aspekType} , ${JSON.stringify(nama_user)} )' href="javascript:void(0)">
-    <i class="bi bi-pencil-square"></i>
-</a>                       </div>
-                    </td>
-                </tr>`;
-            });
-            
-            let table = $('#tabel_aspek').DataTable();
-            table.clear().destroy();
-            $("#tabel_aspek tbody").html(tbody);
-            $('#tabel_aspek').DataTable();
-            $("#aspekGuru").modal("show");
-        },
-        error: function(xhr, status, error) {
-            console.error("Terjadi kesalahan: ", error);
-        }
-    });
+                  <td>${index + 1}</td>
+                  <td>${item.guru.nama_user}</td>
+                  <td>${item.skor ?? '-'}</td>
+                  <td>${item.keterangan ?? '-'}</td>
+                  <td>${item.jumlah_siswa ?? '-'}</td>
+                  <td>${tahun}</td>
+                 
+              </tr>`;
+          });
+
+          let table = $('#tabel_aspek').DataTable();
+          table.clear().destroy();
+          $("#tabel_aspek tbody").html(tbody);
+          $('#tabel_aspek').DataTable();
+          $("#aspekGuru").modal("show");
+      },
+      error: function(xhr, status, error) {
+          console.error("Terjadi kesalahan saat memuat data aspek:", error);
+      }
+  });
 }
+
+
+// function loadAspekData(id, aspekType, nama_user) {
+//   console.log(nama_user);
+//   nama_awal = nama_user;
+//     $.ajax({
+//         url: "/guru/aspek/" + id,
+//         type: "GET",
+//         data: { type: aspekType },
+//         dataType: "json",
+//         success: function(response) {
+//             let tbody = "";
+            
+//             response.forEach(function(item, index) {
+//                 let namaField;
+//                 let typeNumber;
+//                 let folder;
+//                 switch(aspekType) {
+//                     case '1':
+//                         namaField = item.nama_pedagogik;
+//                         typeNumber = 1;
+//                         folder = 'pedagogik';
+//                         nama_user = nama_user;
+//                         break;
+//                     case '2':
+//                         namaField = item.nama_kepribadian;
+//                         typeNumber = 2;
+//                         folder = 'kepribadian';
+//                         nama_user = nama_user;
+//                         break;
+//                     case '3':
+//                         namaField = item.nama_profesional;
+//                         typeNumber = 3;
+//                         folder = 'profesional';
+//                         nama_user = nama_user;
+//                         break;
+//                     case '4':
+//                         namaField = item.nama_sosial;
+//                         typeNumber = 4;
+//                         folder = 'sosial';
+//                         nama_user = nama_user;
+//                         break;
+//                     default:
+//                         namaField = item.nama_pedagogik;
+//                         typeNumber = 1;
+//                         folder = 'pedagogik';
+//                         nama_user = nama_user;
+//                 }
+
+//               tbody += `<tr style="color: black;">
+//                     <td>${index + 1}</td>
+//                     <td>${namaField}</td>
+//                     <td>${item.dokumen}</td>
+//                     <td>${item.nilai == null || item.nilai == '' ? '' : item.nilai}</td>
+//                     <td>${formatTanggalIndo(item.tanggal)}</td>
+//                     <td>
+//                        <div class="btn-group">
+//                           <a class="btn btn-primary btn-sm text-light mr-2" target="_blank" href="/storage/${nama_user}/${folder}/${item.dokumen}"><i class="bi bi-download"></i></a>
+// <a class="btn btn-warning btn-sm text-light" onclick='beriNilaiAspek(${JSON.stringify(item)} , ${aspekType} , ${JSON.stringify(nama_user)} )' href="javascript:void(0)">
+//     <i class="bi bi-pencil-square"></i>
+// </a>                       </div>
+//                     </td>
+//                 </tr>`;
+//             });
+            
+//             let table = $('#tabel_aspek').DataTable();
+//             table.clear().destroy();
+//             $("#tabel_aspek tbody").html(tbody);
+//             $('#tabel_aspek').DataTable();
+//             $("#aspekGuru").modal("show");
+//         },
+//         error: function(xhr, status, error) {
+//             console.error("Terjadi kesalahan: ", error);
+//         }
+//     });
+// }
 
 // Event listener untuk perubahan filter tidak perlu diubah karena sudah menggunakan window.currentGuruId
 $(document).ready(function() {

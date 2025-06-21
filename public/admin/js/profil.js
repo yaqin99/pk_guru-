@@ -24,7 +24,8 @@ function viewProfile(id){
             }
             // Load data aspek default (pedagogik)
             $('#user_id').val(id);
-            loadAspekDataProfil(id, '1');
+            // loadAspekDataProfil(id, '1');
+            loadAspekDataProfil2(id , $('#filterAspekProfil').val())
         }
     });
 }
@@ -114,7 +115,7 @@ $(document).ready(function() {
     $('#filterAspekProfil').on('change', function() {
         let userId = $('#nama_profil').data('user-id');
         if (userId) {
-            loadAspekDataProfil(userId, $(this).val());
+            loadAspekDataProfil2(userId, $(this).val());
         }
     });
 
@@ -144,7 +145,7 @@ $(document).ready(function() {
                     $('#modalTambahAspek').modal('hide');
                     $('#formTambahAspek')[0].reset();
                     // Reload tabel aspek
-                    loadAspekDataProfil(userId, $('#filterAspekProfil').val());
+                    loadAspekDataProfil2(userId, $('#filterAspekProfil').val());
                 }
             },
             error: function(xhr, status, error) {
@@ -199,6 +200,61 @@ function formatTanggalIndo(tanggal) {
 
   return `${namaHari}, ${tgl} ${namaBulan} ${tahun}`;
 }
+
+function loadAspekDataProfil2(id, aspekType, nama_user) {
+    $.ajax({
+        url: "/guru/nilaiAspek/" + id,
+        type: "GET",
+        data: { type: aspekType },
+        dataType: "json",
+        success: function(response) {
+          console.log(response)
+            let tbody = "";
+  
+            response.forEach(function(item, index) {
+                let folder, namaField;
+  
+                switch(aspekType) {
+                    case '1':
+                        folder = 'pedagogik';
+                        break;
+                    case '2':
+                        folder = 'kepribadian';
+                        break;
+                    case '3':
+                        folder = 'profesional';
+                        break;
+                    case '4':
+                        folder = 'sosial';
+                        break;
+                    default:
+                        folder = 'pedagogik';
+                }
+  
+                let tahun = new Date(item.tanggal).getFullYear();
+  
+                tbody += `<tr style="color: black;">
+                    <td>${index + 1}</td>
+                    <td>${item.guru.nama_user}</td>
+                    <td>${item.skor ?? '-'}</td>
+                    <td>${item.keterangan ?? '-'}</td>
+                    <td>${item.jumlah_siswa ?? '-'}</td>
+                    <td>${tahun}</td>
+                   
+                </tr>`;
+            });
+  
+            let table = $('#tabel_aspek_profil').DataTable();
+            table.clear().destroy();
+            $("#tabel_aspek_profil tbody").html(tbody);
+            $('#tabel_aspek_profil').DataTable();
+            $("#aspekGuru").modal("show");
+        },
+        error: function(xhr, status, error) {
+            console.error("Terjadi kesalahan saat memuat data aspek:", error);
+        }
+    });
+  }
 
 function loadAspekDataProfil(id, aspekType) {
     $.ajax({
@@ -332,7 +388,7 @@ function deleteAspek(row, aspekType) {
                         );
                         // Reload tabel
                         let userId = $('#nama_profil').data('user-id');
-                        loadAspekDataProfil(userId, aspekType);
+                        loadAspekDataProfil2(userId, aspekType);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -382,7 +438,7 @@ function simpanAspek() {
                 $('#file_info').remove();
                 $('#aspek_id').val('');
                 $('#file_aspek').prop('required', true);
-                loadAspekDataProfil(userId, $('#filterAspekProfil').val());
+                loadAspekDataProfil2(userId, $('#filterAspekProfil').val());
             }
         },
         error: function(xhr, status, error) {

@@ -20,6 +20,10 @@ class User extends Authenticatable
      {
          return $this->belongsTo(Mapel::class, 'mapel_id');
      }
+     public function nilaiAspek()
+     {
+         return $this->hasMany(NilaiAspek::class, 'user_id');
+     }
     public function surat(){
         return $this->hasMany(Surat::class);
      }

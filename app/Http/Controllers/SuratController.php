@@ -10,6 +10,7 @@ use App\Models\Pedagogik;
 use App\Models\Kepribadian;
 use App\Models\Profesional;
 use App\Models\Sosial;
+use App\Models\NilaiAspek;
 use Carbon\Carbon;
 
 
@@ -477,65 +478,120 @@ class SuratController extends Controller
       ]);
     }
 
+    public function cetak()
+{
+    try {
+        $user_id = request()->user_id;
+        $tahun = Carbon::now()->year;
 
-    public function cetak(){
-        try {
-            $nama = User::where('id' , request()->user_id)->first();
-            $kinerja = Pengajuan::with('program')->where('user_id' , request()->user_id)->where('status' , 6)->get();
-            $tahun = Carbon::now()->year;
+        $nama = User::findOrFail($user_id);
 
-            $pedagogik = Pedagogik::where('user_id', 
-            request()->user_id)
+        $kinerja = Pengajuan::with('program')
+            ->where('user_id', $user_id)
+            ->where('status', 6)
+            ->get();
+
+        // Ambil nilai aspek dari tabel nilai_aspeks berdasarkan user_id dan tahun
+        $aspeks = NilaiAspek::where('user_id', $user_id)
             ->whereYear('tanggal', $tahun)
-            ->first();
+            ->get()
+            ->keyBy('tipe'); // agar mudah dipanggil per tipe
+
+        $row = [
+            'nama_user' => $nama->nama_user,
+            'nip' => $nama->nip,
+            'no_hp' => $nama->no_hp,
+            'alamat' => $nama->alamat,
+            'tanggal' => request()->tanggal,
+            'keterangan' => request()->keterangan,
+            'tipe' => request()->tipe,
+            'program' => $kinerja,
+            'pedagogik'   => optional($aspeks->get(1))->skor,
+            'kepribadian' => optional($aspeks->get(2))->skor,
+            'profesional' => optional($aspeks->get(3))->skor,
+            'sosial'      => optional($aspeks->get(4))->skor,
+
+        ];
+
+        $viewName = request()->tipe == '1'
+            ? 'admin.pages.cetak.suratKinerja'
+            : 'admin.pages.cetak.suratTeguran';
+
+        $fileName = request()->tipe == '1'
+            ? 'surat-kinerja_' . $nama->nama_user . '.pdf'
+            : 'surat-teguran_' . $nama->nama_user . '.pdf';
+
+        $pdf = PDF::loadView($viewName, compact('row'));
+        $pdf->setPaper('folio', 'portrait');
+
+        return $pdf->stream($fileName);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Terjadi kesalahan saat mencetak surat: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+    // public function cetak(){
+    //     try {
+    //         $nama = User::where('id' , request()->user_id)->first();
+    //         $kinerja = Pengajuan::with('program')->where('user_id' , request()->user_id)->where('status' , 6)->get();
+    //         $tahun = Carbon::now()->year;
+
+    //         $pedagogik = Pedagogik::where('user_id', 
+    //         request()->user_id)
+    //         ->whereYear('tanggal', $tahun)
+    //         ->first();
         
-            $kepribadian = Kepribadian::where('user_id', 
-            request()->user_id)
-                ->whereYear('tanggal', $tahun)
-                ->first();
+    //         $kepribadian = Kepribadian::where('user_id', 
+    //         request()->user_id)
+    //             ->whereYear('tanggal', $tahun)
+    //             ->first();
             
-            $sosial = Sosial::where('user_id', 
-            request()->user_id)
-                ->whereYear('tanggal', $tahun)
-                ->first();
+    //         $sosial = Sosial::where('user_id', 
+    //         request()->user_id)
+    //             ->whereYear('tanggal', $tahun)
+    //             ->first();
             
-            $profesional = Profesional::where('user_id', 
-            request()->user_id)
-                ->whereYear('tanggal', $tahun)
-                ->first();      
+    //         $profesional = Profesional::where('user_id', 
+    //         request()->user_id)
+    //             ->whereYear('tanggal', $tahun)
+    //             ->first();      
                 
             
-             $row = [
-                'nama_user' => $nama->nama_user,
-                'nip' => $nama->nip,
-                'no_hp' => $nama->no_hp,
-                'alamat' => $nama->alamat,
-                'tanggal' => request()->tanggal,
-                'keterangan' => request()->keterangan,
-                'tipe' => request()->tipe,
-                'program' => $kinerja,
-                'pedagogik' => $pedagogik->nilai,
-                'kepribadian' => $kepribadian->nilai,
-                'profesional' => $profesional->nilai,
-                'sosial' => $sosial->nilai,
-            ];
+    //          $row = [
+    //             'nama_user' => $nama->nama_user,
+    //             'nip' => $nama->nip,
+    //             'no_hp' => $nama->no_hp,
+    //             'alamat' => $nama->alamat,
+    //             'tanggal' => request()->tanggal,
+    //             'keterangan' => request()->keterangan,
+    //             'tipe' => request()->tipe,
+    //             'program' => $kinerja,
+    //             'pedagogik' => $pedagogik->nilai,
+    //             'kepribadian' => $kepribadian->nilai,
+    //             'profesional' => $profesional->nilai,
+    //             'sosial' => $sosial->nilai,
+    //         ];
 
 
-            $viewName = request()->tipe == '1' ? 'admin.pages.cetak.suratKinerja' : 'admin.pages.cetak.suratTeguran';
-            $fileName = request()->tipe == '1' ? 'surat-kinerja_'.$nama->nama_user.'.pdf' : 'surat-teguran_'.$nama->nama_user.'.pdf';
+    //         $viewName = request()->tipe == '1' ? 'admin.pages.cetak.suratKinerja' : 'admin.pages.cetak.suratTeguran';
+    //         $fileName = request()->tipe == '1' ? 'surat-kinerja_'.$nama->nama_user.'.pdf' : 'surat-teguran_'.$nama->nama_user.'.pdf';
 
-            $pdf = PDF::loadView($viewName, compact('row'));
-            $pdf->setPaper('folio', 'portrait');
+    //         $pdf = PDF::loadView($viewName, compact('row'));
+    //         $pdf->setPaper('folio', 'portrait');
             
-            return $pdf->stream($fileName);
+    //         return $pdf->stream($fileName);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Terjadi kesalahan saat mencetak surat: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => 'Terjadi kesalahan saat mencetak surat: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
     public function cetakGet($data){
       $row = json_decode($data, true);
 

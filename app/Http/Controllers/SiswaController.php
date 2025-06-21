@@ -63,21 +63,22 @@ class SiswaController extends Controller
         $penilaians = $request->penilaian;
         $tipe = $request->tipe_aspek;
     
-        // 1. Cek apakah siswa ini sudah pernah menilai guru ini untuk tipe aspek ini
+        // 1. Cek apakah siswa sudah menilai guru ini untuk tipe aspek ini
         $sudahDinilai = RincianNilaiAspek::where('siswa_id', $siswa_id)
             ->where('guru_id', $guru_id)
             ->where('tipe_aspek', $tipe)
+            ->whereYear('tanggal', Carbon::now()->year)
             ->exists();
     
         if ($sudahDinilai) {
             return response()->json([
                 'success' => false,
-                'message' => 'Siswa sudah menilai guru ini pada tipe aspek tersebut.',
+                'message' => 'Siswa sudah menilai guru ini pada tipe aspek tersebut untuk tahun ini.',
                 'status' => 'already_rated'
             ]);
         }
     
-        // 2. Simpan data penilaian baru
+        // 2. Simpan penilaian baru
         foreach ($penilaians as $penilaian) {
             RincianNilaiAspek::create([
                 'siswa_id' => $siswa_id,
@@ -89,55 +90,63 @@ class SiswaController extends Controller
             ]);
         }
     
-        // 3. Hitung total siswa yang sudah menilai guru ini untuk tipe ini
-        $totalSiswaSudahMenilai = RincianNilaiAspek::where('guru_id', $guru_id)
+        // 3. Hitung jumlah siswa yang sudah menilai (tahun berjalan)
+        $jumlahSiswaMenilai = RincianNilaiAspek::where('guru_id', $guru_id)
             ->where('tipe_aspek', $tipe)
+            ->whereYear('tanggal', Carbon::now()->year)
             ->distinct('siswa_id')
             ->count('siswa_id');
     
-        // 4. Total siswa tetap 20 (manual)
-        $totalSiswa = 20;
-    
-        // 5. Lanjutkan perhitungan skor
+        // 4. Hitung total nilai dan jumlah komponen (tahun berjalan)
         $totalNilai = RincianNilaiAspek::where('guru_id', $guru_id)
             ->where('tipe_aspek', $tipe)
+            ->whereYear('tanggal', Carbon::now()->year)
             ->sum('nilai');
     
         $jumlahKomponen = RincianNilaiAspek::where('guru_id', $guru_id)
             ->where('tipe_aspek', $tipe)
+            ->whereYear('tanggal', Carbon::now()->year)
             ->distinct('komponen_id')
             ->count('komponen_id');
     
-        $skorMaksimal = $totalSiswa * $jumlahKomponen * 2;
-        $persentase = ($totalNilai / $skorMaksimal) * 100;
+        $skorMaksimal = $jumlahSiswaMenilai * $jumlahKomponen * 2;
+        $persentase = ($skorMaksimal > 0) ? ($totalNilai / $skorMaksimal) * 100 : 0;
     
-        if ($persentase >= 81) {
+        if ($persentase >= 90) {
+            $keterangan = 'Sangat Baik';
+        } elseif ($persentase >= 80) {
             $keterangan = 'Baik';
-        } elseif ($persentase >= 61) {
+        } elseif ($persentase >= 70) {
             $keterangan = 'Cukup';
-        } else {
+        } elseif ($persentase >= 60) {
             $keterangan = 'Kurang';
+        } else {
+            $keterangan = 'Sangat Kurang';
         }
     
-        // 6. Cek apakah sudah ada data NilaiAspek sebelumnya
+        // 5. Cek apakah sudah ada NilaiAspek tahun ini
+        $tahunSekarang = Carbon::now()->year;
+    
         $existing = NilaiAspek::where('user_id', $guru_id)
             ->where('tipe', $tipe)
+            ->whereYear('tanggal', $tahunSekarang)
             ->first();
     
         if ($existing) {
-            // Update: Gabungkan skor lama dan baru (ambil rata-rata atau dijumlah tergantung kebutuhan)
-            // Misalnya: Update dengan skor terakhir (replace)
+            // Update data tahun ini
             $existing->update([
                 'tanggal' => Carbon::now(),
+                'jumlah_siswa' => $jumlahSiswaMenilai,
                 'skor' => round($persentase, 2),
                 'keterangan' => $keterangan,
             ]);
         } else {
-            // Create jika belum ada
+            // Buat record baru untuk tahun ini
             NilaiAspek::create([
                 'user_id' => $guru_id,
                 'tanggal' => Carbon::now(),
                 'tipe' => $tipe,
+                'jumlah_siswa' => $jumlahSiswaMenilai,
                 'skor' => round($persentase, 2),
                 'keterangan' => $keterangan,
             ]);

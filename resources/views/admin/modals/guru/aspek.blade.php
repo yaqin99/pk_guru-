@@ -15,7 +15,7 @@
                         </select>
                     </div>
                 </div>
-                <table class="table table-bordered" id="tabel_aspek" style="width: 100%; color: black; ">
+                {{-- <table class="table table-bordered" id="tabel_aspek" style="width: 100%; color: black; ">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -24,6 +24,21 @@
                             <th width="5%">Poin</th>
                             <th width="15%">Tanggal</th>
                             <th width="15%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       
+                    </tbody>
+                </table> --}}
+                <table class="table table-bordered" id="tabel_aspek" style="width: 100%; color: black; ">
+                    <thead>
+                        <tr>
+                            <th width="5%">No</th>
+                            <th width="20%">Nama Guru</th>
+                            <th width="10%">Skor</th>
+                            <th width="25%">Keterangan</th>
+                            <th width="20%">Jumlah Penilai</th>
+                            <th width="20%">Tahun Ajaran</th>
                         </tr>
                     </thead>
                     <tbody>

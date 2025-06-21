@@ -54,6 +54,7 @@ Route::post('/addGuru', [GuruController::class,'addGuru']);
 Route::get('/deleteGuru/{id}', [GuruController::class,'deleteGuru']);
 Route::put('/editGuru', [GuruController::class,'editGuru']);
 Route::get('/guru/aspek/{id}', [GuruController::class,'getAspek']);
+Route::get('/guru/nilaiAspek/{id}', [GuruController::class,'getNilaiAspek']);
 Route::get('/guru/download/{id}/{dokumen}/{type}', [GuruController::class,'download']);
 //Pengajuan All Routes
 

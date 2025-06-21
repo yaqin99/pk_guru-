@@ -584,12 +584,11 @@ function getSurat(){
     $('#nama_guru').select2();
     $('#nama_guru_edit').select2();
 
-    $('#nama_guru').on('change', function(event) {
-      if (event.originalEvent) {
-          // Hanya jalankan cekGuru jika event berasal dari user
-          cekGuru(this);
-      }
-    });
+    // $('#nama_guru').on('change', function(event) {
+    //   if (event.originalEvent) {
+    //       cekGuru(this);
+    //   }
+    // });
 
     $('#addSuratButton').click(function(e) {
       e.preventDefault();

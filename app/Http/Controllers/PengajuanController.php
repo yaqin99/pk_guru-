@@ -355,23 +355,23 @@ class PengajuanController extends Controller
                 'needCertificate' => false
             ];
 
-            if ($newPoin >= 50) {
+            if ($newPoin >= 20) {
 
-                $pesan_guru = "🎉 Selamat! Poin kinerja Anda telah mencapai 50 poin 🎉" . 
+                $pesan_guru = "🎉 Selamat! Poin kinerja Anda telah mencapai 20 poin 🎉" . 
                 "\nSurat Kinerja Anda sedang dalam proses oleh Admin." . 
                 "\nSilahkan diperiksa dalam aplikasi" . 
                 "\nTerima kasih 🙏";
 
                 $response_guru = $this->whatsappService->sendMessage($no_guru, $pesan_guru);
 
-                $pesan_admin = "Guru Atas Nama " . $user->nama_user ." Telah mencapai 50 Poin". 
+                $pesan_admin = "Guru Atas Nama " . $user->nama_user ." Telah mencapai 20 Poin". 
                 "\nTolong segera dibuatkan Surat Keterangan Kinerja." . 
                 "\nTerima kasih 🙏";
 
                 $response_guru = $this->whatsappService->sendMessage($no_admin, $pesan_admin);
 
                 $response['needCertificate'] = true;
-                $response['message'] = 'Pengajuan berhasil divalidasi. '. $user->nama_user.' telah mencapai 50 poin dan berhak mendapatkan surat keterangan kinerja.';
+                $response['message'] = 'Pengajuan berhasil divalidasi. '. $user->nama_user.' telah mencapai 20 poin dan berhak mendapatkan surat keterangan kinerja.';
                 $response['guru'] = [
                     'nama' => $user->nama_user,
                     'poin' => $newPoin

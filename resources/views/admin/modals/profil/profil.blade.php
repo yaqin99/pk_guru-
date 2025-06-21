@@ -71,13 +71,13 @@
                                     <option value="4">Sosial</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="showModalTambahAspek({{Auth::user()->id}})">
+                            {{-- <button type="button" class="btn btn-primary" onclick="showModalTambahAspek({{Auth::user()->id}})">
                                 <i class="bi bi-plus"></i> Tambah Aspek
-                            </button>
+                            </button> --}}
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <table class="table table-bordered" id="tabel_aspek_profil" style="width: 100%; color: black;">
+                        {{-- <table class="table table-bordered" id="tabel_aspek_profil" style="width: 100%; color: black;">
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
@@ -89,6 +89,22 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            </tbody>
+                        </table> --}}
+
+                        <table class="table table-bordered" id="tabel_aspek_profil" style="width: 100%; color: black; ">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="20%">Nama Guru</th>
+                                    <th width="10%">Skor</th>
+                                    <th width="25%">Keterangan</th>
+                                    <th width="20%">Jumlah Penilai</th>
+                                    <th width="20%">Tahun Ajaran</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
                             </tbody>
                         </table>
                     </div>

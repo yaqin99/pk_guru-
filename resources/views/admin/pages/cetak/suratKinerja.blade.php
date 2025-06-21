@@ -1,3 +1,22 @@
+
+@php
+function convertSkorToHuruf($skor) {
+    if ($skor >= 95) {
+        return 'A+';
+    } elseif ($skor >= 90) {
+        return 'A';
+    } elseif ($skor >= 80) {
+        return 'B';
+    } elseif ($skor >= 70) {
+        return 'C';
+    } elseif ($skor >= 60) {
+        return 'D';
+    } else {
+        return 'E';
+    }
+}
+@endphp
+
 <!DOCTYPE html>
 
 <html>
@@ -222,11 +241,14 @@ style='font-size:12.0pt'>Dengan ini menerangkan bahwa : </span></p>
 
 <p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-style='font-size:12.0pt'>&nbsp;</span></p>
+
 
 <p class=MsoNormal style='text-align:justify;line-height:150%'><span
 lang=EN-US style='font-size:12.0pt;line-height:150%'>Nama diatas {{$row['keterangan']}}, Adapun rincian program kerja yang telah di laksanakan adalah sebagai berikut : </span></p>
+
+<p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
+  style='font-size:12.0pt'>&nbsp;</span></p>
+  
 
 <table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=643
  style='margin-left:13.9pt;border-collapse:collapse'>
@@ -261,6 +283,7 @@ lang=EN-US style='font-size:12.0pt;line-height:150%'>Nama diatas {{$row['keteran
  <tr style='height:14.0pt'>
   <td style='height:14.0pt;border:none' width=0 height=19></td>
  </tr>
+ 
 @foreach ($row["program"] as $index => $bi)
 
  <tr style='height:28.7pt'>
@@ -300,6 +323,10 @@ lang=EN-US style='font-size:12.0pt;line-height:150%'>Nama diatas {{$row['keteran
 </tr>
 @endforeach
 </table>
+
+<p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
+  style='font-size:12.0pt'>&nbsp;</span></p>
+  
 
 <p class=MsoNormal style='text-align:justify;line-height:150%'><span
 lang=EN-US style='font-size:12.0pt;line-height:150%'>Demikian surat keputusan
@@ -503,11 +530,7 @@ Surat Penilaian Kinerja maka turut dilampirkan hasil perolehan dari empat nilai
 aspek pendukung yaitu Pedagogik, Kepribadian, Profesional dan Sosial. Adapun
 hasil dari nilai tersebut adalah sebagai berikut : </span></p>
 
-<p class=MsoNormal style='margin-left:326.05pt'><span lang=EN-US
-style='font-size:12.0pt'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-top:.55pt;line-height:14.0pt'><span
-lang=EN-US style='font-size:14.0pt'>&nbsp;</span></p>
 
 <table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=643
  style='margin-left:13.9pt;border-collapse:collapse ; margin-top:20px;'>
@@ -548,78 +571,111 @@ lang=EN-US style='font-size:14.0pt'>&nbsp;</span></p>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
   style='font-size:12.0pt'>1.</span></p>
   </td>
+
+
+
   <td width=151 style='width:4.0cm;border-top:none;border-left:none;border-bottom:
   solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row['pedagogik']}}</span></p>
+  style='font-size:12.0pt'>{{convertSkorToHuruf($row['pedagogik'])}}</span></p>
   </td>
   <td width=151 style='width:4.0cm;border-top:none;border-left:none;border-bottom:
   solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row['kepribadian']}}</span></p>
+  style='font-size:12.0pt'>{{convertSkorToHuruf($row['kepribadian'])}}</span></p>
   </td>
   <td width=151 style='width:4.0cm;border-top:none;border-left:none;border-bottom:
   solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row['profesional']}}</span></p>
+  style='font-size:12.0pt'>{{convertSkorToHuruf($row['profesional'])}}</span></p>
   </td>
   <td width=142 style='width:106.3pt;border-top:none;border-left:none;
   border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0cm 0cm 0cm 0cm;
   height:28.7pt'>
   <p class=MsoNormal align=center style='text-align:center'><span lang=EN-US
-  style='font-size:12.0pt'>{{$row['sosial']}}</span></p>
+  style='font-size:12.0pt'>{{convertSkorToHuruf($row['sosial'])}}</span></p>
   </td>
+
   <td style='height:28.7pt;border:none' width=0 height=38></td>
  </tr>
 </table>
 
-<p class=MsoNormal style='line-height:10.0pt'><span lang=EN-US>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-top:.4pt;line-height:10.0pt'><span lang=EN-US>&nbsp;</span></p>
+<!-- Baris Keterangan Nilai dan Tanda Tangan -->
+<table style="width: 100%; margin-top: 40px;">
+  <tr>
+    <!-- Kolom Keterangan Nilai -->
+    <td style="vertical-align: top; width: 50%;">
+      <table border="1" cellspacing="0" cellpadding="5" 
+        style="border-collapse: collapse; border: 2px solid #000; font-size: 12pt; width: 90%;">
+        <thead>
+          <tr style="background-color: #f1f1f1;">
+            <th style="text-align: center;">Huruf</th>
+            <th style="text-align: center;">Rentang Nilai</th>
+            <th style="text-align: center;">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center;">A+</td>
+            <td style="text-align: center;">95 - 100</td>
+            <td style="text-align: center;">Istimewa</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">A</td>
+            <td style="text-align: center;">90 - 94</td>
+            <td style="text-align: center;">Sangat Baik</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">B</td>
+            <td style="text-align: center;">80 - 89</td>
+            <td style="text-align: center;">Baik</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">C</td>
+            <td style="text-align: center;">70 - 79</td>
+            <td style="text-align: center;">Cukup</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">D</td>
+            <td style="text-align: center;">60 - 69</td>
+            <td style="text-align: center;">Kurang</td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">E</td>
+            <td style="text-align: center;">0 - 59</td>
+            <td style="text-align: center;">Sangat Kurang</td>
+          </tr>
+        </tbody>
+      </table>
+    </td>
 
-<p class=MsoNormal style='margin-left:288.0pt;text-indent:36.0pt'><span
-lang=EN-US style='font-size:12.0pt'>&nbsp;</span></p>
+    <!-- Kolom Tanda Tangan -->
+    <td style="vertical-align: top; text-align: center; width: 50%;">
+      <p style="font-size: 12pt; text-align: right; margin-right: 50px;">
+        Sumenep, {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y') }}
+      </p>
+      <div style="margin-top: -10px;">
+        <img
+          src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/stempel.png'))) }}"
+          height="150"
+          style="position: absolute; left: 65%; transform: translateX(-50%); opacity: 0.5;"
+        />
 
-<p class="MsoNormal" style="text-align: right; margin-top: 20px; margin-right:50px;">
-  <span lang="EN-US" style="font-size:12.0pt">
-    Sumenep, {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y') }}
-  </span>
-</p>
-
-<!-- Pembungkus tanda tangan & stempel -->
-<div style="width: 100%; display: flex; justify-content: flex-end; position: relative; margin-left:475px;">
-  
-  <div style="text-align: center; width: 250px; position: relative; margin-top:-30px;">
-    
-    <!-- Stempel di belakang -->
-    <img
-      src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/stempel.png'))) }}"
-      height="150"
-      style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1; opacity: 0.5;"
-    />
-
-    <!-- Tanda tangan -->
-    <img
-      src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/ttdfurqan.png'))) }}"
-      height="100"
-      style="margin-top: 40px; z-index: 2; position: relative; margin-right:20px;"
-    />
-
-    <!-- Nama -->
-    <p class="MsoNormal" style="font-size:12pt; margin-top: 5px; z-index: 3; position: relative;">
-      Kepala MA Al-Ghazali,
-    </p>
-    <p class="MsoNormal" style="font-size:12pt; font-weight: bold; z-index: 3; position: relative;">
-      AHMAD AINUL FURQAN, S.Pd
-    </p>
-
-  </div>
-
-</div>
-
+        <img
+          src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/ttdfurqan.png'))) }}"
+          height="100"
+          style="margin-top: 40px;"
+        />
+        <p style="font-size:12pt; margin-top: 5px;">Kepala MA Al-Ghazali,</p>
+        <p style="font-size:12pt; font-weight: bold;">AHMAD AINUL FURQAN, S.Pd</p>
+      </div>
+    </td>
+  </tr>
+</table>
 
 </body>
 

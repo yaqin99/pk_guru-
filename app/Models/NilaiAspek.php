@@ -11,4 +11,9 @@ class NilaiAspek extends Model
 
     protected $guarded = ['id'];
 
+    public function guru()
+    {
+        // Kolom foreign key-nya adalah user_id di tabel nilai_aspeks
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
