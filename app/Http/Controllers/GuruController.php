@@ -36,6 +36,7 @@ class GuruController extends Controller
             $data = User::with('mapel')
             ->where('role', 1)
             ->orderBy('kelas', 'asc')
+            ->orderBy('poin', 'desc') // Urutkan berdasarkan poin tertinggi
             ->orderBy('nama_user', 'asc')
             ->get();
         
