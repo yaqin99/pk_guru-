@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_siswa');
             $table->string('kelas')->nullable();
-            $table->string('no_absen')->nullable();
+            $table->integer('no_absen')->nullable();
             $table->string('angkatan')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->string('no_hp')->nullable();

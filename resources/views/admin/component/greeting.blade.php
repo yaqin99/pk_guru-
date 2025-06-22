@@ -15,6 +15,14 @@
                 <li class="breadcrumb-item"><button onclick="showAddSurat()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Surat</button></li>
                 @endif
            
+            @elseif ($pages == 'siswa')
+                @if (Auth::user()->role == 2)
+                <li class="breadcrumb-item"><button onclick="showAddSiswa()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Siswa</button></li>
+                <li class="breadcrumb-item"><button onclick="sendWaAllSiswa()" data-bs-toggle="modal" class="btn btn-warning text-left text-dark"><i class="bi bi-chat-text"></i>
+                    Chat Siswa</button></li>
+
+                @endif
+           
             @elseif ($pages == 'pedagogik')
                 @if (Auth::user()->role == 1)
                 <li class="breadcrumb-item"><button onclick="showAddPedagogik()" data-bs-toggle="modal" data-bs-target="#modalModulTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pedagogik</button></li>

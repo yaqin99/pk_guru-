@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,8 +62,20 @@ Route::get('/guru/download/{id}/{dokumen}/{type}', [GuruController::class,'downl
 
 //siswa 
 Route::get('/siswa', [SiswaController::class,'index'])->middleware('auth');
+Route::get('/siswa/cek-absen-terakhir', [SiswaController::class, 'cekAbsenTerakhir']);
+Route::post('/siswa/addSiswa', [SiswaController::class,'addSiswa'])->middleware('auth');
+Route::get('/siswa/getSiswa/{id}', [SiswaController::class, 'getSiswa'])->middleware('auth');
+Route::delete('/siswa/delete/{id}', [SiswaController::class, 'deleteSiswa'])->middleware('auth');
+Route::post('/siswa/ubah-status', [SiswaController::class, 'ubahStatus'])->middleware('auth');
+Route::post('/siswa/kirim-wa-semua', [SiswaController::class, 'kirimWaSemua'])->name('siswa.kirimWa')->middleware('auth');
 
-
+Route::get('/siswa/cek-status', function (Request $request) {
+    $siswa = \App\Models\Siswa::find($request->id);
+    if (!$siswa) {
+        return response()->json(['success' => false], 404);
+    }
+    return response()->json(['status' => $siswa->status]);
+});
 
 
 Route::get('/pengajuan', [PengajuanController::class,'index'])->middleware('auth');

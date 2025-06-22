@@ -19,6 +19,7 @@
                                 <th>No Absen</th>
                                 <th>Angkatan</th>
                                 <th>Nomer Handphone</th>
+                                <th>Status</th>
                                 <th>Opsi</th>
                             </tr>
                         </thead>
@@ -33,5 +34,5 @@
     </div>
    
 </div>
-
+@include('admin.modals.addSiswa')
 @endsection
