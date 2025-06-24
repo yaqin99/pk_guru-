@@ -146,6 +146,7 @@ public function addSiswa(Request $request)
             'no_hp' => $request->no_hp,
             'angkatan' => $request->angkatan,
             'status' => 1,
+            'password' => bcrypt(12345),
         ]);
     }
     
