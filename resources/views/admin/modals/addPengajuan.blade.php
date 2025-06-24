@@ -32,10 +32,14 @@
                             <input class="form-control form-white" id="rpp" type="file" name="rpp">
                         </div>
                         <div class="col-md-6">
+                            <label class="control-label">Bukti Kegiatan</label>
+                            <input class="form-control form-white" id="bukti_kegiatan" type="file" name="bukti_kegiatan">
+                        </div>
+                        {{-- <div class="col-md-6">
                             <label class="control-label">Tanggal</label>
                             <input class="form-control form-white" id="tanggal" type="date" name="tanggal">
                         </div>
-                        
+                         --}}
                     </div>
                 </form>
             </div>

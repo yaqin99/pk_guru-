@@ -40,6 +40,19 @@
                             <input class="form-control form-white" id="rpp_id" type="file" name="rpp">
                         </div>
                         
+                        <div class="input-group col-md-6" id="old_bukti">
+                            <label class="control-label">Bukti Kegiatan</label>
+                            <div class="input-group mb-3">
+
+                                <input type="text" class="form-control" placeholder="" id="cek_bukti" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                <button class="btn btn-primary" type="button" id="cek_file_bukti" onclick="changing_bukti()">Ubah</button>
+                              </div>
+                        </div>
+                        <div class="col-md-6" id="new_bukti" hidden>
+                            <label class="control-label">Bukti Kegiatan</label>
+                            <input class="form-control form-white" id="bukti_edit_real" type="file" name="bukti_edit_real">
+                        </div>
+                        
                     </div>
                 </form>
             </div>

@@ -22,10 +22,10 @@ function getPengajuan(){
          {data: 'nama_user', name: 'nama_user'},
          {data: 'nama_kegiatan', name: 'nama_kegiatan'},
          {data: 'catatan', name: 'catatan'},
-         {data: 'catatan_admin', name: 'catatan_admin'},
+        //  {data: 'catatan_admin', name: 'catatan_admin'},
          {data: 'estimasi', name: 'estimasi'},
          {data: 'jumlah_poin', name: 'jumlah_poin'},
-         {data: 'tanggal', name: 'tanggal'},
+        //  {data: 'tanggal', name: 'tanggal'},
          {data: 'status', name: 'status'},
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
@@ -71,6 +71,60 @@ function getPengajuan(){
                                     confirmButtonText: 'OK'
                                 });
                             }
+                            $('#tabel_pengajuan').DataTable().ajax.reload();
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat memvalidasi pengajuan'
+                    });
+                }
+            });
+        }
+    });
+}
+   function kepsekValidasi(row) {
+    let data = JSON.parse(row);
+    Swal.fire({
+        title: 'Apakah anda yakin?',
+        text: "Pengajuan ini akan diselesaikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Selesaikan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: 'kepsekValidasi',
+                type: 'POST',
+                data: {
+                    id: data.id,
+                    user_id: data.user_id,
+                    jumlah_poin: data.jumlah_poin,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if(response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message
+                        }).then(() => {
+                            // Jika guru sudah mencapai 20 poin
+                            // if(response.needCertificate) {
+                            //     Swal.fire({
+                            //         icon: 'info',
+                            //         title: 'Perhatian!',
+                            //         html: `Guru <b>${response.guru.nama}</b> telah mencapai <b>${response.guru.poin} poin</b>.<br>
+                            //               Silahkan buatkan surat keterangan kinerja.`,
+                            //         confirmButtonText: 'OK'
+                            //     });
+                            // }
                             $('#tabel_pengajuan').DataTable().ajax.reload();
                         });
                     }
@@ -223,6 +277,15 @@ $( document ).ready(function() {
         $('#namaFileBuktiKegiatan').val(fileName);
   
     });
+
+    $(document).on('click', '#btn-buka-pdf', function () {
+      const rppUrl = $(this).data('rpp');
+      const buktiUrl = $(this).data('bukti');
+
+      window.open(rppUrl, '_blank');
+      window.open(buktiUrl, '_blank');
+  });
+
 
     $('#addBuktiKegiatanSave').click(function(e) {
       e.preventDefault();
@@ -389,9 +452,10 @@ $( document ).ready(function() {
     //define variable
     let nama_kegiatan   = $('#nama_kegiatan').val();
     let waktu   = $('#waktu').val();
-    let tanggal   = $('#tanggal').val();
+    // let tanggal   = $('#tanggal').val();
     let jumlah_poin   = $('#jumlah_poin').val();
     let rpp   = $('#rpp').val();   
+    let bukti_kegiatan   = $('#bukti_kegiatan').val();   
     let nameData   = $('#cek').val();   
     let token = $('#token_pengajuan').val();
     let waktuFix = Array.from(waktu)[0];
@@ -402,6 +466,7 @@ $( document ).ready(function() {
         waktu : waktuFix , 
         jumlah_poin : poinFix , 
         rpp : rpp , 
+        bukti_kegiatan : bukti_kegiatan , 
            }
     //ajax
 
@@ -426,12 +491,14 @@ $( document ).ready(function() {
    
     
     var file_data = $('#rpp').prop('files')[0];
+    var bukti = $('#bukti_kegiatan').prop('files')[0];
     var form_data = new FormData();
     form_data.append('rpp', file_data);
+    form_data.append('bukti', bukti);
     form_data.append('_token', token);
     form_data.append('nama_kegiatan', nama_kegiatan);
     form_data.append('waktu', waktuFix);
-    form_data.append('tanggal', tanggal);
+    // form_data.append('tanggal', tanggal);
     form_data.append('jumlah_poin', poinFix);
    
     
@@ -552,8 +619,10 @@ $( document ).ready(function() {
     
     
     var file_data = $('#rpp_id').prop('files')[0];
+    var bukti_edit = $('#bukti_edit_real').prop('files')[0];
     var form_data = new FormData();
     form_data.append('rpp', file_data);
+    form_data.append('bukti', bukti_edit);
     form_data.append('rpp_name', name);
     form_data.append('id', id);
     form_data.append('_token', token);
@@ -641,11 +710,16 @@ function editPengajuan(row){
   $('#theId').val(data.id);
 
   $('#cek').val(data.rpp);
+  $('#cek_bukti').val(data.bukti);
  
 }
 
 function changing(){
   $('#rpp_id').click();
+
+}
+function changing_bukti(){
+  $('#bukti_edit_real').click();
 
 }
 
@@ -654,6 +728,11 @@ $(document).ready(function(){
   $('#rpp_id').change(function(e){
       var fileName = e.target.files[0].name;
       $('#cek').val(fileName);
+
+  });
+  $('#bukti_edit_real').change(function(e){
+      var file_bukti = e.target.files[0].name;
+      $('#cek_bukti').val(file_bukti);
 
   });
 });

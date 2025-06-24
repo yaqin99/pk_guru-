@@ -4,8 +4,12 @@
     <div class="col-sm-12 p-md-0 justify-content-sm-start mt-2 mt-sm-0 d-flex mt-5">
         <ol class="breadcrumb">
             @if ($pages == 'guru')
-            <li class="breadcrumb-item"><button onclick="showAddGuru()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Guru</button></li>
-            <li class="breadcrumb-item"><button onclick="showResetPoinGuru()" data-bs-toggle="modal" class="btn btn-warning text-left text-dark"><i class="bi bi-arrow-counterclockwise"></i> Reset Poin Guru</button></li>
+                @if (Auth::user()->role == 2)
+
+                <li class="breadcrumb-item"><button onclick="showAddGuru()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Guru</button></li>
+                <li class="breadcrumb-item"><button onclick="showResetPoinGuru()" data-bs-toggle="modal" class="btn btn-warning text-left text-dark"><i class="bi bi-arrow-counterclockwise"></i> Reset Poin Guru</button></li>
+                @endif
+
             @elseif ($pages == 'pengajuan')
                 @if (Auth::user()->role == 1)
                 <li class="breadcrumb-item"><button onclick="showAddPengajuan()" data-bs-toggle="modal" data-bs-target="#modalJenisTambah" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Pengajuan</button></li>
@@ -47,9 +51,11 @@
             @endif
 
             @elseif ($pages == 'program')
-                
-            <li class="breadcrumb-item"><button onclick="showAddProgram()" data-bs-toggle="modal" data-bs-target="#modalProgram" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Program Kegiatan</button></li>
-            
+                @if (Auth::user()->role == 2)
+
+                <li class="breadcrumb-item"><button onclick="showAddProgram()" data-bs-toggle="modal" data-bs-target="#modalProgram" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Program Kegiatan</button></li>
+                @endif
+
            
             @endif
         </ol>

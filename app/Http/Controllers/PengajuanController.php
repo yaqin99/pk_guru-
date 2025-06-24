@@ -44,11 +44,6 @@ class PengajuanController extends Controller
                 # code...
                 $data = Pengajuan::with(['guru' , 'program'])->where('user_id' , Auth::user()->id)->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->orderBy('created_at', 'desc')->get();
             }
-            if (Auth::user()->role == 2) {
-                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [2,5])->orderBy('tanggal' , 'desc')->get();
-                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->get();
-
-            }
             if (Auth::user()->role == 3) {
                 // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('tanggal' , 'desc')->get();
                 $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->get();
@@ -64,57 +59,48 @@ class PengajuanController extends Controller
                     
                     ->addColumn('catatan', function($row){
                     return $row->catatan;})
-                    ->addColumn('catatan_admin', function($row){
-                    return $row->catatan_admin;})
+                    // ->addColumn('catatan_admin', function($row){
+                    // return $row->catatan_admin;})
                     
                     ->addColumn('estimasi', function($row){
                     return $row->estimasi.' '.'Semester';})
                     ->addColumn('jumlah_poin', function($row){
                     return $row->jumlah_poin.' '.'Poin';})
-                    ->addColumn('tanggal', function($row){
-                    Carbon::setLocale('id');
+                    // ->addColumn('tanggal', function($row){
+                    // Carbon::setLocale('id');
 
-                    return Carbon::parse($row->tanggal)->translatedFormat('l, d F Y');})
+                    // return Carbon::parse($row->tanggal)->translatedFormat('l, d F Y');})
                     ->addColumn('status', function($row){
-                        if ($row->status == null || $row->status == 1) {                
-                          return $status = 'Revisi Admin' ; 
-                        } 
+                       
                         if ($row->status == 2) {                
                           return $status = 'Menunggu' ; 
                         } 
                         if ($row->status == 3) {                
-                          return $status = 'Diteruskan' ; 
-                        } 
-                        if ($row->status == 4) {                
-                          return $status = 'Disetujui' ; 
-                        } 
-                        if ($row->status == 5) {                
-                          return $status = 'Terkonfirmasi' ; 
-                        } 
-                        if ($row->status == 6) {                
                           return $status = 'Selesai' ; 
                         } 
-                        if ($row->status == 7) {                
+                        if ($row->status == 4) {                
                           return $status = 'Ditolak' ; 
                         } 
-                        if ($row->status == 8) {                
+                        if ($row->status == 5) {                
                           return $status = 'Revisi Kepsek' ; 
                         } 
                       })
                    
                     ->addColumn('action', function($row){
                         if (Auth::user()->role == 3) {
-                            if ($row->status == 3) {
+                            if ($row->status == 2) {
+                                $rpp = asset('storage/' . $row->guru->nama_user . '/rpp/' . $row->rpp);
+                                $bukti = asset('storage/' . $row->guru->nama_user . '/bukti/' . $row->bukti);
                                 $btn = '
                                 <div class="btn-group">
-                                <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" ti
-                                    >
-                               <i class="bi bi-printer-fill" ></i>
+                                <a  id="btn-buka-pdf"  data-rpp="'.$rpp.'" data-bukti="'.$bukti.'" class="btn btn-primary text-light btn-sm" title="Cetak Berkas">
+                                    <i class="bi bi-printer-fill" ></i>
                                 </a>
+                              
                                 <a onclick=\'tolakPengajuan(`'.$row->id.'`)\' class="edit btn btn-danger btn-sm text-light ml-2" title="Tolak Pengajuan" >
                                 <i class="bi bi-x-circle-fill"></i>
                                 </a>
-                                <a onclick=\'approvePengajuan(`'.$row->id.'`)\' class="edit btn btn-success btn-sm text-light ml-2" title="Setujui Pengajuan" >
+                                <a onclick=\'kepsekValidasi(`'.$row.'`)\' class="edit btn btn-success btn-sm text-light ml-2" title="Setujui Pengajuan" >
                                 <i class="bi bi-check-circle-fill"></i>
                                 </a>
                                 
@@ -129,28 +115,13 @@ class PengajuanController extends Controller
          
                                  return $btn;
                             } 
-                            else if ($row->status == 8) {
-                                $btn = '
-                                <div class="btn-group">
-                                <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru">
-                               <i class="bi bi-printer-fill" ></i>
-                                </a>
-                                
-                                
-                                </div>
-                                
-                                ';
-                                
-         
-                                 return $btn;
-                            } 
-                            
                             else {
+                                $rpp = asset('storage/' . $row->guru->nama_user . '/rpp/' . $row->rpp);
+                                $bukti = asset('storage/' . $row->guru->nama_user . '/bukti/' . $row->bukti);
                                 $btn = '
                                 <div class="btn-group">
-                                <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" data-bs-toggle="modal" data-bs-target="#editGuru" ti
-                                    >
-                               <i class="bi bi-printer-fill" ></i>
+                               <a  id="btn-buka-pdf"  data-rpp="'.$rpp.'" data-bukti="'.$bukti.'" class="btn btn-primary text-light btn-sm" title="Cetak Berkas">
+                                    <i class="bi bi-printer-fill" ></i>
                                 </a>
                                 </div>
                                 ';
@@ -158,7 +129,7 @@ class PengajuanController extends Controller
                             }
                          }
                          if (Auth::user()->role == 1) {
-                            if ($row->status == 6 || $row->status == 5) {
+                            if ($row->status == 3 || $row->status == 4) {
                                 $btn = '
                                 
                                 
@@ -175,32 +146,6 @@ class PengajuanController extends Controller
                                 // ';
                                 
                             } 
-                            else if ($row->status == 7) {
-                                $btn = '
-                                <div class="btn-group">
-                                <a href="javascript:void(0)" onclick=\'deletePengajuan(`'.$row->id.'`)\' class="edit btn btn-danger text-light btn-sm ml-2" title="Hapus Pengajuan" ><i class="bi bi-trash3-fill"></i></a>
-
-                                
-                                </div>
-                                
-                                ';
-                                
-                            } 
-                            
-                            
-                            else if ($row->status == 4) {
-                                $btn = '
-                                <div class="btn-group">
-                                <a onclick=\'buktiKegiatan(`'.json_encode($row).'`)\' class="edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Bukti Kegiatan" >
-                                <i class="bi bi-file-earmark-pdf-fill"></i>                            
-                                </a>
-                                
-                                </div>
-                                
-                                ';
-                                
-                            }
-
                             else {
                                 $btn = '
                                 <div class="btn-group">
@@ -220,66 +165,7 @@ class PengajuanController extends Controller
      
                              return $btn;
                          } 
-                         if (Auth::user()->role == 2) {
-                           if ($row->status == 5) {
-
-                            $btn = '
-                            <div class="btn-group">
-                           <a href="/storage/'.$row->guru->nama_user.'/buktiKegiatan'.'/'.''.$row->bukti.'"class="btn btn-primary text-light btn-sm" title="Bukti Kegiatan" >
-                           <i class="bi bi-printer-fill" ></i>
-                            </a>
-                            
-                            <a onclick=\'adminValidasi(`'.json_encode($row).'`)\' class="ml-2 edit btn btn-success text-light btn-sm mr-2" data-bs-toggle="modal" data-bs-target="#editGuru" title="Selesaikan Pengajuan" >
-                            <i class="bi bi-check-circle-fill"></i>                            
-                            </a>
-
-                            
-                            
-                            
-                            </div>
-                            
-                            ';
-                            
-     
-                             return $btn;
-                           
-                           } else if ($row->status == 2) {
-                            $btn = '
-                            <div class="btn-group">
-                            
-
-                            <a onclick=\'sendToKepsek(`'.json_encode($row->id).'`)\' class="edit btn btn-warning text-light btn-sm mr-2" title="Kirim ke Kepsek" >
-                            <i class="bi bi-send-fill"></i>
-                            </a>
-
-                            <a onclick=\'perbaikiPengajuan(`'.json_encode($row->id).'`)\' class="edit btn btn-danger text-light btn-sm mr-2" title="Perbaiki Pengajuan" >
-                            <i class="bi bi-arrow-bar-left"></i>               
-                            </a>
-                            
-                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" title="Cetak RPP" >
-                           <i class="bi bi-printer-fill" ></i>
-                            </a>
-                            
-                            
-                            </div>
-                            
-                            ';
-                            
-     
-                             return $btn;
-                           } else {
-                            $btn = '
-                            <div class="btn-group">
-                            <a href="/storage/'.$row->guru->nama_user.'/rpp'.'/'.''.$row->rpp.'"class="btn btn-primary text-light btn-sm" title="Cetak RPP" >
-                           <i class="bi bi-printer-fill" ></i>
-                            </a>
-                            </div>
-                            ';
-                            
-     
-                             return $btn;
-                           }
-                         }
+                        
                            
                     })
                     ->rawColumns(['action'])
@@ -332,7 +218,7 @@ class PengajuanController extends Controller
 
             // Update status pengajuan
             Pengajuan::where('id', request('id'))->update([
-                'status' => 6, 
+                'status' => 3, 
             ]);
 
             // Kirim notifikasi WhatsApp ke guru
@@ -390,6 +276,80 @@ class PengajuanController extends Controller
             ], 500);
         }
     }
+    public function kepsekValidasi()
+    {
+        try {
+            $user = User::find(request('user_id'));
+            $newPoin = $user->poin + request('jumlah_poin');
+            
+            // Update poin user
+            User::where('id', request('user_id'))->update([
+                'poin' => $newPoin,
+            ]);
+
+            // Update status pengajuan
+            Pengajuan::where('id', request('id'))->update([
+                'status' => 3, 
+            ]);
+
+            // Kirim notifikasi WhatsApp ke guru
+            $data = Pengajuan::find(request('id'));
+            $admin = User::where('role', 2)->first();
+            $no_guru = $user->no_hp;
+            $no_admin = $admin->no_hp;
+            
+            $message_guru = "Pengajuan Anda Telah Divalidasi oleh Kepala Sekolah". 
+                "\nSilahkan periksa poin perolehan anda".
+                "\nApabila poin sudah mencukupi maka admin akan mengeluarkan surat kinerja".
+                "\nTerima Kasih";
+
+            $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
+
+            // Cek apakah poin sudah mencapai 20
+            $response = [
+                'success' => true,
+                'message' => 'Pengajuan berhasil divalidasi',
+                'needCertificate' => false
+            ];
+
+            if ($newPoin >= 20) {
+
+                $pesan_guru = "🎉 Selamat! Poin kinerja Anda telah mencapai 20 poin 🎉" . 
+                "\nSurat Kinerja Anda sedang dalam proses oleh Admin." . 
+                "\nSilahkan diperiksa dalam aplikasi" . 
+                "\nTerima kasih 🙏";
+
+                $response_guru = $this->whatsappService->sendMessage($no_guru, $pesan_guru);
+
+                $pesan_admin = "Guru Atas Nama " . $user->nama_user ." Telah mencapai 20 Poin". 
+                "\nTolong segera dibuatkan Surat Keterangan Kinerja." . 
+                "\nTerima kasih 🙏";
+
+                $response_guru = $this->whatsappService->sendMessage($no_admin, $pesan_admin);
+
+                $response['needCertificate'] = true;
+                $response['message'] = 'Pengajuan berhasil divalidasi. '. $user->nama_user.' telah mencapai 20 poin dan berhak mendapatkan surat keterangan kinerja.';
+                $response['guru'] = [
+                    'nama' => $user->nama_user,
+                    'poin' => $newPoin
+                ];
+
+                
+
+            }
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
     public function getPengajuan()
     {
         $data = User::with('pengajuan');
@@ -408,7 +368,7 @@ class PengajuanController extends Controller
     public function approve(Request $request)
     {
         $add = Pengajuan::where('id', $request->id)->update([
-            'status' => 4, 
+            'status' => 3, 
           ]);
 
         $data = Pengajuan::find(request('id'));
@@ -424,7 +384,7 @@ class PengajuanController extends Controller
     public function tolak(Request $request)
     {
         $add = Pengajuan::where('id', $request->id)->update([
-            'status' => 7, 
+            'status' => 4, 
             'catatan' => $request->catatan,
           ]);
 
@@ -462,7 +422,7 @@ class PengajuanController extends Controller
     {
         $add = Pengajuan::where('id', request('id'))->update([
             'catatan' => request('catatan'), 
-            'status' => 8, 
+            'status' => 5, 
 
             ]);
 
@@ -523,12 +483,15 @@ class PengajuanController extends Controller
     {
         $user = Auth::user();
         $nameFile = request()->file('rpp')->getClientOriginalName();
+        $bukti = request()->file('bukti')->getClientOriginalName();
 
         if(!Storage::disk('public')->exists($user->nama_user)) {
             Storage::disk('public')->makeDirectory($user->nama_user);
-        }            
+        }  
+              
 
         request()->file('rpp')->storeAs($user->nama_user.'/rpp' , $nameFile , ['disk' => 'public']);
+        request()->file('bukti')->storeAs($user->nama_user.'/bukti' , $bukti , ['disk' => 'public']);
         
         $add = Pengajuan::create([
             'nama_kegiatan' => request('nama_kegiatan'), 
@@ -537,65 +500,99 @@ class PengajuanController extends Controller
             'estimasi' => request('waktu'), 
             'jumlah_poin' => request('jumlah_poin'), 
             'rpp' =>  $nameFile, 
-            'tanggal' =>  request('tanggal'),
-            'bukti' =>  '', 
+            'bukti' =>  $bukti, 
+            'tanggal' =>  Carbon::now(),
             'status' => 2 , 
         ]);
 
         // Kirim notifikasi WhatsApp ke admin
         $nama_kegiatan = Program::find(request('nama_kegiatan'))->nama_program;
-        $no_admin = User::where('role' , 2)->first();
+        $no_admin = User::where('role' , 3)->first();
         $phone = $no_admin->no_hp; // Nomor admin
-        $message = "Ada pengajuan baru:\nNama Kegiatan: " . $nama_kegiatan . 
-                   "\nGuru: " .$user = Auth::user()->nama_user .
-                   "\nEstimasi: " . request('waktu') . " Semester" .
-                   "\nJumlah Poin: " . request('jumlah_poin').
+        $message = "Assalamualaikum Wr Wb, Bapak/Ibu.
+                     \nDimohon untuk segera melakukan validasi terhadap program kinerja dengan keterangan : 
+                    \nNama Kegiatan : " . $nama_kegiatan . 
+                   "\nGuru : " .$user = Auth::user()->nama_user .
+                   "\Waktu Pelaksanaan : " . request('waktu') . " Semester" .
+                   "\nJumlah Poin : " . request('jumlah_poin').
                    "\nMohon segera diperiksa".
                    "\nTerima Kasih";
+
+                   
 
         $response = $this->whatsappService->sendMessage($phone, $message);
     }
 
     public function editPengajuan()
     {         
-        $user = Auth::user();
         $name =  request()->file('rpp');
+        $bukti =  request()->file('bukti');
         $nama_rpp =  request('rpp_name');
-        $data = Pengajuan::find(request('id'));
 
-        if ($name != null) {
-            Storage::disk('public')->delete($user->nama_user.'/rpp'.'/'.$data->rpp);
+        $pengajuanId = request('id');
+        $nama_kegiatan = request('nama_kegiatan');
+        $estimasi = request('waktu');
+        $jumlah_poin = request('jumlah_poin');
+        $user = Auth::user();
+        $user_id = $user->id;
+        $user_nama = $user->nama_user;
 
-            $nameFile =  request()->file('rpp')->getClientOriginalName();
-            request()->file('rpp')->storeAs($user->nama_user.'/rpp' , $nameFile , ['disk' => 'public']);
-            $add = Pengajuan::where('id',request('id'))->update([
-                  'nama_kegiatan' => request('nama_kegiatan'), 
-                  'user_id' =>  $user = Auth::user()->id,
-                  'estimasi' => request('waktu'), 
-                  'jumlah_poin' => request('jumlah_poin'), 
-                  'rpp' =>  $nameFile, 
-                  'status' => 2,
+        $data = Pengajuan::find($pengajuanId);
+
+        // Inisialisasi variabel flag perubahan
+        $isUpdated = false;
+
+        // Update RPP jika ada
+        if (request()->hasFile('rpp')) {
+            Storage::disk('public')->delete($user_nama . '/rpp/' . $data->rpp);
+            $rppFile = request()->file('rpp');
+            $nameFile = $rppFile->getClientOriginalName();
+            $rppFile->storeAs($user_nama . '/rpp', $nameFile, ['disk' => 'public']);
+
+            Pengajuan::where('id', $pengajuanId)->update([
+                'rpp' => $nameFile,
             ]);
 
-            $no_admin = User::where('role' , 2)->first();
-            $phone = $no_admin->no_hp; // Nomor admin
-            $message = "Perbaikan pengajuan kegiatan sudah selesai". 
-                       "\nOleh: " .$user = Auth::user()->nama_user .
-                       "\nMohon segera diperiksa".
-                       "\nTerima Kasih";
-    
-            $response = $this->whatsappService->sendMessage($phone, $message);
-
-        } else {
-            $add = Pengajuan::where('id',request('id'))->update([
-                    'nama_kegiatan' => request('nama_kegiatan'), 
-                    'user_id' =>  $user = Auth::user()->id, 
-                    'estimasi' => request('waktu'), 
-                    'jumlah_poin' => request('jumlah_poin'), 
-                    'status' => 2,
-              ]);
+            $isUpdated = true;
         }
-        
+
+        // Update Bukti jika ada
+        if (request()->hasFile('bukti')) {
+            Storage::disk('public')->delete($user_nama . '/bukti/' . $data->bukti);
+            $buktiFile = request()->file('bukti');
+            $nama_bukti = $buktiFile->getClientOriginalName();
+            $buktiFile->storeAs($user_nama . '/bukti', $nama_bukti, ['disk' => 'public']);
+
+            Pengajuan::where('id', $pengajuanId)->update([
+                'bukti' => $nama_bukti,
+            ]);
+
+            $isUpdated = true;
+        }
+
+        // Update data umum
+        Pengajuan::where('id', $pengajuanId)->update([
+            'nama_kegiatan' => $nama_kegiatan,
+            'user_id' => $user_id,
+            'estimasi' => $estimasi,
+            'jumlah_poin' => $jumlah_poin,
+            'status' => 2,
+        ]);
+
+        // Kirim WhatsApp jika ada perubahan file
+        if ($isUpdated) {
+            $no_admin = User::where('role', 3)->first();
+            $phone = $no_admin->no_hp;
+
+            $message = "Assalamu’alaikum Wr. Wb.\n" .
+                    "Yth. Bapak/Ibu Kepala Sekolah,\n" .
+                    "Perbaikan pengajuan kegiatan sudah selesai.\n" .
+                    "Oleh: $user_nama\n\n" .
+                    "Mohon kiranya dapat segera diperiksa dan ditindaklanjuti.\n\n" .
+                    "Terima kasih.";
+
+            $response = $this->whatsappService->sendMessage($phone, $message);
+        }
 
 
       
@@ -606,6 +603,7 @@ class PengajuanController extends Controller
       $user = Auth::user();
       $data = Pengajuan::find($id);
       Storage::disk('public')->delete($user->nama_user.'/rpp'.'/'.$data->rpp);
+      Storage::disk('public')->delete($user->nama_user.'/bukti'.'/'.$data->bukti);
       $deltete = Pengajuan::where('id' , $id)->delete();
     }
 

@@ -95,7 +95,7 @@ class UserController extends Controller
             if ($user->role == 1) {
                 return redirect()->intended('/pengajuan')->with('success' , 'Selamat Datang Kembali');
             } else if ($user->role == 2) {
-                return redirect()->intended('/pengajuan')->with('success' , 'Selamat Datang Kembali');
+                return redirect()->intended('/program')->with('success' , 'Selamat Datang Kembali');
             } else if ($user->role == 3) {
                 return redirect()->intended('/pengajuan')->with('success' , 'Selamat Datang Kembali');
             }

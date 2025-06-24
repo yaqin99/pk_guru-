@@ -21,7 +21,7 @@
 
 
             
-            
+            @if (Auth::user()->role == 1 || Auth::user()->role == 3)
             <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="bi bi-file-earmark-bar-graph"></i>
             </i><span class="nav-text">Data Kinerja</span></a>
             <ul aria-expanded="false">
@@ -36,7 +36,8 @@
                 </li> --}}
             </ul>
             </li>
-            
+            @endif
+
             <li><a href="/surat" aria-expanded="false"><i class="bi bi-envelope"></i><span
                         class="nav-text">Data Surat</span></a>
             </li>

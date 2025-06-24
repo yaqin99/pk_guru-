@@ -16,12 +16,12 @@
                                 <th>No</th>
                                 <th>Nama Guru</th>
                                 <th>Program Kerja</th>
-                                <th>Catatan Kepsek</th>    
-                                <th>Catatan Admin</th>
+                                <th>Catatan Evaluasi</th>    
+                                {{-- <th>Catatan Admin</th> --}}
                                
                                 <th>Estimasi</th>
                                 <th>Poin</th>
-                                <th>Tanggal</th>
+                                {{-- <th>Tanggal</th> --}}
                                 <th>Status</th>
                                 <th>Opsi</th>
                             </tr>
