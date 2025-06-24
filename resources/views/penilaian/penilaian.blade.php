@@ -164,17 +164,24 @@
 
     }
 
+    $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+    });
+
     function showPenilaianModal() {
+    // Ambil nilai input
     let siswa = $('#siswa').val();
     let guru = $('#guru_id_penilaian').val();
-    let mapel = $('#mapel_id').val(); // Pastikan id ini benar di form HTML
+    let mapel = $('#mapel_id').val();
     let kelas = $('#kelas').val();
     let password = $('#passwordSiswa').val();
 
-    // Debug: cek apakah semua variabel benar
+    // Debugging ke console (bisa dihapus kalau tidak perlu)
     console.log({ siswa, guru, mapel, kelas, password });
 
-    // Validasi input kosong
+    // Validasi: jika ada yang kosong, munculkan peringatan
     if (!siswa || !guru || !mapel || !kelas || !password) {
         Swal.fire({
             icon: 'warning',
@@ -182,33 +189,42 @@
             text: 'Sebelum menilai, tolong lengkapi semua data terlebih dahulu.',
             confirmButtonText: 'Oke, saya mengerti'
         });
-        return; // hentikan proses AJAX
+        return;
     }
 
-    // Kirim AJAX jika semua data lengkap
+    // Kirim AJAX jika valid
     $.ajax({
-        url: `/openPenilaian`,
-        type: "POST",
-        cache: false,
+        url: '/openPenilaian',
+        type: 'POST',
         data: {
             siswa: siswa,
             guru: guru,
             mapel: mapel,
             kelas: kelas,
-            password: password,
-            _token: $('meta[name="csrf-token"]').attr('content')
+            password: password
         },
         success: function(response) {
             if (response.success) {
+                // Masukkan ID siswa dan guru ke input hidden di modal
                 $('#user_id').val(response.siswa_id);
                 $('#guru_id').val(response.guru_id);
+                // Tampilkan modal penilaian
                 $('#modalPenilaian').modal('show');
             } else {
-                Swal.fire('Gagal', response.message || 'Password salah atau siswa tidak ditemukan.', 'warning');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Gagal',
+                    text: response.message || 'Password salah atau siswa tidak ditemukan.'
+                });
             }
         },
-        error: function() {
-            Swal.fire('Gagal', 'Terjadi kesalahan saat mengirim data.', 'error');
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText); // Debug error ke console
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan',
+                text: 'Gagal mengirim data. Silakan coba lagi.'
+            });
         }
     });
 }
