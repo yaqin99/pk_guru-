@@ -18,7 +18,7 @@ class SiswaSeeder extends Seeder
 
         $students = [];
         foreach (['10 A' => '2025', '11 B' => '2024', '12 C' => '2023'] as $kelas => $angkatan) {
-            for ($i = 1; $i <= 20; $i++) {
+            for ($i = 1; $i <= 8; $i++) {
                 $students[] = [
                     'nama_siswa' => $faker->name,
                     'kelas' => $kelas,
