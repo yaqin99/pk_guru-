@@ -49,6 +49,11 @@ class PengajuanController extends Controller
                 $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->get();
 
             }
+            if (Auth::user()->role == 2) {
+                // $data = Pengajuan::with(['guru' , 'program'])->whereIn('status' , [3])->orderBy('tanggal' , 'desc')->get();
+                $data = Pengajuan::with(['guru' , 'program'])->orderBy('tanggal' , 'desc')->orderBy('created_at', 'desc')->get();
+
+            }
 
             return Datatables::of($data)
                     ->addIndexColumn()

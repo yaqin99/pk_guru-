@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Siswa;
-use App\Models\mapel;
+use App\Models\Mapel;
 use App\Models\User;
 use App\Models\Komponen;
 use App\Models\RincianNilaiAspek;
