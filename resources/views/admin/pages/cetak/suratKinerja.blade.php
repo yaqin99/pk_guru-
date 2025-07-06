@@ -655,14 +655,14 @@ hasil dari nilai tersebut adalah sebagai berikut : </span></p>
 
     <!-- Kolom Tanda Tangan -->
     <td style="vertical-align: top; text-align: center; width: 50%;">
-      <p style="font-size: 12pt; text-align: right; margin-right: 50px;">
+      <p style="font-size: 12pt; text-align: right; margin-right: 110px;">
         Sumenep, {{ \Carbon\Carbon::parse($row['tanggal'])->isoFormat('D MMMM Y') }}
       </p>
       <div style="margin-top: -10px;">
         <img
           src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/admin/images/stempel.png'))) }}"
           height="150"
-          style="position: absolute; left: 65%; transform: translateX(-50%); opacity: 0.5;"
+          style="position: absolute; left: 70%; transform: translateX(-50%); opacity: 0.5;"
         />
 
         <img
@@ -673,6 +673,8 @@ hasil dari nilai tersebut adalah sebagai berikut : </span></p>
         <p style="font-size:12pt; margin-top: 5px;">Kepala MA Al-Ghazali,</p>
         <p style="font-size:12pt; font-weight: bold;">AHMAD AINUL FURQAN, S.Pd</p>
       </div>
+
+      
     </td>
   </tr>
 </table>
