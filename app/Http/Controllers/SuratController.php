@@ -488,7 +488,7 @@ class SuratController extends Controller
 
         $kinerja = Pengajuan::with('program')
             ->where('user_id', $user_id)
-            ->where('status', 6)
+            ->where('status', 3)
             ->get();
 
         // Ambil nilai aspek dari tabel nilai_aspeks berdasarkan user_id dan tahun
