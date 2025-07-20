@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             );
         DB::table('users')->insert(
             [
-                'nama_user' => "ABD. MU'IZ" ,
+                'nama_user' => "ABD. MUIZ" ,
                 'nip' =>  '-' ,
                 'no_hp' =>  '08999920375' ,
                 'alamat' => '-' , 
@@ -102,7 +102,7 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert(
             [
-                'nama_user' => "NOR 'AINI S.Pd." ,
+                'nama_user' => "NOR AINI S.Pd." ,
                 'nip' =>  '-' ,
                 'no_hp' =>  '08999920375' ,
                 'alamat' => '-' , 

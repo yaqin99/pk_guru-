@@ -120,7 +120,10 @@ public function addSiswa(Request $request)
         'no_hp' => 'nullable|string|max:20',
         'angkatan' => 'required|integer',
     ]);
+    $plainPassword = Str::random(6);
 
+    // 2. Simpan password terenkripsi ke database
+    $passwordFix = Hash::make($plainPassword);
     
     if ($request->id_siswa) {
         // Edit mode
@@ -135,6 +138,7 @@ public function addSiswa(Request $request)
             'no_absen' => $request->no_absen,
             'no_hp' => $request->no_hp,
             'angkatan' => $request->angkatan,
+            'password' => $passwordFix,
         ]);
     
     } else {
@@ -146,9 +150,21 @@ public function addSiswa(Request $request)
             'no_hp' => $request->no_hp,
             'angkatan' => $request->angkatan,
             'status' => 1,
-            'password' => bcrypt(12345),
+            'password' => $passwordFix,
         ]);
     }
+
+    $no_hp = $this->formatNomorWa($request->no_hp);
+    
+    // 4. Pesan dikirim ke WA
+    $message = "Assalamu'alaikum, berikut adalah informasi akun Anda:\n".
+               "Nama: *{$request->nama_siswa}*\n".
+               "Kelas: *{$request->kelas}*\n".
+               "Password: *{$plainPassword}*\n\n".
+               "Gunakan password ini untuk Mengisi Survey Aspek Guru. Jangan dibagikan ke orang lain!\nTerima kasih 🙏";
+
+    // 5. Kirim via WhatsApp
+    $this->whatsappService->sendMessage($no_hp, $message);
     
     return response()->json(['success' => true, 'message' => 'Data siswa berhasil disimpan!']);
 }
@@ -219,6 +235,15 @@ public function getSiswa($id)
         $penilaians = $request->penilaian;
         $tipe = $request->tipe_aspek;
     
+        $mapTipeAspek = [
+            '1' => 'Pedagogik',
+            '2' => 'Kepribadian',
+            '3' => 'Profesional',
+            '4' => 'Sosial',
+        ];
+        
+        $namaTipe = $mapTipeAspek[$tipe];
+
         // 1. Cek apakah siswa sudah menilai guru ini untuk tipe aspek ini
         $sudahDinilai = RincianNilaiAspek::where('siswa_id', $siswa_id)
             ->where('guru_id', $guru_id)
@@ -229,8 +254,10 @@ public function getSiswa($id)
         if ($sudahDinilai) {
             return response()->json([
                 'success' => false,
-                'message' => 'Siswa sudah menilai guru ini pada tipe aspek tersebut untuk tahun ini.',
-                'status' => 'already_rated'
+                'message' => 'Anda sudah menilai guru ini untuk aspek tersebut tahun ini.',
+                'status' => 'already_rated',
+                'tahun' => Carbon::now()->year,
+                'tipe' => $namaTipe,
             ]);
         }
     

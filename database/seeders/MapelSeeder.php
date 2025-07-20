@@ -23,7 +23,7 @@ class MapelSeeder extends Seeder
             ['nama_mapel' => 'Bahasa Arab'],
             ['nama_mapel' => 'Sejarah Kebudayaan Islam (SKI)'],
             ['nama_mapel' => 'Informatika'],
-            ['nama_mapel' => "Al Qur'an Hadist"],
+            ['nama_mapel' => "Al Qur an Hadist"],
         ]);
         
     }

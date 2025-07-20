@@ -488,6 +488,11 @@ $( document ).ready(function() {
 
         return;
     }
+    if (!bukti_kegiatan) {
+        showNotification('Peringatan', 'Bukti Kegiatan harus diisi!', 'warning');
+
+        return;
+    }
    
     
     var file_data = $('#rpp').prop('files')[0];

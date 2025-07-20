@@ -280,7 +280,11 @@ function addPenilaian() {
             $('#modalPenilaian').modal('hide');
             $('#formPenilaianSiswa')[0].reset();
         } else if (response.status === 'already_rated') {
-            Swal.fire('Sudah Dinilai', 'Anda sudah menilai guru ini untuk tipe aspek tersebut.', 'warning');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Sudah Dinilai',
+                html: `Anda sudah menilai guru ini untuk aspek <strong>${response.tipe}</strong> pada tahun <strong>${response.tahun}</strong>. Silakan coba lagi tahun depan.`,
+            });
         } else {
             Swal.fire('Gagal', response.message || 'Terjadi kesalahan.', 'error');
         }
