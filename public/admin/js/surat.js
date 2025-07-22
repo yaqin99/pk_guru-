@@ -350,8 +350,7 @@ function getSurat(){
            {data: 'nama_surat', name: 'nama_surat'},
            {data: 'tipe', name: 'tipe'},
            {data: 'tanggal', name: 'tanggal'},
-           {data: 'status', name: 'status'},
-           {data: 'penerusan', name: 'penerusan'},
+         
            {data: 'action', name: 'action', orderable: false, searchable: false},
      ]
  });

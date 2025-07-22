@@ -81,85 +81,10 @@ class SuratController extends Controller
                     ->addColumn('nama_surat', function($row){
                     return $row->nama_surat;})
                     ->addColumn('tipe', function($row){
-                    return $row->tipe;})
+                    return $row->tipe == 1 ? 'Surat Kinerja' : 'Surat Teguran';})
                     ->addColumn('tanggal', function($row){
                     return $row->tanggal;})
-                    ->addColumn('status', function($row){
-                      if ($row->status == null || $row->status == 1) {
-                       
-                        return $status = 'Menunggu' ; 
-                        
- 
-                        
-                      } else if ($row->status == 2) {
-                        return $status = 'Menunggu Persetujuan' ; 
-                      } else if ($row->status == 3) {
-                        return $status = 'Ditolak' ; 
-                      } else {
-                        return $status = 'Disetujui' ; 
-
-                      };
-                    })
                     
-                    ->addColumn('penerusan', function($row){
-                      if (Auth::user()->role == 3) {
-                        
-
-                        if ($row->status == 2 ) {
-                          $btn = '
-                          <div class="btn-group">
-                          <a onclick=\'approve(`'.$row->id.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" >
-                          <i class="bi bi-check-lg" ></i>
-                          </a>
-                          <a onclick=\'tolakSurat(`'.$row->id.'`)\' class="ml-2 edit btn btn-danger  btn-sm text-light" >
-                          <i class="bi bi-arrow-left-short" ></i>
-                          </a>
-                          </div>
-                          
-                          ';
-                          return $btn ; 
-                         } else {
-                          $btn = '
-                          
-                          
-                          ';
-                          return $btn ; 
-                         
-                         }
-
-
-                      }
-                      if (Auth::user()->role == 2) {
-                         if ($row->status == 3) {
-                          $btn = '
-                          
-                          ';
-                          return $btn;
-                         } else {
-                          if ($row->status != 1) {
-                            $btn = '
-                            
-                            ';
-                            return $btn;
-                          } else {
-                            $btn = '
-                          <div class="btn-group">
-                          <a onclick=\'teruskanSurat(`'.$row.'`)\' class="ml-2 edit btn btn-success btn-sm text-light" >
-                          <i class="bi bi-arrow-right-short" ></i>
-                          </a>
-                          
-                          </div>
-                          
-                          ';
-                          
-   
-                           return $btn;
-                          }
-                         
-                         }
-                      }
-                           
-                    })
                     ->addColumn('action', function($row){
                       if (Auth::user()->role == 3) {
                         $btn = '
@@ -167,12 +92,19 @@ class SuratController extends Controller
                         <a onclick=\'cetakSurat(`'.$row.'`)\' class="ml-2 edit btn btn-primary btn-sm text-light" >
                         <i class="bi bi-printer-fill" ></i>
                         </a>
-                       
+                        
+                        <a onclick=\'editSurat(`'.$row.'`)\' class="ml-2 edit btn btn-warning btn-sm text-light" data-bs-toggle="modal" data-bs-target="#editSurat">
+                        <i class="bi bi-pencil-fill" ></i>
+                        </a>
+                        
+                        <a href="javascript:void(0)" onclick=\'deleteSurat(`'.$row->id.'`)\' class="ml-2 edit btn btn-danger btn-sm"><i class="bi bi-trash3-fill"></i></a>
+                        
                         </div>
                         
                         ';
-                        return $btn;
-
+                        
+ 
+                         return $btn;
                       }
                       if (Auth::user()->role == 1) {
                         $btn = '
@@ -260,6 +192,16 @@ class SuratController extends Controller
             'tanggal' => request('tanggal'), 
             'keterangan' => request('keterangan'), 
           ]);
+
+          $no_guru = User::find($request->nama_user)->no_hp;
+
+
+            $message_guru = "Surat Kinerja Anda Telah diperbaiki oleh Kepala Sekolah". 
+            "\nSilahkan cek dan cetak cetak surat pada aplikasi PK Guru".
+            "\nTerima Kasih";
+
+
+        $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
         
     }
     public function teruskanSurat(Request $request)
@@ -398,7 +340,7 @@ class SuratController extends Controller
               'tipe' => request('tipe_surat'),
               'tanggal' => request('tanggal'), 
               'keterangan' => $keterangan, 
-              'status' => 1,
+              'status' => 4,
             ]);
           } else {
             $add = Surat::create([
@@ -407,11 +349,10 @@ class SuratController extends Controller
               'tipe' => request('tipe_surat'),
               'tanggal' => request('tanggal'), 
               'keterangan' => request('keterangan'), 
-              'status' => 1,
+              'status' => 4,
             ]);
           }
-            
-
+              $no_guru = User::find($request->nama_user)->no_hp;
               Aspek::create([
                 'surat_kinerja_id' => $add->id  , 
                 'pedagogik' => null, 
@@ -419,6 +360,14 @@ class SuratController extends Controller
                 'profesional' => null,
                 'sosial' => null, 
               ]);
+
+              $message_guru = "Surat Kinerja Anda Telah dikeluarkan oleh Kepala Sekolah". 
+              "\nSilahkan cetak surat pada aplikasi PK Guru".
+              "\nTerima Kasih";
+    
+    
+            $response_guru = $this->whatsappService->sendMessage($no_guru, $message_guru);
+
 
         } else {
 
