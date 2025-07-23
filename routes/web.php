@@ -68,6 +68,7 @@ Route::get('/siswa/getSiswa/{id}', [SiswaController::class, 'getSiswa'])->middle
 Route::delete('/siswa/delete/{id}', [SiswaController::class, 'deleteSiswa'])->middleware('auth');
 Route::post('/siswa/ubah-status', [SiswaController::class, 'ubahStatus'])->middleware('auth');
 Route::post('/siswa/kirim-wa-semua', [SiswaController::class, 'kirimWaSemua'])->name('siswa.kirimWa')->middleware('auth');
+Route::get('/siswa/kirimWa/{id}', [SiswaController::class, 'kirimWa']);
 
 Route::get('/siswa/cek-status', function (Request $request) {
     $siswa = \App\Models\Siswa::find($request->id);

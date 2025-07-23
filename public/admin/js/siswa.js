@@ -134,6 +134,29 @@ function editSiswa (row){
 
 }
 
+function kirimWa(data) {
+    let siswa = JSON.parse(data);
+
+    $.ajax({
+        url: `/siswa/kirimWa/${siswa.id}`,
+        method: 'GET',
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: `Pesan telah berhasil dikirim ke siswa atas nama ${siswa.nama_siswa}`
+                });
+            } else {
+                Swal.fire('Gagal', 'Gagal mengirim pesan WhatsApp.', 'error');
+            }
+        },
+        error: function () {
+            Swal.fire('Gagal', 'Terjadi kesalahan saat menghubungi server.', 'error');
+        }
+    });
+}
+
 
 function deleteSiswa(id) {
   Swal.fire({

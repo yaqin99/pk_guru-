@@ -69,7 +69,13 @@ class SiswaController extends Controller
                         
                            $btn = '
                            <div class="btn-group">
-                           <a onclick=\'ubahStatus(`'.$row['id'].'`)\' class="edit btn btn-primary text-light btn-sm" title="Edit Status Siswa" style="cursor: pointer;">
+                            <a onclick=\'kirimWa(`'.$row.'`)\'
+                            class="edit btn btn-success text-light btn-sm" 
+                            title="Kirim WhatsApp" 
+                            style="cursor: pointer;">
+                            <i class="bi bi-whatsapp"></i>
+                            </a>
+                           <a onclick=\'ubahStatus(`'.$row['id'].'`)\' class="edit btn btn-primary text-light btn-sm ml-2" title="Edit Status Siswa" style="cursor: pointer;">
                            <i class="bi bi-ban-fill"></i>
                            </a>
                            <a onclick=\'editSiswa(`'.$row.'`)\' class="edit btn btn-warning text-light btn-sm ml-2" title="Edit Data" style="cursor: pointer;">
@@ -412,6 +418,43 @@ public function kirimWaSemua(Request $request)
 
     return response()->json(['success' => true, 'message' => 'Password dan pesan berhasil dikirim ke semua siswa aktif.']);
 }
+
+public function kirimWa($id)
+{
+    $siswa = Siswa::where('status', 1)->whereNotNull('no_hp')->find($id);
+
+    if (!$siswa) {
+        return response()->json(['success' => false, 'message' => 'Siswa tidak ditemukan atau tidak aktif.']);
+    }
+
+    // 1. Generate password random (6 karakter)
+    $plainPassword = Str::random(6);
+
+    // 2. Simpan password terenkripsi
+    $siswa->password = Hash::make($plainPassword);
+    $siswa->save();
+
+    // 3. Format nomor WA
+    $no_hp = $this->formatNomorWa($siswa->no_hp);
+
+    // 4. Format pesan WA
+    $message = "Assalamu'alaikum, berikut adalah informasi akun Anda:\n".
+               "Nama: *{$siswa->nama_siswa}*\n".
+               "Kelas: *{$siswa->kelas}*\n".
+               "Password: *{$plainPassword}*\n\n".
+               "Gunakan password ini untuk Mengisi Survey Aspek Guru. Jangan dibagikan ke orang lain!\nTerima kasih 🙏";
+
+    // 5. Kirim pesan
+    $this->whatsappService->sendMessage($no_hp, $message);
+
+    // 6. Kirim respon balik
+    return response()->json([
+        'success' => true,
+        'data' => $siswa,
+        'message' => 'Pesan berhasil dikirim.'
+    ]);
+}
+
 
 private function formatNomorWa($noHp)
 {
