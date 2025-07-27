@@ -134,9 +134,9 @@ function editSiswa (row){
 
 }
 
-function waSiswa(data) {
+function kirimWa(data) {
     let siswa = JSON.parse(data);
-    
+
     $.ajax({
         url: `/siswa/kirimWa/${siswa.id}`,
         method: 'GET',
