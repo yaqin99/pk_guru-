@@ -134,18 +134,17 @@ function editSiswa (row){
 
 }
 
-function kirimWa(data) {
-    let siswa = JSON.parse(data);
-
+function kirimWa(id) {
+    console.log('wa terkirim')
     $.ajax({
-        url: `/siswa/kirimWa/${siswa.id}`,
+        url: `/siswa/kirimWa/${id}`,
         method: 'GET',
         success: function (response) {
             if (response.success) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
-                    text: `Pesan telah berhasil dikirim ke siswa atas nama ${siswa.nama_siswa}`
+                    text: `Pesan telah berhasil dikirim ke siswa`
                 });
             } else {
                 Swal.fire('Gagal', 'Gagal mengirim pesan WhatsApp.', 'error');
