@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\DB;
 
 class GuruController extends Controller
 {
@@ -80,7 +81,15 @@ class GuruController extends Controller
                         
                            $btn = '
                            <div class="btn-group">
-                           <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm" title="Lihat Aspek" style="cursor: pointer;">
+                            <a  onclick=\'viewGrafik(`'.$row.'`)\'
+                            class="btn btn-info text-light btn-sm "
+                            title="Lihat Grafik Performa"
+                            style="cursor: pointer;">
+                            <i class="bi bi-bar-chart-line"></i> 
+                            </a>
+
+ 
+                           <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm ml-2" title="Lihat Aspek" style="cursor: pointer;">
                            <i class="bi bi-eye-fill" ></i>
                            </a>
                            <a onclick=\'editGuru(`'.$row.'`)\' class="edit btn btn-warning text-light btn-sm ml-2" title="Edit Data" style="cursor: pointer;">
@@ -203,6 +212,67 @@ class GuruController extends Controller
         return response()->json($data);
     }
     
+
+
+    public function getGrafikPerforma($id)
+    {
+        $type       = request('type');         // kompetensi | kehadiran | kinerja
+        $tahunAwal  = request('tahun_awal');   // optional
+        $tahunAkhir = request('tahun_akhir');  // optional
+    
+        /** helper untuk menyisipkan filter tahun jika diisi */
+        $applyYearFilter = function ($query) use ($tahunAwal, $tahunAkhir) {
+            if ($tahunAwal)  { $query->whereYear('tanggal', '>=', $tahunAwal); }
+            if ($tahunAkhir) { $query->whereYear('tanggal', '<=', $tahunAkhir); }
+            return $query;
+        };
+    
+        /* ---------------------- KINERJA (sudah ada) ---------------------- */
+        if ($type === 'kinerja') {
+            $data = DB::table('pengajuans')
+                ->selectRaw('YEAR(tanggal) AS tahun, SUM(jumlah_poin) AS total')
+                ->where('user_id', $id)
+                ->tap($applyYearFilter)              // terapkan filter tahun kalau ada
+                ->groupBy('tahun')
+                ->orderBy('tahun')
+                ->pluck('total', 'tahun');           // collection: [2022=>15, 2023=>26]
+    
+            return response()->json([
+                'labels' => $data->keys()->toArray(),
+                'data'   => $data->values()->toArray()
+            ]);
+        }
+    
+        /* -------------------- KOMPETENSI (baru) -------------------- */
+        if ($type === 'kompetensi') {
+            // diasumsikan tipe = 1 untuk kompetensi. sesuaikan kalau beda
+            $data = DB::table('nilai_aspeks')
+                ->selectRaw('YEAR(tanggal) AS tahun, AVG(skor) AS total') // pakai AVG. ganti ke SUM kalau mau jumlah
+                ->where('user_id', $id)
+                ->where('tipe', 1)
+                ->tap($applyYearFilter)
+                ->groupBy('tahun')
+                ->orderBy('tahun')
+                ->pluck('total', 'tahun');
+    
+            return response()->json([
+                'labels' => $data->keys()->toArray(),
+                'data'   => $data->values()->toArray()
+            ]);
+        }
+    
+        /* -------------- KEHADIRAN (belum diisi) -------------- */
+        if ($type === 'kehadiran') {
+            // sementara kosong → nanti di‑update kalau sudah ada tabel/aturan
+        }
+    
+        // default kosong
+        return response()->json([
+            'labels' => [],
+            'data'   => []
+        ]);
+    }
+
     public function getAspek($id)
     {
         $type = request('type'); // Default ke pedagogik jika tidak ada type

@@ -38,6 +38,7 @@
 </div>
 @include('admin.modals.guru.aspek')
 @include('admin.modals.guru.penilaian')
+@include('admin.modals.guru.grafik')
 @include('admin.modals.addGuru')
 @include('admin.modals.editGuru')
 @endsection

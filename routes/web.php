@@ -57,6 +57,8 @@ Route::put('/editGuru', [GuruController::class,'editGuru']);
 Route::get('/guru/aspek/{id}', [GuruController::class,'getAspek']);
 Route::get('/guru/nilaiAspek/{id}', [GuruController::class,'getNilaiAspek']);
 Route::get('/guru/download/{id}/{dokumen}/{type}', [GuruController::class,'download']);
+Route::get('/guru/grafikData/{id}', [GuruController::class, 'getGrafikPerforma']);
+
 //Pengajuan All Routes
 
 

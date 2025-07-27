@@ -69,6 +69,7 @@ class SiswaController extends Controller
                         
                            $btn = '
                            <div class="btn-group">
+                           
                             <a onclick=\'kirimWa(`'.$row.'`)\'
                             class="edit btn btn-success text-light btn-sm" 
                             title="Kirim WhatsApp" 
