@@ -13,17 +13,17 @@
                             <option value="kinerja">Kinerja Guru</option>
                         </select>
                     </div>
-                    <div  class="row mb-3" id="wrapSubFilter" style="display:none;">
-                        <div class="col-md-4">
-
+                </div>
+                <div class="row mb-3" id="wrapSubFilter" style="display: none;">
+                    <div class="col-md-4">
                         <select class="form-control" id="filterAspek">
-                            <option value="pedagogik">Pedagogik</option>
-                            <option value="kepribadian">Kepribadian</option>
-                            <option value="sosial">Sosial</option>
-                            <option value="profesional">Profesional</option>
+                            <option value="1">Pedagogik</option>
+                            <option value="2">Kepribadian</option>
+                            <option value="3">Profesional</option>
+                            <option value="4">Sosial</option>
                         </select>
-                        </div>
                     </div>
+                </div>
                 <canvas id="chartPerforma" height="100"></canvas>
             </div>
             <div class="modal-footer">
