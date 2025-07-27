@@ -31,68 +31,84 @@ function getGuru(){
    let currentGuruId = null;
 
    function viewGrafik(row) {
-    console.log(row)
-       const data = JSON.parse(row);
-       currentGuruId = data.id;
+    const data = JSON.parse(row);
+    currentGuruId = data.id;
 
-       console.log({
-           data_id: data.id,
-           nama_user: data.nama_user,
-           aspek: $('#filterGrafik').val(),
-       });
+    $('#grafikGuru').modal('show');
 
-       $('#grafikGuru').modal('show');
-       loadGrafikData(data.id, $('#filterGrafik').val());
-   }
+    const tipe = $('#filterGrafik').val();
+    const aspek = tipe === 'kompetensi' ? $('#filterAspek').val() : null;
+
+    loadGrafikData(data.id, tipe, aspek);
+}
 
    $('#filterGrafik').on('change', function () {
-       if (currentGuruId) {
-           loadGrafikData(currentGuruId, $(this).val());
-       }
-   });
+    const selected = $(this).val();
 
-   function loadGrafikData(id, tipe) {
-       $.ajax({
-           url: `/guru/grafikData/${id}`,
-           type: "GET",
-           data: { type: tipe },
-           dataType: "json",
-           success: function (response) {
-               // Contoh response:
-               // { labels: ["Jan", "Feb", "Mar"], data: [80, 85, 90] }
+    if (selected === 'kompetensi') {
+        $('#wrapSubFilter').slideDown();
+    } else {
+        $('#wrapSubFilter').slideUp();
+    }
 
-               const ctx = document.getElementById('chartPerforma').getContext('2d');
+    if (currentGuruId) {
+        const aspek = selected === 'kompetensi' ? $('#filterAspek').val() : null;
+        loadGrafikData(currentGuruId, selected, aspek);
+    }
+});
 
-               // Hancurkan chart lama kalau ada
-               if (chartGuru) {
-                   chartGuru.destroy();
-               }
-               let yMax = 100;               // default
-               if (tipe === 'kinerja')   yMax = 50;
-               if (tipe === 'kehadiran') yMax = 100; // contoh
+$('#filterAspek').on('change', function () {
+  if (currentGuruId) {
+      loadGrafikData(currentGuruId, 'kompetensi', $(this).val());
+  }
+});
 
-               chartGuru = new Chart(ctx, {
-                   type: 'bar',
-                   data: {
-                       labels: response.labels,
-                       datasets: [{
-                           label: `Performa Guru - ${tipe}`,
-                           data: response.data,
-                           backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                           borderColor: 'rgba(54, 162, 235, 1)',
-                           borderWidth: 1
-                       }]
-                   },
-                   options: {
-                    scales: { y: { beginAtZero: true, max: yMax } }
-                }
-               });
-           },
-           error: function (xhr, status, error) {
-               console.error("Gagal load data grafik:", error);
-           }
-       });
-   }
+
+function loadGrafikData(id, tipe, aspek) {
+  $.ajax({
+      url: `/guru/grafikData/${id}`,
+      type: "GET",
+      data: {
+          type: tipe,
+          aspek: aspek
+      },
+      dataType: "json",
+      success: function (response) {
+          const ctx = document.getElementById('chartPerforma').getContext('2d');
+
+          if (chartGuru) {
+              chartGuru.destroy();
+          }
+
+          let yMax = 100;
+          if (tipe === 'kinerja')   yMax = 50;
+          if (tipe === 'kehadiran') yMax = 100;
+
+          chartGuru = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: response.labels,
+                  datasets: [{
+                      label: `Performa Guru - ${tipe}${aspek ? ' - ' + aspek : ''}`,
+                      data: response.data,
+                      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                      borderColor: 'rgba(54, 162, 235, 1)',
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: { beginAtZero: true, max: yMax }
+                  }
+              }
+          });
+      },
+      error: function (xhr, status, error) {
+          console.error("Gagal load data grafik:", error);
+      }
+  });
+}
+
 
 
 function showResetPoinGuru() {
@@ -184,7 +200,22 @@ function showResetPoinGuru() {
 }
 
 $( document ).ready(function() {     
-   getGuru()
+   getGuru();
+
+
+   $('#filterGrafik').on('change', function () {
+    const selected = $(this).val();
+
+    if (selected === 'kompetensi') {
+        $('#wrapSubFilter').slideDown();
+    } else {
+        $('#wrapSubFilter').slideUp();
+    }
+});
+
+// Trigger saat halaman pertama kali load
+$('#filterGrafik').trigger('change');
+
 });
 
 $(document).ready(function() {

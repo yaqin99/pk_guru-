@@ -244,17 +244,25 @@ class GuruController extends Controller
         }
     
         /* -------------------- KOMPETENSI (baru) -------------------- */
+
+        $aspek = request('aspek');
+
         if ($type === 'kompetensi') {
-            // diasumsikan tipe = 1 untuk kompetensi. sesuaikan kalau beda
-            $data = DB::table('nilai_aspeks')
-                ->selectRaw('YEAR(tanggal) AS tahun, AVG(skor) AS total') // pakai AVG. ganti ke SUM kalau mau jumlah
+            $query = DB::table('nilai_aspeks')
+                ->selectRaw('YEAR(tanggal) AS tahun, AVG(skor) AS total')
                 ->where('user_id', $id)
-                ->where('tipe', 1)
-                ->tap($applyYearFilter)
-                ->groupBy('tahun')
+                ->tap($applyYearFilter);
+        
+            if ($aspek) {
+                $query->where('tipe', $aspek); // jika aspek dipilih
+            } else {
+                $query->whereIn('tipe', [1, 2, 3, 4]); // default semua aspek kompetensi
+            }
+        
+            $data = $query->groupBy('tahun')
                 ->orderBy('tahun')
                 ->pluck('total', 'tahun');
-    
+        
             return response()->json([
                 'labels' => $data->keys()->toArray(),
                 'data'   => $data->values()->toArray()
