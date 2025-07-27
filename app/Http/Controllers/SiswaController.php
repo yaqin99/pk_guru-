@@ -65,12 +65,14 @@ class SiswaController extends Controller
      
                              return $btn;
                         } else {
-
+                            $rowJson = json_encode($row);
+                            $rowEscaped = htmlspecialchars($rowJson, ENT_QUOTES, 'UTF-8');
+                            
                         
                            $btn = '
                            <div class="btn-group">
                            
-                            <a onclick=\'waSiswa(`'.$row.'`)\'
+                            <a onclick=\'waSiswa(`'.$rowEscaped.'`)\'
                             class="edit btn btn-success text-light btn-sm" 
                             title="Kirim WhatsApp" 
                             style="cursor: pointer;">
