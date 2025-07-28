@@ -66,50 +66,207 @@ $('#filterAspek').on('change', function () {
 
 function loadGrafikData(id, tipe, aspek) {
   $.ajax({
-      url: `/guru/grafikData/${id}`,
-      type: "GET",
-      data: {
-          type: tipe,
-          aspek: aspek
-      },
-      dataType: "json",
-      success: function (response) {
-          const ctx = document.getElementById('chartPerforma').getContext('2d');
+    url: `/guru/grafikData/${id}`,
+    type: "GET",
+    data: {
+      type: tipe,
+      aspek: aspek
+    },
+    dataType: "json",
+    success: function (response) {
+      const ctx = document.getElementById('chartPerforma').getContext('2d');
 
-          if (chartGuru) {
-              chartGuru.destroy();
-          }
-
-          let yMax = 100;
-          if (tipe === 'kinerja')   yMax = 50;
-          if (tipe === 'kehadiran') yMax = 100;
-
-          chartGuru = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                  labels: response.labels,
-                  datasets: [{
-                      label: `Performa Guru - ${tipe}${aspek ? ' - ' + aspek : ''}`,
-                      data: response.data,
-                      backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                      borderColor: 'rgba(54, 162, 235, 1)',
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                  scales: {
-                      y: { beginAtZero: true, max: yMax }
-                  }
-              }
-          });
-      },
-      error: function (xhr, status, error) {
-          console.error("Gagal load data grafik:", error);
+      if (chartGuru) {
+        chartGuru.destroy();
       }
+
+      // Buat gradien warna garis
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+      // Set maksimum nilai Y tergantung tipe
+      let yMax = 100;
+      if (tipe === 'kinerja') yMax = 50;
+      if (tipe === 'kehadiran') yMax = 100;
+
+      chartGuru = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: response.labels,
+          datasets: [{
+            label: `Performa Guru - ${tipe}${aspek ? ' - ' + aspek : ''}`,
+            data: response.data,
+            fill: true,
+            backgroundColor: gradient,
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 5,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          animations: {
+            tension: {
+              duration: 1000,
+              easing: 'easeOutBounce',
+              from: 0.2,
+              to: 0.4,
+              loop: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: yMax,
+              title: {
+                display: true,
+                text: 'Skor'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Tahun'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                color: '#333',
+                font: {
+                  weight: 'bold'
+                }
+              }
+            },
+            tooltip: {
+              backgroundColor: '#333',
+              titleColor: '#fff',
+              bodyColor: '#eee',
+              borderWidth: 1,
+              borderColor: '#ccc',
+              cornerRadius: 5,
+              padding: 10
+            }
+          }
+        }
+      });
+    },
+    error: function (xhr, status, error) {
+      console.error("Gagal load data grafik:", error);
+    }
+  });
+}
+
+function tambahAbsensiGuru() {
+  // Reset value inputan di modal
+  $('#modalAbsensiManual select[name="user_id"]').val('').trigger('change');
+  $('#modalAbsensiManual select[name="keterangan"]').val('').trigger('change');
+
+  // Tampilkan modal
+  $('#modalAbsensiManual').modal('show');
+
+  // Inisialisasi ulang select2 setelah modal muncul
+  setTimeout(() => {
+      $('#modalAbsensiManual .select2').select2({
+          dropdownParent: $('#modalAbsensiManual'),
+          width: '100%'
+      });
+  }, 300); // Tunggu sedikit biar modal ke-render sempurna
+}
+
+function submitAbsensiManual() {
+  var form = $('#formAbsensiManual');
+  var formData = form.serialize();
+
+  $.ajax({
+    url: '/admin/absensi/tambah',
+    type: 'POST',
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    data: formData,
+    success: function(response) {
+      if (response.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: response.message || 'Absensi berhasil disimpan.',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          // Tutup modal
+          $('#modalAbsensiManual').modal('hide');
+          
+          // Reset form
+          form[0].reset();
+
+          // Reload DataTable jika ada
+          if ($.fn.DataTable.isDataTable('#tabel_absensi')) {
+            $('#tabel_absensi').DataTable().ajax.reload();
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Gagal!',
+          text: response.message || 'Gagal menyimpan absensi.'
+        });
+      }
+    },
+    error: function(xhr) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Terjadi kesalahan saat menyimpan absensi.'
+      });
+    }
   });
 }
 
 
+function addAbsensi() {
+  let absenUrl = $('meta[name="absen-hadir-url"]').attr('content');
+
+  $.ajax({
+    url: absenUrl,
+    type: "POST",
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    success: function(response) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: response.message || 'Absensi berhasil dicatat.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      // 🔄 Update warna hari ini
+      let today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      let el = $(`.hari[data-tanggal="${today}"]`);
+      if (el.length) {
+        el.removeClass('bg-default bg-alpha bg-sakit bg-izin');
+        el.addClass('bg-hadir'); // pastikan bg-hadir = hijau
+      }
+
+    },
+    error: function(xhr) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: xhr.responseJSON?.message || 'Terjadi kesalahan saat melakukan absensi.',
+        timer: 2500,
+        showConfirmButton: false
+      });
+    }
+  });
+}
 
 function showResetPoinGuru() {
   Swal.fire({
@@ -202,6 +359,46 @@ function showResetPoinGuru() {
 $( document ).ready(function() {     
    getGuru();
 
+   $('#formAbsensiManual').on('submit', function(e) {
+    e.preventDefault();
+    
+    const form = $(this);
+    const formData = form.serialize();
+  
+    $.ajax({
+      url: '{{ route("absensi.admin.tambah") }}',
+      method: 'POST',
+      data: formData,
+      success: function(res) {
+        // Tutup modal dan kasih notifikasi
+        $('#modalAbsensiManual').modal('hide');
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil',
+          text: 'Absensi berhasil ditambahkan!',
+          timer: 1500,
+          showConfirmButton: false
+        });
+        
+        // Bisa lo refresh tabel absensi di sini kalau mau
+        // contoh: reloadDataAbsensi();
+      },
+      error: function(xhr) {
+        console.error(xhr);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal',
+          text: 'Terjadi kesalahan saat menyimpan data.'
+        });
+      }
+    });
+  });
+
+
+   $('.select2').select2({
+    dropdownParent: $('#modalAbsensiManual'),
+    width: '100%'
+  });
 
    $('#filterGrafik').on('change', function () {
     const selected = $(this).val();

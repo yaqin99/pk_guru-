@@ -8,7 +8,17 @@
 
                 <li class="breadcrumb-item"><button onclick="showAddGuru()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i> Tambah Guru</button></li>
                 <li class="breadcrumb-item"><button onclick="showResetPoinGuru()" data-bs-toggle="modal" class="btn btn-warning text-left text-dark"><i class="bi bi-arrow-counterclockwise"></i> Reset Poin Guru</button></li>
+                <li class="breadcrumb-item">
+                    <button onclick="tambahAbsensiGuru()" data-bs-toggle="modal" class="btn btn-success text-left text-white">
+                        <i class="bi bi-person-check-fill"></i> Tambah Absensi Guru
+                    </button>
+                </li>             
                 @endif
+                @if (Auth::user()->role == 1)
+
+                <li class="breadcrumb-item"><button onclick="addAbsensi()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i>Absen Harian</button></li>
+                @endif
+    
 
             @elseif ($pages == 'pengajuan')
                 @if (Auth::user()->role == 1)

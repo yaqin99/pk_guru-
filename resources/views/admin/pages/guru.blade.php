@@ -41,4 +41,5 @@
 @include('admin.modals.guru.grafik')
 @include('admin.modals.addGuru')
 @include('admin.modals.editGuru')
+@include('admin.modals.guru.addAbsensi')
 @endsection

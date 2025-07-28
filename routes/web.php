@@ -6,6 +6,7 @@ use App\Http\Controllers\KepribadianController;
 use App\Http\Controllers\PedagogikController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\ProfesionalController;
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\SosialController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\UserController;
@@ -49,6 +50,7 @@ Route::post('/admin/guru/reset-poin', [GuruController::class,'resetPoin']);
 
 //guru All Routes
 Route::get('/', [PengajuanController::class,'index'])->middleware('auth');
+Route::get('/absensi', [AbsensiController::class,'absensiGuru'])->middleware('auth');
 Route::get('/guru', [GuruController::class,'index'])->middleware('auth');
 Route::get('/getGuru', [GuruController::class,'getGuru'])->middleware('auth');
 Route::post('/addGuru', [GuruController::class,'addGuru']);
@@ -58,9 +60,16 @@ Route::get('/guru/aspek/{id}', [GuruController::class,'getAspek']);
 Route::get('/guru/nilaiAspek/{id}', [GuruController::class,'getNilaiAspek']);
 Route::get('/guru/download/{id}/{dokumen}/{type}', [GuruController::class,'download']);
 Route::get('/guru/grafikData/{id}', [GuruController::class, 'getGrafikPerforma']);
+Route::post('/absen/hadir', [AbsensiController::class, 'hadir'])->name('absen.hadir');
+Route::post('/admin/absensi/tambah', [AbsensiController::class, 'tambahManual'])->name('absensi.admin.tambah');
 
-//Pengajuan All Routes
-
+// Route::get('/absen/scan', [GuruController::class, 'scanAbsen'])
+//     ->middleware('auth') // penting biar tahu siapa usernya
+//     ->name('absen.scan');
+// //Pengajuan All Routes
+// Route::get('/absen/qr-cetak', function () {
+//     return view('admin.pages.absensi.qr');
+// });
 
 //siswa 
 Route::get('/siswa', [SiswaController::class,'index'])->middleware('auth');

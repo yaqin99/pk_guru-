@@ -26,6 +26,39 @@ class GuruController extends Controller
         $this->whatsappService = $whatsappService;
     }
     
+
+    public function scanAbsen()
+{
+    $user = Auth::user();
+    $tanggal = Carbon::now()->toDateString();
+
+    $sudahAbsen = DB::table('absensis')
+        ->where('user_id', $user->id)
+        ->whereDate('tanggal', $tanggal)
+        ->exists();
+
+    if ($sudahAbsen) {
+        return view('admin.pages.absensi.result', [
+            'status' => 'info',
+            'message' => 'Anda sudah absen hari ini.'
+        ]);
+    }
+
+    DB::table('absensis')->insert([
+        'user_id' => $user->id,
+        'tanggal' => $tanggal,
+        'keterangan' => 'Hadir',
+        'created_at' => now(),
+        'updated_at' => now()
+    ]);
+
+    return view('absensi.result', [
+        'status' => 'success',
+        'message' => 'Absensi berhasil. Terima kasih!'
+    ]);
+}
+
+
     
     public function index(Request $request)
     {
@@ -110,10 +143,11 @@ class GuruController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
         }
-
+        $guru = User::where('role', 1)->get(); // pastikan role guru ada
         return view('admin.pages.guru' , [
             'pages' => $pages , 
             'mapels' => $mapel , 
+            'guru' => $guru  
         ]);
     }
     
