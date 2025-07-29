@@ -50,16 +50,16 @@ class AbsensiController extends Controller
 
         // Hitung jarak
 
-        dd([
-            'lokasiSekolah' => [
-                'lat' => $lokasiSekolah->latitude,
-                'lng' => $lokasiSekolah->longitude,
-            ],
-            'lokasiUser' => [
-                'lat' => $request->lat,
-                'lng' => $request->lng,
-            ]
-        ]);
+        // dd([
+        //     'lokasiSekolah' => [
+        //         'lat' => $lokasiSekolah->latitude,
+        //         'lng' => $lokasiSekolah->longitude,
+        //     ],
+        //     'lokasiUser' => [
+        //         'lat' => $request->lat,
+        //         'lng' => $request->lng,
+        //     ]
+        // ]);
         $jarak = $this->hitungJarak(
             $lokasiSekolah->latitude,
             $lokasiSekolah->longitude,
