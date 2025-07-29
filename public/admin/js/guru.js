@@ -163,6 +163,88 @@ function loadGrafikData(id, tipe, aspek) {
   });
 }
 
+function setLokasiSekolah() {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Atur Lokasi Sekolah',
+    text: 'Dengan melakukan aksi ini akan mengatur lokasi sekolah di lokasi Anda saat ini. Guru hanya akan bisa absen tidak lebih dari 20 meter dari lokasi ini.',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, atur lokasi',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            let accuracy = position.coords.accuracy; // akurasi dalam meter
+            let lat = position.coords.latitude.toFixed(8);
+            let lng = position.coords.longitude.toFixed(8);
+
+            // Kalau akurasi di atas 50 meter, kasih peringatan
+            if (accuracy > 50) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Lokasi Kurang Akurat',
+                text: 'Akurasi lokasi: ' + accuracy.toFixed(2) + ' meter. Coba nyalakan GPS atau pindah ke area terbuka.',
+                confirmButtonText: 'Coba Lagi'
+              });
+              return;
+            }
+
+            $.ajax({
+              url: '/admin/lokasi-sekolah/set',
+              type: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              data: {
+                lat: lat,
+                lng: lng
+              },
+              success: function () {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Berhasil!',
+                  text: 'Lokasi sekolah berhasil disimpan.',
+                  timer: 2000,
+                  showConfirmButton: false
+                });
+              },
+              error: function () {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Gagal!',
+                  text: 'Tidak dapat menyimpan lokasi sekolah.'
+                });
+              }
+            });
+          },
+          function () {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'Gagal mendapatkan lokasi. Pastikan GPS aktif dan izin lokasi diberikan.'
+            });
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Browser Anda tidak mendukung Geolocation.'
+        });
+      }
+    }
+  });
+}
+
+
+
 function tambahAbsensiGuru() {
   // Reset value inputan di modal
   $('#modalAbsensiManual select[name="user_id"]').val('').trigger('change');
@@ -232,41 +314,113 @@ function submitAbsensiManual() {
 function addAbsensi() {
   let absenUrl = $('meta[name="absen-hadir-url"]').attr('content');
 
-  $.ajax({
-    url: absenUrl,
-    type: "POST",
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    },
-    success: function(response) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: response.message || 'Absensi berhasil dicatat.',
-        timer: 2000,
-        showConfirmButton: false
-      });
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        let lat = position.coords.latitude.toFixed(8);
+        let lng = position.coords.longitude.toFixed(8);
+        let accuracy = position.coords.accuracy; // meter
 
-      // 🔄 Update warna hari ini
-      let today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
-      let el = $(`.hari[data-tanggal="${today}"]`);
-      if (el.length) {
-        el.removeClass('bg-default bg-alpha bg-sakit bg-izin');
-        el.addClass('bg-hadir'); // pastikan bg-hadir = hijau
+        // Cek akurasi lokasi
+        if (accuracy > 50) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Lokasi Kurang Akurat',
+            text: 'Akurasi lokasi: ' + accuracy.toFixed(2) + ' meter. Pastikan GPS aktif dan coba lagi di area terbuka.',
+            confirmButtonText: 'Coba Lagi'
+          });
+          return;
+        }
+
+        $.ajax({
+          url: absenUrl,
+          type: "POST",
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data: {
+            lat: lat,
+            lng: lng
+          },
+          success: function (response) {
+            if (response.status === 'already') {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: response.message || 'Anda sudah absen hari ini.',
+                timer: 2500,
+                showConfirmButton: false
+              });
+              return;
+            }
+
+            if (response.status === 'error') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: response.message || 'Anda berada di luar area sekolah.',
+                timer: 3000,
+                showConfirmButton: true
+              });
+              return;
+            }
+
+            if (response.status === 'success') {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: response.message || 'Absensi berhasil dicatat.',
+                timer: 2000,
+                showConfirmButton: false
+              });
+
+              // Update tampilan kalender
+              let today = new Date().toISOString().split('T')[0];
+              let el = $(`.hari[data-tanggal="${today}"]`);
+              if (el.length) {
+                el.removeClass('bg-default bg-alpha bg-sakit bg-izin')
+                  .addClass('bg-hadir')
+                  .find('div:last').text('H');
+              }
+            }
+          },
+          error: function (xhr) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Gagal!',
+              text: xhr.responseJSON?.message || 'Terjadi kesalahan saat melakukan absensi.',
+              timer: 2500,
+              showConfirmButton: false
+            });
+          }
+        });
+      },
+      function () {
+        Swal.fire({
+          icon: 'error',
+          title: 'Lokasi Tidak Ditemukan',
+          text: 'Pastikan GPS aktif dan izin lokasi diberikan.',
+          timer: 3000,
+          showConfirmButton: true
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
       }
-
-    },
-    error: function(xhr) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Gagal!',
-        text: xhr.responseJSON?.message || 'Terjadi kesalahan saat melakukan absensi.',
-        timer: 2500,
-        showConfirmButton: false
-      });
-    }
-  });
+    );
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Browser Tidak Mendukung',
+      text: 'Perangkat Anda tidak mendukung fitur lokasi.',
+      timer: 3000,
+      showConfirmButton: true
+    });
+  }
 }
+
 
 function showResetPoinGuru() {
   Swal.fire({

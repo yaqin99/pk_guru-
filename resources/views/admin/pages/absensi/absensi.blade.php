@@ -3,12 +3,13 @@
 @section('main')
 <meta name="absen-hadir-url" content="{{ route('absen.hadir') }}">
 <style>
-    .bg-hadir { background-color: #4CAF50; color: white; }   /* Hijau */
-    .bg-alpha { background-color: #f44336; color: white; }   /* Merah */
-    .bg-sakit { background-color: #2196F3; color: white; }   /* Biru */
-    .bg-izin  { background-color: #FF9800; color: white; }   /* Oranye */
-    .bg-default { background-color: #e0e0e0; color: black; } /* Default abu */
-  </style>
+    .bg-hadir { background-color: #4CAF50; color: white; }
+    .bg-alpha { background-color: #f44336; color: white; }
+    .bg-sakit { background-color: #2196F3; color: white; }
+    .bg-izin  { background-color: #FF9800; color: white; }
+    .bg-default { background-color: #e0e0e0; color: black; }
+</style>
+
 <div class="container">
     <h3 class="mb-4 text-center">Data Absensi Guru - Bulan {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}</h3>
 
@@ -28,6 +29,12 @@
         $firstDayOfWeek = $startOfMonth->dayOfWeekIso; // Senin = 1, Minggu = 7
         $daysInMonth = $now->daysInMonth;
     @endphp
+
+    <div class="text-center mb-3">
+        <button onclick="addAbsensi()" class="btn btn-success">
+            <i class="bi bi-check-circle"></i> Absen Hari Ini
+        </button>
+    </div>
 
     <div class="d-flex justify-content-center">
         <div class="calendar" style="width: 100%; max-width: 700px;">
@@ -55,14 +62,16 @@
                             $tanggal = $now->format('Y-m') . '-' . str_pad($dayCounter, 2, '0', STR_PAD_LEFT);
                             $status = $absensi[$tanggal] ?? null;
                             $class = match($status) {
-                                'hadir' => 'bg-success text-white',
-                                'alpha' => 'bg-transparent text-white',
-                                'sakit' => 'bg-warning text-dark',
-                                'izin'  => 'bg-primary text-white',
-                                default => '',
+                                'hadir' => 'bg-hadir',
+                                'alpha' => 'bg-alpha',
+                                'sakit' => 'bg-sakit',
+                                'izin'  => 'bg-izin',
+                                default => 'bg-default',
                             };
                         @endphp
-                        <div class="col border py-3 {{ $class }}" style="min-height: 70px;">
+                        <div class="col border py-3 hari {{ $class }}" 
+                             data-tanggal="{{ $tanggal }}" 
+                             style="min-height: 70px; transition: background-color 0.5s ease;">
                             <div><strong>{{ $dayCounter }}</strong></div>
                             <div>{{ $status ? strtoupper($status[0]) : '-' }}</div>
                         </div>

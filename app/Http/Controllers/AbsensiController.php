@@ -10,7 +10,7 @@ use App\Models\Pedagogik;
 use App\Models\Kepribadian;
 use App\Models\Profesional;
 use App\Models\NilaiAspek;
-use App\Models\Sosial;
+use App\Models\LokasiSekolah;
 use App\Models\Mapel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
@@ -23,33 +23,80 @@ class AbsensiController extends Controller
 {
 
 
+    
+    function hitungJarak($lat1, $lon1, $lat2, $lon2) {
+        $earthRadius = 6371000; // meter
+    
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo   = deg2rad($lat2);
+        $lonTo   = deg2rad($lon2);
+    
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+    
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+    
+        return $earthRadius * $angle;
+    }
+
     public function hadir(Request $request)
     {
         $user = auth()->user();
         $today = Carbon::today();
-    
+
+        $lokasiSekolah = LokasiSekolah::orderBy('created_at', 'desc')->first();
+
+        // Hitung jarak
+
+        dd([
+            'lokasiSekolah' => [
+                'lat' => $lokasiSekolah->latitude,
+                'lng' => $lokasiSekolah->longitude,
+            ],
+            'lokasiUser' => [
+                'lat' => $request->lat,
+                'lng' => $request->lng,
+            ]
+        ]);
+        $jarak = $this->hitungJarak(
+            $lokasiSekolah->latitude,
+            $lokasiSekolah->longitude,
+            $request->lat,
+            $request->lng
+        );
+
+        if ($jarak > 20) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Anda di luar lokasi sekolah (' . round($jarak, 2) . ' m)'
+            ], 403);
+        }
+
         $sudahAbsen = Absensi::where('user_id', $user->id)
-                             ->whereDate('tanggal', $today)
-                             ->exists();
-    
+            ->whereDate('tanggal', $today)
+            ->exists();
+
         if ($sudahAbsen) {
             return response()->json([
                 'status' => 'already',
                 'message' => 'Anda sudah absen hari ini.'
             ]);
         }
-    
+
         Absensi::create([
             'user_id' => $user->id,
             'tanggal' => $today,
             'keterangan' => 'hadir'
         ]);
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Absensi berhasil dicatat.'
         ]);
     }
+
 
     public function absensiGuru()
     {    

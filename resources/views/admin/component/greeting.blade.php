@@ -13,10 +13,16 @@
                         <i class="bi bi-person-check-fill"></i> Tambah Absensi Guru
                     </button>
                 </li>             
+                <li class="breadcrumb-item">
+                    <button onclick="setLokasiSekolah()" data-bs-toggle="modal" class="btn btn-info text-white">
+                        <i class="bi bi-geo-alt-fill"></i> Atur Lokasi Sekolah
+                    </button>
+                </li>
+                         
                 @endif
                 @if (Auth::user()->role == 1)
 
-                <li class="breadcrumb-item"><button onclick="addAbsensi()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i>Absen Harian</button></li>
+                {{-- <li class="breadcrumb-item"><button onclick="addAbsensi()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i>Absen Harian</button></li> --}}
                 @endif
     
 

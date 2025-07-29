@@ -12,6 +12,7 @@ use App\Http\Controllers\SuratController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\LokasiSekolahController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -62,6 +63,9 @@ Route::get('/guru/download/{id}/{dokumen}/{type}', [GuruController::class,'downl
 Route::get('/guru/grafikData/{id}', [GuruController::class, 'getGrafikPerforma']);
 Route::post('/absen/hadir', [AbsensiController::class, 'hadir'])->name('absen.hadir');
 Route::post('/admin/absensi/tambah', [AbsensiController::class, 'tambahManual'])->name('absensi.admin.tambah');
+
+Route::post('/admin/lokasi-sekolah/set', [LokasiSekolahController::class, 'setLokasiSekolah'])
+    ->name('lokasi.sekolah.set');
 
 // Route::get('/absen/scan', [GuruController::class, 'scanAbsen'])
 //     ->middleware('auth') // penting biar tahu siapa usernya
