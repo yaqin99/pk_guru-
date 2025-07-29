@@ -2,6 +2,8 @@
 
 @section('main')
 <meta name="absen-hadir-url" content="{{ route('absen.hadir') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <style>
     .bg-hadir { background-color: #4CAF50; color: white; }
     .bg-alpha { background-color: #f44336; color: white; }
