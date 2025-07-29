@@ -82,4 +82,119 @@
         </div>
     </div>
 </div>
+<script>
+
+function addAbsensi() {
+  let absenUrl = $('meta[name="absen-hadir-url"]').attr('content');
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        let lat = position.coords.latitude.toFixed(8);
+        let lng = position.coords.longitude.toFixed(8);
+        let accuracy = position.coords.accuracy; // meter
+
+        // Cek akurasi lokasi
+        if (accuracy > 50) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Lokasi Kurang Akurat',
+            text: 'Akurasi lokasi: ' + accuracy.toFixed(2) + ' meter. Pastikan GPS aktif dan coba lagi di area terbuka.',
+            confirmButtonText: 'Coba Lagi'
+          });
+          return;
+        }
+
+        $.ajax({
+          url: absenUrl,
+          type: "POST",
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data: {
+            lat: lat,
+            lng: lng
+          },
+          success: function (response) {
+            if (response.status === 'already') {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: response.message || 'Anda sudah absen hari ini.',
+                timer: 2500,
+                showConfirmButton: false
+              });
+              return;
+            }
+
+            if (response.status === 'error') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: response.message || 'Anda berada di luar area sekolah.',
+                timer: 3000,
+                showConfirmButton: true
+              });
+              return;
+            }
+
+            if (response.status === 'success') {
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: response.message || 'Absensi berhasil dicatat.',
+                timer: 2000,
+                showConfirmButton: false
+              });
+
+              // Update tampilan kalender
+              let today = new Date().toISOString().split('T')[0];
+              let el = $(`.hari[data-tanggal="${today}"]`);
+              if (el.length) {
+                el.removeClass('bg-default bg-alpha bg-sakit bg-izin')
+                  .addClass('bg-hadir')
+                  .find('div:last').text('H');
+              }
+            }
+          },
+          error: function (xhr) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Gagal!',
+              text: xhr.responseJSON?.message || 'Terjadi kesalahan saat melakukan absensi.',
+              timer: 2500,
+              showConfirmButton: false
+            });
+          }
+        });
+      },
+      function () {
+        Swal.fire({
+          icon: 'error',
+          title: 'Lokasi Tidak Ditemukan',
+          text: 'Pastikan GPS aktif dan izin lokasi diberikan.',
+          timer: 3000,
+          showConfirmButton: true
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Browser Tidak Mendukung',
+      text: 'Perangkat Anda tidak mendukung fitur lokasi.',
+      timer: 3000,
+      showConfirmButton: true
+    });
+  }
+}
+
+
+
+</script>
 @endsection
