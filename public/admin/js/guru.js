@@ -1,5 +1,7 @@
-let nama_awal = null;
 window.chartGuru = window.chartGuru || null;
+window.chartMurid = window.chartMurid || null;
+window.chartStatusGuru = window.chartStatusGuru || null;
+let nama_awal = null;
 
 $(document).ready(function() {
   $('#filterTahun').on('change', function() {
@@ -34,6 +36,7 @@ function getGuru(){
    }
 
    let currentGuruId = null;
+   window.chartGuru = window.chartGuru || null;
    
    function viewGrafik(row) {
     const data = JSON.parse(row);

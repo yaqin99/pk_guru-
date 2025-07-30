@@ -39,7 +39,6 @@
 <script>
 
 
-let chartMurid, chartGuru, chartStatusGuru;
 
 function dataKemajuanSekolah() {
     const tahun = $('#filterTahun').val();
@@ -52,9 +51,9 @@ function dataKemajuanSekolah() {
         dataType: 'json',
         success: function(response) {
             // Hapus chart lama
-            if (chartMurid) chartMurid.destroy();
-            if (chartGuru) chartGuru.destroy();
-            if (chartStatusGuru) chartStatusGuru.destroy();
+            [window.chartMurid, window.chartGuru, window.chartStatusGuru].forEach(c => {
+    if (c instanceof Chart) c.destroy();
+});
 
             // === Chart Murid (Line Gradient) ===
             const ctxMurid = document.getElementById('chartMurid').getContext('2d');
