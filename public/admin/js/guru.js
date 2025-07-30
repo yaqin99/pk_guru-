@@ -103,69 +103,74 @@ function reloadChart(aspekOverride = null) {
 }
 
 
-   function loadGrafikData(id, tipe, aspek = null, start = null, end = null) {
-       $.ajax({
-           url: `/guru/grafikData/${id}`,
-           type: "GET",
-           data: {
-               type: tipe,
-               aspek: aspek,
-               start: start,
-               end: end
-           },
-           dataType: "json",
-           success: function (response) {
-               const ctx = document.getElementById('chartPerforma').getContext('2d');
-               if (chartGuru) chartGuru.destroy();
-   
-               const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-               gradient.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
-               gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-   
-               let yMax = 100;
-               if (tipe === 'kinerja') yMax = 50;
-               if (tipe === 'kehadiran') yMax = 31;
-   
-               chartGuru = new Chart(ctx, {
-                   type: 'line',
-                   data: {
-                       labels: response.labels,
-                       datasets: [{
-                           label: `Performa Guru - ${tipe}${aspek ? ' - ' + aspek : ''}`,
-                           data: response.data,
-                           fill: true,
-                           backgroundColor: gradient,
-                           borderColor: 'rgba(54, 162, 235, 1)',
-                           borderWidth: 2,
-                           tension: 0.4,
-                           pointRadius: 5,
-                           pointHoverRadius: 8
-                       }]
-                   },
-                   options: {
-                       responsive: true,
-                       scales: {
-                           y: {
-                               beginAtZero: true,
-                               max: yMax,
-                               title: {
-                                   display: true,
-                                   text: tipe === 'kehadiran' ? 'Jumlah Kehadiran (hari)' : 'Skor'
-                               }
-                           },
-                           x: {
-                               title: {
-                                   display: true,
-                                   text: tipe === 'kehadiran' ? 'Bulan' : 'Tahun'
-                               }
-                           }
-                       }
-                   }
-               });
-           }
-       });
-   }
-   
+function loadGrafikData(id, tipe, aspek = null, start = null, end = null) {
+  $.ajax({
+      url: `/guru/grafikData/${id}`,
+      type: "GET",
+      data: {
+          type: tipe,
+          aspek: aspek,
+          start: start,
+          end: end
+      },
+      dataType: "json",
+      success: function (response) {
+          const ctx = document.getElementById('chartPerforma').getContext('2d');
+
+          // Pastikan chart lama dihapus
+          if (window.chartGuru instanceof Chart) {
+              window.chartGuru.destroy();
+          }
+
+          const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
+          gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+          let yMax = 100;
+          if (tipe === 'kinerja') yMax = 50;
+          if (tipe === 'kehadiran') yMax = 31;
+
+          // Simpan chart baru ke window.chartGuru biar nggak bentrok
+          window.chartGuru = new Chart(ctx, {
+              type: 'line',
+              data: {
+                  labels: response.labels,
+                  datasets: [{
+                      label: `Performa Guru - ${tipe}${aspek ? ' - ' + aspek : ''}`,
+                      data: response.data,
+                      fill: true,
+                      backgroundColor: gradient,
+                      borderColor: 'rgba(54, 162, 235, 1)',
+                      borderWidth: 2,
+                      tension: 0.4,
+                      pointRadius: 5,
+                      pointHoverRadius: 8
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          max: yMax,
+                          title: {
+                              display: true,
+                              text: tipe === 'kehadiran' ? 'Jumlah Kehadiran (hari)' : 'Skor'
+                          }
+                      },
+                      x: {
+                          title: {
+                              display: true,
+                              text: tipe === 'kehadiran' ? 'Bulan' : 'Tahun'
+                          }
+                      }
+                  }
+              }
+          });
+      }
+  });
+}
+
 
 function showResetPoinGuru() {
   Swal.fire({
