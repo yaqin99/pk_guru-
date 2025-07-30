@@ -8,6 +8,7 @@ use App\Models\Kepribadian;
 use App\Models\Profesional;
 use App\Models\NilaiAspek;
 use App\Models\Sosial;
+use App\Models\Absensi;
 use App\Models\Mapel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -280,13 +281,12 @@ class GuruController extends Controller
         /* -------------------- KOMPETENSI (baru) -------------------- */
 
         $aspek = request('aspek');
-
         if ($type === 'kompetensi') {
             $query = DB::table('nilai_aspeks')
                 ->selectRaw('YEAR(tanggal) AS tahun, AVG(skor) AS total')
                 ->where('user_id', $id)
                 ->tap($applyYearFilter);
-        
+
             if ($aspek) {
                 $query->where('tipe', $aspek); // jika aspek dipilih
             } else {
@@ -296,7 +296,7 @@ class GuruController extends Controller
             $data = $query->groupBy('tahun')
                 ->orderBy('tahun')
                 ->pluck('total', 'tahun');
-        
+
             return response()->json([
                 'labels' => $data->keys()->toArray(),
                 'data'   => $data->values()->toArray()
@@ -305,7 +305,32 @@ class GuruController extends Controller
     
         /* -------------- KEHADIRAN (belum diisi) -------------- */
         if ($type === 'kehadiran') {
-            // sementara kosong → nanti di‑update kalau sudah ada tabel/aturan
+            $start = request('start'); // format: YYYY-MM-DD
+            $end   = request('end');   // format: YYYY-MM-DD
+        
+            $query = Absensi::selectRaw('DATE_FORMAT(tanggal, "%M %Y") as bulan, COUNT(*) as total_hadir')
+                ->where('user_id', $id)
+                ->where('keterangan', 'hadir');
+            // Kalau user pilih range tanggal
+            if ($start && $end) {
+                $query->whereBetween('tanggal', [$start, $end]);
+            } else {
+                // Default: 12 bulan terakhir
+                $tanggalAkhir = now()->endOfMonth();
+                $tanggalAwal  = now()->subMonths(11)->startOfMonth();
+        
+                $query->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir]);
+            }
+        
+            $data = $query
+                ->groupBy('bulan')
+                ->orderByRaw('MIN(tanggal)')
+                ->pluck('total_hadir', 'bulan');
+        
+            return response()->json([
+                'labels' => $data->keys()->toArray(),   // ["Agustus 2024", "September 2024", ...]
+                'data'   => $data->values()->toArray() // [20, 25, 28, ...]
+            ]);
         }
     
         // default kosong

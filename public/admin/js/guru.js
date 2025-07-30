@@ -26,146 +26,137 @@ function getGuru(){
  });
    }
 
-
-   let chartGuru;
    let currentGuruId = null;
-
+   let chartGuru = null;
+   
    function viewGrafik(row) {
     const data = JSON.parse(row);
     currentGuruId = data.id;
 
+    // Set default tipe & aspek
+    $('#filterGrafik').val('kompetensi');
+    $('#filterAspek').val('1'); // default pedagogik
+    $('#wrapSubFilter').show();
+    $('#wrapDateFilter').hide();
+
     $('#grafikGuru').modal('show');
 
-    const tipe = $('#filterGrafik').val();
-    const aspek = tipe === 'kompetensi' ? $('#filterAspek').val() : null;
-
-    loadGrafikData(data.id, tipe, aspek);
+    // Langsung load chart default 1
+    reloadChart();
 }
 
-   $('#filterGrafik').on('change', function () {
-    const selected = $(this).val();
+// Event filter tipe grafik
+$('#filterGrafik').on('change', function () {
+    if (!currentGuruId) return;
 
-    if (selected === 'kompetensi') {
+    const tipe = $(this).val();
+
+    if (tipe === 'kompetensi') {
         $('#wrapSubFilter').slideDown();
+        $('#wrapDateFilter').slideUp();
+    } else if (tipe === 'kehadiran') {
+        $('#wrapSubFilter').slideUp();
+        $('#wrapDateFilter').slideDown();
     } else {
         $('#wrapSubFilter').slideUp();
+        $('#wrapDateFilter').slideUp();
     }
 
-    if (currentGuruId) {
-        const aspek = selected === 'kompetensi' ? $('#filterAspek').val() : null;
-        loadGrafikData(currentGuruId, selected, aspek);
-    }
+    reloadChart();
 });
 
-$('#filterAspek').on('change', function () {
-  if (currentGuruId) {
-      loadGrafikData(currentGuruId, 'kompetensi', $(this).val());
-  }
+// Event ganti aspek → reload chart
+$(document).on('change', '#filterAspek', function () {
+  if (!currentGuruId) return;
+  const newAspek = $(this).val();
+  console.log("Aspek diganti ke:", newAspek);
+  reloadChart(newAspek);
 });
 
+// Event tanggal untuk kehadiran
+$('#startDate, #endDate').on('change', function () {
+    if (!currentGuruId) return;
+    reloadChart();
+});
 
-function loadGrafikData(id, tipe, aspek) {
-  $.ajax({
-    url: `/guru/grafikData/${id}`,
-    type: "GET",
-    data: {
-      type: tipe,
-      aspek: aspek
-    },
-    dataType: "json",
-    success: function (response) {
-      const ctx = document.getElementById('chartPerforma').getContext('2d');
+function reloadChart(aspekOverride = null) {
+  const tipe = $('#filterGrafik').val();
+  const aspek = (tipe === 'kompetensi') 
+      ? (aspekOverride !== null ? aspekOverride : $('#filterAspek').val()) 
+      : null;
 
-      if (chartGuru) {
-        chartGuru.destroy();
-      }
+  const start = (tipe === 'kehadiran') ? $('#startDate').val() : null;
+  const end = (tipe === 'kehadiran') ? $('#endDate').val() : null;
 
-      // Buat gradien warna garis
-      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-      gradient.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  console.log("Reload chart dengan aspek:", aspek);
 
-      // Set maksimum nilai Y tergantung tipe
-      let yMax = 100;
-      if (tipe === 'kinerja') yMax = 50;
-      if (tipe === 'kehadiran') yMax = 100;
-
-      chartGuru = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: response.labels,
-          datasets: [{
-            label: `Performa Guru - ${tipe}${aspek ? ' - ' + aspek : ''}`,
-            data: response.data,
-            fill: true,
-            backgroundColor: gradient,
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 2,
-            tension: 0.4,
-            pointRadius: 5,
-            pointHoverRadius: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          animations: {
-            tension: {
-              duration: 1000,
-              easing: 'easeOutBounce',
-              from: 0.2,
-              to: 0.4,
-              loop: false
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: yMax,
-              title: {
-                display: true,
-                text: 'Skor'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Tahun'
-              }
-            }
-          },
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top',
-              labels: {
-                color: '#333',
-                font: {
-                  weight: 'bold'
-                }
-              }
-            },
-            tooltip: {
-              backgroundColor: '#333',
-              titleColor: '#fff',
-              bodyColor: '#eee',
-              borderWidth: 1,
-              borderColor: '#ccc',
-              cornerRadius: 5,
-              padding: 10
-            }
-          }
-        }
-      });
-    },
-    error: function (xhr, status, error) {
-      console.error("Gagal load data grafik:", error);
-    }
-  });
+  loadGrafikData(currentGuruId, tipe, aspek, start, end);
 }
 
 
-
-
+   function loadGrafikData(id, tipe, aspek = null, start = null, end = null) {
+       $.ajax({
+           url: `/guru/grafikData/${id}`,
+           type: "GET",
+           data: {
+               type: tipe,
+               aspek: aspek,
+               start: start,
+               end: end
+           },
+           dataType: "json",
+           success: function (response) {
+               const ctx = document.getElementById('chartPerforma').getContext('2d');
+               if (chartGuru) chartGuru.destroy();
+   
+               const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+               gradient.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
+               gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+   
+               let yMax = 100;
+               if (tipe === 'kinerja') yMax = 50;
+               if (tipe === 'kehadiran') yMax = 31;
+   
+               chartGuru = new Chart(ctx, {
+                   type: 'line',
+                   data: {
+                       labels: response.labels,
+                       datasets: [{
+                           label: `Performa Guru - ${tipe}${aspek ? ' - ' + aspek : ''}`,
+                           data: response.data,
+                           fill: true,
+                           backgroundColor: gradient,
+                           borderColor: 'rgba(54, 162, 235, 1)',
+                           borderWidth: 2,
+                           tension: 0.4,
+                           pointRadius: 5,
+                           pointHoverRadius: 8
+                       }]
+                   },
+                   options: {
+                       responsive: true,
+                       scales: {
+                           y: {
+                               beginAtZero: true,
+                               max: yMax,
+                               title: {
+                                   display: true,
+                                   text: tipe === 'kehadiran' ? 'Jumlah Kehadiran (hari)' : 'Skor'
+                               }
+                           },
+                           x: {
+                               title: {
+                                   display: true,
+                                   text: tipe === 'kehadiran' ? 'Bulan' : 'Tahun'
+                               }
+                           }
+                       }
+                   }
+               });
+           }
+       });
+   }
+   
 
 function showResetPoinGuru() {
   Swal.fire({

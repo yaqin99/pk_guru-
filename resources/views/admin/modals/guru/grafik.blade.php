@@ -14,10 +14,20 @@
                         </select>
                     </div>
                 </div>
+                <div class="row mb-3" id="wrapDateFilter" style="display: none;">
+                    <div class="col-md-4">
+                        <label>Dari</label>
+                        <input type="date" class="form-control" id="startDate">
+                    </div>
+                    <div class="col-md-4">
+                        <label>Sampai</label>
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+                </div>
                 <div class="row mb-3" id="wrapSubFilter" style="display: none;">
                     <div class="col-md-4">
                         <select class="form-control" id="filterAspek">
-                            <option value="1">Pedagogik</option>
+                            <option selected value="1">Pedagogik</option>
                             <option value="2">Kepribadian</option>
                             <option value="3">Profesional</option>
                             <option value="4">Sosial</option>
