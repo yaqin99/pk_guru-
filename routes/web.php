@@ -49,6 +49,9 @@ Route::get('/admin/profile/{id}', [UserController::class,'profile']);
 Route::post('/admin/profile/update', [UserController::class,'updateProfile']);
 Route::post('/admin/guru/reset-poin', [GuruController::class,'resetPoin']);
 
+Route::get('/sekolah/grafik', [UserController::class, 'getGrafikKemajuan']);
+
+
 //guru All Routes
 Route::get('/', [PengajuanController::class,'index'])->middleware('auth');
 Route::get('/absensi', [AbsensiController::class,'absensiGuru'])->middleware('auth');

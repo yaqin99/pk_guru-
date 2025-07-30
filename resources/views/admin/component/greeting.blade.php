@@ -19,6 +19,12 @@
                     </button>
                 </li>
                          
+                <li class="breadcrumb-item">
+                    <button onclick="dataKemajuanSekolah()" data-bs-toggle="modal" class="btn btn-info text-white">
+                        <i class="bi bi-geo-alt-fill"></i> Kemajuan Sekolah
+                    </button>
+                </li>
+                         
                 @endif
                 @if (Auth::user()->role == 1)
 

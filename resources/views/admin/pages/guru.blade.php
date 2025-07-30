@@ -38,6 +38,109 @@
 </div>
 <script>
 
+
+let chartMurid, chartGuru, chartStatusGuru;
+
+function dataKemajuanSekolah() {
+    const tahun = $('#filterTahun').val();
+    $('#kemajuanSekolah').modal('show');
+
+    $.ajax({
+        url: '/sekolah/grafik',
+        type: 'GET',
+        data: { tahun: tahun },
+        dataType: 'json',
+        success: function(response) {
+            // Hapus chart lama
+            if (chartMurid) chartMurid.destroy();
+            if (chartGuru) chartGuru.destroy();
+            if (chartStatusGuru) chartStatusGuru.destroy();
+
+            // === Chart Murid (Line Gradient) ===
+            const ctxMurid = document.getElementById('chartMurid').getContext('2d');
+            const gradientMurid = ctxMurid.createLinearGradient(0, 0, 0, 300);
+            gradientMurid.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
+            gradientMurid.addColorStop(1, 'rgba(54, 162, 235, 0)');
+
+            chartMurid = new Chart(ctxMurid, {
+                type: 'line',
+                data: {
+                    labels: response.siswa_per_tahun.labels,
+                    datasets: [{
+                        label: 'Jumlah Murid',
+                        data: response.siswa_per_tahun.data,
+                        fill: true,
+                        backgroundColor: gradientMurid,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // === Chart Guru (Line Gradient) ===
+            const ctxGuru = document.getElementById('chartGuru').getContext('2d');
+            const gradientGuru = ctxGuru.createLinearGradient(0, 0, 0, 300);
+            gradientGuru.addColorStop(0, 'rgba(255, 99, 132, 0.6)');
+            gradientGuru.addColorStop(1, 'rgba(255, 99, 132, 0)');
+
+            chartGuru = new Chart(ctxGuru, {
+                type: 'line',
+                data: {
+                    labels: response.guru_per_tahun.labels,
+                    datasets: [{
+                        label: 'Jumlah Guru',
+                        data: response.guru_per_tahun.data,
+                        fill: true,
+                        backgroundColor: gradientGuru,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // === Chart Status Guru (Pie) ===
+            const ctxStatus = document.getElementById('chartStatusGuru').getContext('2d');
+            chartStatusGuru = new Chart(ctxStatus, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(response.status_guru),
+                    datasets: [{
+                        data: Object.values(response.status_guru),
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'],
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // === Indeks Kemajuan ===
+            const muridTahunTerbaru = response.siswa_per_tahun.data.slice(-1)[0];
+            const muridTahunLalu = response.siswa_per_tahun.data.slice(-2)[0];
+            const guruTahunTerbaru = response.guru_per_tahun.data.slice(-1)[0];
+            const guruTahunLalu = response.guru_per_tahun.data.slice(-2)[0];
+
+            let indeks = 'Tetap';
+            if (muridTahunTerbaru > muridTahunLalu && guruTahunTerbaru >= guruTahunLalu) {
+                indeks = 'Meningkat';
+                $('#indeksKemajuan').css('background', '#d4edda').css('color', '#155724');
+            } else if (muridTahunTerbaru < muridTahunLalu) {
+                indeks = 'Menurun';
+                $('#indeksKemajuan').css('background', '#f8d7da').css('color', '#721c24');
+            }
+
+            $('#indeksKemajuan').text(indeks);
+        }
+    });
+}
+
+
 function setLokasiSekolah() {
   Swal.fire({
     icon: 'warning',
@@ -191,4 +294,5 @@ function submitAbsensiManual() {
 @include('admin.modals.addGuru')
 @include('admin.modals.editGuru')
 @include('admin.modals.guru.addAbsensi')
+@include('admin.modals.guru.kemajuan')
 @endsection

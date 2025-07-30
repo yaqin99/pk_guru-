@@ -43,6 +43,10 @@
                         class="nav-text">Data Absensi</span></a>
             </li>
             @endif
+
+         
+
+
             @if (Auth::user()->role == 1 || Auth::user()->role == 3)
             <li><a href="/surat" aria-expanded="false"><i class="bi bi-envelope"></i><span
                         class="nav-text">Data Surat</span></a>

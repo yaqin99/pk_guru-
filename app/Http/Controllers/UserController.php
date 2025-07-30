@@ -6,8 +6,61 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+
 class UserController extends Controller
 {
+
+    public function getGrafikKemajuan(Request $request)
+    {
+        $tahun = $request->tahun;
+    
+        // Query jumlah siswa
+        $siswaQuery = DB::table('siswas');
+        if ($tahun && $tahun !== 'all') {
+            $siswaQuery->where('angkatan', $tahun);
+        }
+        $siswa = $siswaQuery
+            ->selectRaw('angkatan as tahun, COUNT(*) as total')
+            ->groupBy('tahun')
+            ->orderBy('tahun')
+            ->pluck('total', 'tahun');
+    
+        // Query jumlah guru
+        $guruQuery = DB::table('users')->where('role', 1); // role guru
+        if ($tahun && $tahun !== 'all') {
+            $guruQuery->whereYear('tanggal', $tahun);
+        }
+        $guru = $guruQuery
+            ->selectRaw('YEAR(tanggal) as tahun, COUNT(*) as total')
+            ->groupBy('tahun')
+            ->orderBy('tahun')
+            ->pluck('total', 'tahun');
+    
+        // Query status guru
+        $statusGuruQuery = DB::table('users')->where('role', 1);
+        if ($tahun && $tahun !== 'all') {
+            $statusGuruQuery->whereYear('tanggal', $tahun);
+        }
+        $statusGuru = $statusGuruQuery
+            ->select('status_kepegawaian', DB::raw('COUNT(*) as total'))
+            ->groupBy('status_kepegawaian')
+            ->pluck('total', 'status_kepegawaian');
+    
+        return response()->json([
+            'siswa_per_tahun' => [
+                'labels' => $siswa->keys(),
+                'data'   => $siswa->values()
+            ],
+            'guru_per_tahun' => [
+                'labels' => $guru->keys(),
+                'data'   => $guru->values()
+            ],
+            'status_guru' => $statusGuru
+        ]);
+    }
+    
+    
 
     public function profile($id){
         $user = User::find($id);

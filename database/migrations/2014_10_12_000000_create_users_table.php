@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('username');
             $table->string('password');
             $table->integer('role');
+            $table->string(column: 'status_kepegawaian');
+            $table->date('tanggal');
             $table->rememberToken();
             $table->timestamps();
         });

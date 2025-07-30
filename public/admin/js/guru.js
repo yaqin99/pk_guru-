@@ -1,5 +1,11 @@
 let nama_awal = null;
 
+$(document).ready(function() {
+  $('#filterTahun').on('change', function() {
+      dataKemajuanSekolah();
+  });
+});
+
 
 function getGuru(){
     $("#tabel_guru").dataTable().fnDestroy();
@@ -27,7 +33,7 @@ function getGuru(){
    }
 
    let currentGuruId = null;
-   let chartGuru = null;
+   window.chartGuru = window.chartGuru || null;
    
    function viewGrafik(row) {
     const data = JSON.parse(row);

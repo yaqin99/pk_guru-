@@ -29,9 +29,10 @@ class UserSeeder extends Seeder
                 'username' => 'arina' , 
                 'password' => bcrypt('arina') ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2022-02-15',
             ]
-            );
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => 'BAMBANG HARIYANTO S.E' ,
@@ -45,9 +46,10 @@ class UserSeeder extends Seeder
                 'username' => 'bambang' , 
                 'password' => bcrypt('bambang') ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'PNS',
+                'tanggal' => '2022-03-10',
             ]
-            );
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "ABD. MUIZ" ,
@@ -61,10 +63,10 @@ class UserSeeder extends Seeder
                 'username' => "muiz" , 
                 'password' => bcrypt("muiz") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2022-05-21',
             ]
-            );
-
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "ELIBSIN NUR KHALISOH S.Si, " ,
@@ -78,11 +80,10 @@ class UserSeeder extends Seeder
                 'username' => "elibsin" , 
                 'password' => bcrypt("elibsin") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'P3K',
+                'tanggal' => '2023-01-15',
             ]
-            );
-        
-
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "ZAIFUDDIN S.Pd.I," ,
@@ -96,10 +97,10 @@ class UserSeeder extends Seeder
                 'username' => "zaifuddin" , 
                 'password' => bcrypt("zaifuddin") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2023-02-08',
             ]
-            );
-
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "NOR AINI S.Pd." ,
@@ -113,8 +114,10 @@ class UserSeeder extends Seeder
                 'username' => "noraini" , 
                 'password' => bcrypt("noraini") ,
                 'role' => 1 ,
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2023-03-12',
             ]
-            );
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "SYAMSUL HADI S.Pd.I, " ,
@@ -128,10 +131,10 @@ class UserSeeder extends Seeder
                 'username' => "syamsul" , 
                 'password' => bcrypt("syamsul") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'P3K',
+                'tanggal' => '2024-01-20',
             ]
-            );
-        
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "SYAMSUL HADI S.Pd.I," ,
@@ -145,10 +148,10 @@ class UserSeeder extends Seeder
                 'username' => "syamsul" , 
                 'password' => bcrypt("syamsul") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2024-02-15',
             ]
-            );
-        
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "MAISARATUL HASANAH S.Pd." ,
@@ -162,10 +165,10 @@ class UserSeeder extends Seeder
                 'username' => "maisaratul" , 
                 'password' => bcrypt("maisaratul") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2024-03-18',
             ]
-            );
-        
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "MISRIYADI S.Pd." ,
@@ -179,10 +182,10 @@ class UserSeeder extends Seeder
                 'username' => "misri" , 
                 'password' => bcrypt("misri") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2024-04-22',
             ]
-            );
-        
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "ROFIQ ROMADLAN S.Pd, M.Pd." ,
@@ -196,10 +199,10 @@ class UserSeeder extends Seeder
                 'username' => "rofiq" , 
                 'password' => bcrypt("rofiq") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'PNS',
+                'tanggal' => '2025-01-15',
             ]
-            );
-        
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => "ACH. MUBASSYIR S.Ag." ,
@@ -213,11 +216,11 @@ class UserSeeder extends Seeder
                 'username' => "rofiq" , 
                 'password' => bcrypt("rofiq") ,
                 'role' => 1 ,
-                
+                'status_kepegawaian' => 'Honorer',
+                'tanggal' => '2025-02-18',
             ]
-            );
+        );
         
-
         DB::table('users')->insert(
             [
                 'nama_user' => 'Admin' ,
@@ -226,13 +229,13 @@ class UserSeeder extends Seeder
                 'alamat' => '-' , 
                 'email' => 'febri.9a23@gmail.com' , 
                 'poin' => 0 , 
-
                 'username' => 'admin' , 
                 'password' => bcrypt('admin') ,
                 'role' => 2 ,
-                
+                'status_kepegawaian' => 'PNS',
+                'tanggal' => '2022-01-10',
             ]
-            );
+        );
         DB::table('users')->insert(
             [
                 'nama_user' => 'AHMAD AINUL FURQAN S.IP.' ,
@@ -241,13 +244,14 @@ class UserSeeder extends Seeder
                 'alamat' => '-' , 
                 'email' => 'ahmadainulfurqan@madrasah.kemenag.go.id' , 
                 'poin' => 0 , 
-
                 'username' => 'kepsek' , 
                 'password' => bcrypt('kepsek') ,
                 'role' => 3 ,
-                
+                'status_kepegawaian' => 'PNS',
+                'tanggal' => '2022-01-05',
             ]
-            );
+        );
+        
 
             // $totalMapel = 22;
 
