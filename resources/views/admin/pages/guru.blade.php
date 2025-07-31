@@ -39,8 +39,6 @@
 </div>
 <script>
 
-
-
 function dataKemajuanSekolah() {
     const tahun = $('#filterTahun').val();
     $('#kemajuanSekolah').modal('show');
@@ -51,18 +49,18 @@ function dataKemajuanSekolah() {
         data: { tahun: tahun },
         dataType: 'json',
         success: function(response) {
-            // Hapus chart lama
-            [window.chartMurid, window.chartGuru, window.chartStatusGuru].forEach(c => {
-    if (c instanceof Chart) c.destroy();
-});
+            // Hapus chart lama biar gak numpuk
+            [window.chartMurid, window.chartGuru, window.chartStatusGuru, window.chartUsiaGuru].forEach(c => {
+                if (c instanceof Chart) c.destroy();
+            });
 
-            // === Chart Murid (Line Gradient) ===
+            // === Chart Murid ===
             const ctxMurid = document.getElementById('chartMurid').getContext('2d');
             const gradientMurid = ctxMurid.createLinearGradient(0, 0, 0, 300);
             gradientMurid.addColorStop(0, 'rgba(54, 162, 235, 0.6)');
             gradientMurid.addColorStop(1, 'rgba(54, 162, 235, 0)');
 
-            chartMurid = new Chart(ctxMurid, {
+            window.chartMurid = new Chart(ctxMurid, {
                 type: 'line',
                 data: {
                     labels: response.siswa_per_tahun.labels,
@@ -81,13 +79,13 @@ function dataKemajuanSekolah() {
                 options: { responsive: true }
             });
 
-            // === Chart Guru (Line Gradient) ===
+            // === Chart Guru ===
             const ctxGuru = document.getElementById('chartGuru').getContext('2d');
             const gradientGuru = ctxGuru.createLinearGradient(0, 0, 0, 300);
             gradientGuru.addColorStop(0, 'rgba(255, 99, 132, 0.6)');
             gradientGuru.addColorStop(1, 'rgba(255, 99, 132, 0)');
 
-            chartGuru = new Chart(ctxGuru, {
+            window.chartGuru = new Chart(ctxGuru, {
                 type: 'line',
                 data: {
                     labels: response.guru_per_tahun.labels,
@@ -106,9 +104,9 @@ function dataKemajuanSekolah() {
                 options: { responsive: true }
             });
 
-            // === Chart Status Guru (Pie) ===
+            // === Chart Status Guru ===
             const ctxStatus = document.getElementById('chartStatusGuru').getContext('2d');
-            chartStatusGuru = new Chart(ctxStatus, {
+            window.chartStatusGuru = new Chart(ctxStatus, {
                 type: 'pie',
                 data: {
                     labels: Object.keys(response.status_guru),
@@ -120,11 +118,57 @@ function dataKemajuanSekolah() {
                 options: { responsive: true }
             });
 
+            // === Chart Usia Guru ===
+            const ctxUsia = document.getElementById('chartUsiaGuru').getContext('2d');
+            const gradientUsia = ctxUsia.createLinearGradient(0, 0, 0, 300);
+            gradientUsia.addColorStop(0, 'rgba(93, 173, 226, 0.6)'); // biru muda
+            gradientUsia.addColorStop(1, 'rgba(155, 89, 182, 0)');   // ungu transparan
+
+            window.chartUsiaGuru = new Chart(ctxUsia, {
+                type: 'line',
+                data: {
+                    labels: response.usia_guru.labels,
+                    datasets: [{
+                        label: 'Rata-rata Usia Guru',
+                        data: response.usia_guru.data,
+                        fill: true,
+                        backgroundColor: gradientUsia,
+                        borderColor: 'rgba(142, 68, 173, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'rgba(142, 68, 173, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' tahun';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Usia (Tahun)'
+                            }
+                        }
+                    }
+                }
+            });
+
             // === Indeks Kemajuan ===
-            const muridTahunTerbaru = response.siswa_per_tahun.data.slice(-1)[0];
-            const muridTahunLalu = response.siswa_per_tahun.data.slice(-2)[0];
-            const guruTahunTerbaru = response.guru_per_tahun.data.slice(-1)[0];
-            const guruTahunLalu = response.guru_per_tahun.data.slice(-2)[0];
+            const muridTahunTerbaru = response.siswa_per_tahun.data.slice(-1)[0] || 0;
+            const muridTahunLalu = response.siswa_per_tahun.data.slice(-2)[0] || 0;
+            const guruTahunTerbaru = response.guru_per_tahun.data.slice(-1)[0] || 0;
+            const guruTahunLalu = response.guru_per_tahun.data.slice(-2)[0] || 0;
 
             let indeks = 'Tetap';
             if (muridTahunTerbaru > muridTahunLalu && guruTahunTerbaru >= guruTahunLalu) {
@@ -133,6 +177,8 @@ function dataKemajuanSekolah() {
             } else if (muridTahunTerbaru < muridTahunLalu) {
                 indeks = 'Menurun';
                 $('#indeksKemajuan').css('background', '#f8d7da').css('color', '#721c24');
+            } else {
+                $('#indeksKemajuan').css('background', '#fff3cd').css('color', '#856404');
             }
 
             $('#indeksKemajuan').text(indeks);
@@ -140,6 +186,15 @@ function dataKemajuanSekolah() {
     });
 }
 
+function tutupKemajuan() {
+    [window.chartMurid, window.chartGuru, window.chartStatusGuru, window.chartUsiaGuru].forEach(c => {
+        if (c instanceof Chart) c.destroy();
+    });
+}
+
+// function tutupKemajuan(){
+//   $('#kemajuanSekolah').modal('hide');
+// }
 
 function setLokasiSekolah() {
   Swal.fire({

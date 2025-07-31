@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('nip')->nullable();
             $table->string('no_hp')->nullable();
             $table->string('alamat')->nullable();
+            $table->string('tempat')->nullable();
+            $table->date('tanggal_lahir')->nullable();
             $table->string('email')->nullable();
             $table->string('poin')->nullable();
             $table->string('foto')->nullable();

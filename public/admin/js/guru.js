@@ -9,9 +9,7 @@ $(document).ready(function() {
   });
 });
 
-function tutupKemajuan(){
-  $('#kemajuanSekolah').modal('hide');
-}
+
 
 function getGuru(){
     $("#tabel_guru").dataTable().fnDestroy();

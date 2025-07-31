@@ -34,8 +34,18 @@
                         <canvas id="chartStatusGuru" height="150"></canvas>
                     </div>
 
-                    <!-- Indeks Kemajuan -->
-                    <div class="col-md-6 d-flex flex-column align-items-center justify-content-center">
+                    <!-- Usia Guru -->
+                    <div class="col-md-6">
+                        <h6>Rata-rata Usia Guru</h6>
+                        <canvas id="chartUsiaGuru" height="150"></canvas>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Indeks Kemajuan -->
+                <div class="row mt-3">
+                    <div class="col-md-12 d-flex flex-column align-items-center justify-content-center">
                         <h6>Indeks Kemajuan Sekolah</h6>
                         <div id="indeksKemajuan" class="p-3 text-center rounded" style="font-size:20px; font-weight:bold;">
                             Memuat...

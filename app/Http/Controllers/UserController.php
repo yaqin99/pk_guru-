@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         $tahun = $request->tahun;
     
-        // Query jumlah siswa
+        // === Jumlah siswa per tahun ===
         $siswaQuery = DB::table('siswas');
         if ($tahun && $tahun !== 'all') {
             $siswaQuery->where('angkatan', $tahun);
@@ -26,8 +26,8 @@ class UserController extends Controller
             ->orderBy('tahun')
             ->pluck('total', 'tahun');
     
-        // Query jumlah guru
-        $guruQuery = DB::table('users')->where('role', 1); // role guru
+        // === Jumlah guru per tahun ===
+        $guruQuery = DB::table('users')->where('role', 1);
         if ($tahun && $tahun !== 'all') {
             $guruQuery->whereYear('tanggal', $tahun);
         }
@@ -37,7 +37,7 @@ class UserController extends Controller
             ->orderBy('tahun')
             ->pluck('total', 'tahun');
     
-        // Query status guru
+        // === Status guru ===
         $statusGuruQuery = DB::table('users')->where('role', 1);
         if ($tahun && $tahun !== 'all') {
             $statusGuruQuery->whereYear('tanggal', $tahun);
@@ -47,6 +47,22 @@ class UserController extends Controller
             ->groupBy('status_kepegawaian')
             ->pluck('total', 'status_kepegawaian');
     
+        // === Rata-rata usia guru per tahun ===
+        $usiaGuruQuery = DB::table('users')
+            ->where('role', 1)
+            ->whereNotNull('tanggal_lahir');
+    
+        if ($tahun && $tahun !== 'all') {
+            $usiaGuruQuery->whereYear('tanggal', $tahun);
+        }
+    
+        $usiaGuru = $usiaGuruQuery
+            ->selectRaw('YEAR(tanggal) as tahun, ROUND(AVG(TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE())), 1) as rata_usia')
+            ->groupBy('tahun')
+            ->orderBy('tahun')
+            ->pluck('rata_usia', 'tahun');
+    
+        // === Return JSON ke frontend ===
         return response()->json([
             'siswa_per_tahun' => [
                 'labels' => $siswa->keys(),
@@ -56,9 +72,14 @@ class UserController extends Controller
                 'labels' => $guru->keys(),
                 'data'   => $guru->values()
             ],
-            'status_guru' => $statusGuru
+            'status_guru' => $statusGuru,
+            'usia_guru' => [
+                'labels' => $usiaGuru->keys(),
+                'data'   => $usiaGuru->values()
+            ]
         ]);
     }
+    
     
     
 
