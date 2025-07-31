@@ -397,26 +397,30 @@ return $row->tanggal
 
     public function addGuru()
     {
-      $add = User::create([
-        'nama_user' => request('nama'), 
-        'nip' => request('nip'), 
-        'no_hp' => request('no_hp'), 
-        'email' => request('email'), 
-        'alamat' => request('alamat'), 
-        'kelas' => request('kelas'), 
-        'mapel_id' => request('mapel'), 
-        'poin' => 0, 
-        'username' => request('username'), 
-        'password' => bcrypt(request('password')), 
-        'role' =>1, 
-      ]);
-
+        $add = User::create([
+            'nama_user'         => request('nama'), 
+            'nip'               => request('nip'), 
+            'no_hp'             => request('no_hp'), 
+            'email'             => request('email'), 
+            'alamat'            => request('alamat'), 
+            'tempat'            => request('tempat'), // field baru
+            'tanggal_lahir'     => request('tanggal_lahir'), // field baru
+            'status_kepegawaian'=> request('status_kepegawaian'), // field baru
+            'kelas'             => request('kelas'), 
+            'mapel_id'          => request('mapel'), 
+            'poin'              => 0, 
+            'username'          => request('username'), 
+            'password'          => bcrypt(request('password')), 
+            'role'              => 1, 
+            'tanggal'           => Carbon::now()->toDateString(), // tanggal input
+        ]);
     
-
-      
-
+        return response()->json([
+            'success' => true,
+            'message' => 'Guru berhasil ditambahkan',
+            'data'    => $add
+        ]);
     }
-
 
     public function resetPoin()
     {
@@ -430,20 +434,33 @@ return $row->tanggal
 
     public function editGuru()
     {
-      $add = User::where('id',request('id'))->update([
-        'nama_user' => request('nama'), 
-        'nip' => request('nip'), 
-        'no_hp' => request('no_hp'), 
-        'email' => request('email'), 
-        'alamat' => request('alamat'), 
-        'kelas' => request('kelas'), 
-        'mapel_id' => request('mapel'),
-      ]);
-
-
-      
-
+        $update = User::where('id', request('id'))->update([
+            'nama_user'         => request('nama'), 
+            'nip'               => request('nip'), 
+            'no_hp'             => request('no_hp'), 
+            'email'             => request('email'), 
+            'alamat'            => request('alamat'), 
+            'tempat'            => request('tempat'), // tempat lahir
+            'tanggal_lahir'     => request('tanggal_lahir'), // tanggal lahir
+            'status_kepegawaian'=> request('status_kepegawaian'), // status kepegawaian
+            'kelas'             => request('kelas'), 
+            'mapel_id'          => request('mapel'),
+            // 'tanggal' tidak diupdate karena itu tanggal penempatan awal
+        ]);
+    
+        if ($update) {
+            return response()->json([
+                'status'  => 'success',
+                'message' => 'Data guru berhasil diubah'
+            ]);
+        } else {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Gagal mengubah data guru'
+            ], 500);
+        }
     }
+    
     public function deleteGuru($id)
     {
       $deltete = User::find($id)->delete();

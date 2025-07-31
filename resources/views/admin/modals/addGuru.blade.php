@@ -30,6 +30,25 @@
                             <input class="form-control form-white" id="email" type="text" name="email">
                         </div>
                         <div class="col-md-6">
+                            <label class="control-label">Tempat Lahir</label>
+                            <input class="form-control form-white" id="tempat" type="text" name="tempat" placeholder="Masukkan Tempat Lahir">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="control-label">Tanggal Lahir</label>
+                            <input class="form-control form-white" id="tanggal_lahir" type="date" name="tanggal_lahir">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="control-label">Status Kepegawaian</label>
+                            <select class="form-control form-white" id="status_kepegawaian" name="status_kepegawaian">
+                                <option value="">-- Pilih Status --</option>
+                                <option value="PNS">PNS</option>
+                                <option value="Honorer">Honorer</option>
+                                <option value="P3K">P3K</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
                             <label class="control-label" id="labelUsername">Username</label>
                             <input class="form-control form-white" id="username" type="text" name="username">
                         </div>
