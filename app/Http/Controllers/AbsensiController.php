@@ -100,7 +100,7 @@ class AbsensiController extends Controller
 
     public function absensiGuru()
     {    
-        $pages = 'guru';
+        $pages = 'absensi';
     
         $user = auth()->user();
         $bulanIni = now()->format('Y-m');
