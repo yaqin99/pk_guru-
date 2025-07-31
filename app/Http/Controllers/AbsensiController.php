@@ -67,12 +67,12 @@ class AbsensiController extends Controller
             $request->lng
         );
 
-        if ($jarak > 20) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Anda di luar lokasi sekolah (' . round($jarak, 2) . ' m)'
-            ], 403);
-        }
+        // if ($jarak > 20) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Anda di luar lokasi sekolah (' . round($jarak, 2) . ' m)'
+        //     ], 403);
+        // }
 
         $sudahAbsen = Absensi::where('user_id', $user->id)
             ->whereDate('tanggal', $today)

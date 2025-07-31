@@ -9,6 +9,9 @@ $(document).ready(function() {
   });
 });
 
+function tutupKemajuan(){
+  $('#kemajuanSekolah').modal('hide');
+}
 
 function getGuru(){
     $("#tabel_guru").dataTable().fnDestroy();
@@ -29,6 +32,7 @@ function getGuru(){
          {data: 'alamat', name: 'alamat'},
          {data: 'kelas', name: 'kelas'},
          {data: 'mapel', name: 'mapel'},
+         {data: 'tanggal', name: 'tanggal'},
          {data: 'poin', name: 'poin'},
          {data: 'action', name: 'action', orderable: false, searchable: false},
      ]

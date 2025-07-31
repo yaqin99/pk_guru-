@@ -21,6 +21,7 @@
                                 <th>Alamat</th>
                                 <th>Kelas</th>
                                 <th>Mapel</th>
+                                <th>Tanggal</th>
                                 <th>Poin</th>
                                 <th>Opsi</th>
                             </tr>

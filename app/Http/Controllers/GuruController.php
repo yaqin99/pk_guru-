@@ -94,6 +94,11 @@ class GuruController extends Controller
                     
                      return $row->mapel->nama_mapel ;
                      })
+                    ->addColumn('tanggal', function($row){
+                    
+return $row->tanggal 
+    ? Carbon::parse($row->tanggal)->locale('id')->translatedFormat('l, d F Y') 
+    : 'Belum ada tanggal';                     })
                     ->addColumn('poin', function($row){
                       return $row->poin;})
                     ->addColumn('action', function($row){
