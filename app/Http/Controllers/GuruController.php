@@ -105,7 +105,13 @@ return $row->tanggal
                         if(Auth::user()->role == 3 ){
                             $btn = '
                             <div class="btn-group">
-                            <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm" title="Lihat Aspek" style="cursor: pointer;">
+                            <a  onclick=\'viewGrafik(`'.$row.'`)\'
+                            class="btn btn-info text-light btn-sm "
+                            title="Lihat Grafik Performa"
+                            style="cursor: pointer;">
+                            <i class="bi bi-bar-chart-line"></i> 
+                            </a>
+                            <a onclick=\'viewAspek(`'.$row.'`)\' class="edit btn btn-primary text-light btn-sm ml-2" title="Lihat Aspek" style="cursor: pointer;">
                             <i class="bi bi-eye-fill" ></i>
                             </a>
                             

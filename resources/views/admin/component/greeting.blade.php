@@ -26,8 +26,12 @@
             </li>
                          
                 @endif
-                @if (Auth::user()->role == 1)
-
+                @if (Auth::user()->role == 3)
+            <li class="breadcrumb-item">
+                <button onclick="dataKemajuanSekolah()" data-bs-toggle="modal" class="btn btn-danger text-white">
+                    <i class="bi bi-bar-chart-fill"></i> Kemajuan Sekolah
+                </button>
+            </li>
                 {{-- <li class="breadcrumb-item"><button onclick="addAbsensi()" data-bs-toggle="modal" class="btn btn-secondary text-left text-light"><i class="bi bi-plus-circle"></i>Absen Harian</button></li> --}}
                 @endif
     

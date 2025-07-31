@@ -39,7 +39,7 @@
             @endif
 
             @if (Auth::user()->role == 1 || Auth::user()->role == 3)
-            <li><a href="/absensi" aria-expanded="false"><i class="bi bi-envelope"></i><span
+            <li><a href="/absensi" aria-expanded="false"><i class="bi bi-check-square-fill"></i><span
                         class="nav-text">Data Absensi</span></a>
             </li>
             @endif
