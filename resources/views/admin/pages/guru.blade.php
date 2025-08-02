@@ -190,6 +190,9 @@ function tutupKemajuan() {
     [window.chartMurid, window.chartGuru, window.chartStatusGuru, window.chartUsiaGuru].forEach(c => {
         if (c instanceof Chart) c.destroy();
     });
+
+      $('#kemajuanSekolah').modal('hide');
+
 }
 
 // function tutupKemajuan(){
